@@ -112,7 +112,7 @@ impl<'a> Iterator for Lexer<'a> {
             Some(c) => {
                 if c == '"' {
                     match self.inner[1..].find('"') {
-                        Some(ind) => Some(Ok(Token::Value(&self.inner[1..ind + 1]))),
+                        Some(ind) => Some(Ok(Token::Value(&self.inner[1..=ind]))),
                         None => Some(Err(ParseError {
                             original: self.original,
                             span: self.offset..self.original.len(),
@@ -121,7 +121,7 @@ impl<'a> Iterator for Lexer<'a> {
                     }
                 } else if is_ident_start(c) {
                     let substr = match self.inner[1..].find(|c: char| !is_ident_rest(c)) {
-                        Some(ind) => &self.inner[..ind + 1],
+                        Some(ind) => &self.inner[..=ind],
                         None => &self.inner[..],
                     };
 
@@ -132,6 +132,9 @@ impl<'a> Iterator for Lexer<'a> {
                         other => Some(Ok(Token::Key(other))),
                     }
                 } else {
+                    // clippy tries to help here, but we need
+                    // a Range here, not a RangeInclusive<>
+                    #[allow(clippy::range_plus_one)]
                     Some(Err(ParseError {
                         original: self.original,
                         span: self.offset..self.offset + 1,

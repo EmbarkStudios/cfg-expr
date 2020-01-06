@@ -8,7 +8,7 @@ use crate::{
 use smallvec::SmallVec;
 
 impl Expression {
-    pub fn parse(original: &str) -> Result<Self, ParseError> {
+    pub fn parse(original: &str) -> Result<Self, ParseError<'_>> {
         let lexer = Lexer::new(original);
 
         // The lexer automatically trims any cfg( ), so reacquire
@@ -38,7 +38,7 @@ impl Expression {
         let apply_pred = |key: Option<(&str, std::ops::Range<usize>)>,
                           val: Option<(&str, std::ops::Range<usize>)>,
                           q: &mut SmallVec<[ExprNode; 5]>|
-         -> Result<(), ParseError> {
+         -> Result<(), ParseError<'_>> {
             // Warning: It is possible for arbitrarily-set configuration
             // options to have the same value as compiler-set configuration
             // options. For example, it is possible to do rustc --cfg "unix" program.rs
@@ -361,15 +361,12 @@ impl Expression {
             last_token = Some(lt.token);
         }
 
-        match last_token {
-            Some(Token::Equals) => {
-                return Err(ParseError {
-                    original,
-                    span: original.len()..original.len(),
-                    reason: Reason::Unexpected(&["\"<value>\""]),
-                })
-            }
-            _ => {}
+        if let Some(Token::Equals) = last_token {
+            return Err(ParseError {
+                original,
+                span: original.len()..original.len(),
+                reason: Reason::Unexpected(&["\"<value>\""]),
+            });
         }
 
         // If we still have functions on the stack, it means we have an unclosed parens
