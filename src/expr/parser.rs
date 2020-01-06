@@ -148,7 +148,19 @@ impl Expression {
 
                         let tp = match &target_key[7..] {
                             "arch" => tp!(Arch),
-                            "feature" => tp!(Feature),
+                            "feature" => {
+                                if val.is_empty() {
+                                    return Err(ParseError {
+                                        original,
+                                        span: vspan,
+                                        reason: Reason::Unexpected(&["<feature>"]),
+                                    });
+                                }
+
+                                q.push(ExprNode::Predicate(InnerPredicate::TargetFeature(vspan)));
+
+                                return Ok(());
+                            }
                             "os" => tp!(opt Os),
                             "family" => tp!(opt Family),
                             "env" => tp!(opt Env),

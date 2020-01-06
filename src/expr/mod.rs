@@ -16,7 +16,6 @@ use crate::targets as targ;
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub enum TargetPredicate {
     Arch(targ::Arch),
-    Feature(targ::Features),
     Os(Option<targ::Os>),
     Family(Option<targ::Family>),
     Env(Option<targ::Env>),
@@ -31,7 +30,6 @@ impl TargetPredicate {
 
         match self {
             Arch(a) => a == target.arch,
-            Feature(f) => (f as u32 & target.features) != 0,
             Os(os) => os == target.os,
             Family(fam) => fam == target.family,
             Env(env) => env == target.env,
@@ -49,6 +47,7 @@ pub enum Predicate<'a> {
     DebugAssertions,
     ProcMacro,
     Feature(&'a str),
+    TargetFeature(&'a str),
     Flag(&'a str),
     KeyValue { key: &'a str, val: &'a str },
 }
@@ -60,6 +59,7 @@ pub enum InnerPredicate {
     DebugAssertions,
     ProcMacro,
     Feature(std::ops::Range<usize>),
+    TargetFeature(std::ops::Range<usize>),
     Other {
         identifier: std::ops::Range<usize>,
         value: Option<std::ops::Range<usize>>,
@@ -77,6 +77,7 @@ impl InnerPredicate {
             IP::DebugAssertions => DebugAssertions,
             IP::ProcMacro => ProcMacro,
             IP::Feature(rng) => Feature(&s[rng.clone()]),
+            IP::TargetFeature(rng) => TargetFeature(&s[rng.clone()]),
             IP::Other { identifier, value } => match value {
                 Some(vs) => KeyValue {
                     key: &s[identifier.clone()],

@@ -82,109 +82,109 @@ target_enum! {
     }
 }
 
-#[derive(Clone, Copy, PartialEq, Debug)]
-#[allow(non_camel_case_types)]
-pub enum Features {
-    /// [SSE](https://en.wikipedia.org/wiki/Streaming_SIMD_Extensions) — Streaming SIMD Extensions
-    sse = 0x1,
-    /// [SSE2](https://en.wikipedia.org/wiki/SSE2) — Streaming SIMD Extensions 2
-    sse2 = 0x2,
-    /// [SSE3](https://en.wikipedia.org/wiki/SSE3) — Streaming SIMD Extensions 3
-    sse3 = 0x4,
-    /// [SSSE3](https://en.wikipedia.org/wiki/SSSE3) — Supplemental Streaming SIMD Extensions 3
-    ssse3 = 0x8,
-    /// [SSE4.1](https://en.wikipedia.org/wiki/SSE4#SSE4.1) — Streaming SIMD Extensions 4.1
-    sse41 = 0x10,
-    /// [SSE4.2](https://en.wikipedia.org/wiki/SSE4#SSE4.2) — Streaming SIMD Extensions 4.2
-    sse42 = 0x20,
-    /// [popcnt](https://www.felixcloutier.com/x86/popcnt) — Count of bits set to 1
-    popcnt = 0x40,
-    /// [fxsave](https://www.felixcloutier.com/x86/fxsave) and [fxrstor](https://www.felixcloutier.com/x86/fxrstor) — Save and restore x87 FPU, MMX Technology, and SSE State
-    fxsr = 0x80,
-    /// A static C runtime is available.
-    crt_static = 0x100,
-    /// [rdrand](https://en.wikipedia.org/wiki/RDRAND) — Read random number
-    rdrand = 0x200,
-    /// [rdseed](https://en.wikipedia.org/wiki/RDRAND) — Read random seed
-    rdseed = 0x400,
-}
+// #[derive(Clone, Copy, PartialEq, Debug)]
+// #[allow(non_camel_case_types)]
+// pub enum Features {
+//     /// [SSE](https://en.wikipedia.org/wiki/Streaming_SIMD_Extensions) — Streaming SIMD Extensions
+//     sse = 0x1,
+//     /// [SSE2](https://en.wikipedia.org/wiki/SSE2) — Streaming SIMD Extensions 2
+//     sse2 = 0x2,
+//     /// [SSE3](https://en.wikipedia.org/wiki/SSE3) — Streaming SIMD Extensions 3
+//     sse3 = 0x4,
+//     /// [SSSE3](https://en.wikipedia.org/wiki/SSSE3) — Supplemental Streaming SIMD Extensions 3
+//     ssse3 = 0x8,
+//     /// [SSE4.1](https://en.wikipedia.org/wiki/SSE4#SSE4.1) — Streaming SIMD Extensions 4.1
+//     sse41 = 0x10,
+//     /// [SSE4.2](https://en.wikipedia.org/wiki/SSE4#SSE4.2) — Streaming SIMD Extensions 4.2
+//     sse42 = 0x20,
+//     /// [popcnt](https://www.felixcloutier.com/x86/popcnt) — Count of bits set to 1
+//     popcnt = 0x40,
+//     /// [fxsave](https://www.felixcloutier.com/x86/fxsave) and [fxrstor](https://www.felixcloutier.com/x86/fxrstor) — Save and restore x87 FPU, MMX Technology, and SSE State
+//     fxsr = 0x80,
+//     /// A static C runtime is available.
+//     crt_static = 0x100,
+//     /// [rdrand](https://en.wikipedia.org/wiki/RDRAND) — Read random number
+//     rdrand = 0x200,
+//     /// [rdseed](https://en.wikipedia.org/wiki/RDRAND) — Read random seed
+//     rdseed = 0x400,
+// }
 
-impl std::ops::BitOr for Features {
-    type Output = u32;
-    fn bitor(self, other: Features) -> Self::Output {
-        self as u32 | other as u32
-    }
-}
+// impl std::ops::BitOr for Features {
+//     type Output = u32;
+//     fn bitor(self, other: Features) -> Self::Output {
+//         self as u32 | other as u32
+//     }
+// }
 
-impl std::ops::BitOr<u32> for Features {
-    type Output = u32;
-    fn bitor(self, other: u32) -> Self::Output {
-        self as u32 | other
-    }
-}
+// impl std::ops::BitOr<u32> for Features {
+//     type Output = u32;
+//     fn bitor(self, other: u32) -> Self::Output {
+//         self as u32 | other
+//     }
+// }
 
-impl std::ops::BitOr<Features> for u32 {
-    type Output = u32;
-    fn bitor(self, other: Features) -> Self::Output {
-        self | other as u32
-    }
-}
+// impl std::ops::BitOr<Features> for u32 {
+//     type Output = u32;
+//     fn bitor(self, other: Features) -> Self::Output {
+//         self | other as u32
+//     }
+// }
 
-impl std::ops::BitAnd for Features {
-    type Output = u32;
-    fn bitand(self, other: Features) -> Self::Output {
-        self as u32 & other as u32
-    }
-}
+// impl std::ops::BitAnd for Features {
+//     type Output = u32;
+//     fn bitand(self, other: Features) -> Self::Output {
+//         self as u32 & other as u32
+//     }
+// }
 
-impl std::ops::BitAnd<u32> for Features {
-    type Output = u32;
-    fn bitand(self, other: u32) -> Self::Output {
-        self as u32 & other
-    }
-}
+// impl std::ops::BitAnd<u32> for Features {
+//     type Output = u32;
+//     fn bitand(self, other: u32) -> Self::Output {
+//         self as u32 & other
+//     }
+// }
 
-impl std::ops::BitAnd<Features> for u32 {
-    type Output = u32;
-    fn bitand(self, other: Features) -> Self::Output {
-        self & other as u32
-    }
-}
+// impl std::ops::BitAnd<Features> for u32 {
+//     type Output = u32;
+//     fn bitand(self, other: Features) -> Self::Output {
+//         self & other as u32
+//     }
+// }
 
-impl std::str::FromStr for Features {
-    type Err = Reason;
+// impl std::str::FromStr for Features {
+//     type Err = Reason;
 
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(match s {
-            "sse" => Self::sse,
-            "sse2" => Self::sse2,
-            "sse3" => Self::sse3,
-            "ssse3" => Self::ssse3,
-            "sse4.1" => Self::sse41,
-            "sse4.2" => Self::sse42,
-            "popcnt" => Self::popcnt,
-            "fxsr" => Self::fxsr,
-            "crt-static" => Self::crt_static,
-            "rdrand" => Self::rdrand,
-            "rdseed" => Self::rdseed,
-            _ => {
-                return Err(Reason::Unexpected(&[
-                    "sse",
-                    "sse2",
-                    "sse3",
-                    "ssse3",
-                    "sse4.1",
-                    "sse4.2",
-                    "popcnt",
-                    "fxsr",
-                    "crt-static",
-                    "rdrand",
-                    "rdseed",
-                ]))
-            }
-        })
-    }
-}
+//     fn from_str(s: &str) -> Result<Self, Self::Err> {
+//         Ok(match s {
+//             "sse" => Self::sse,
+//             "sse2" => Self::sse2,
+//             "sse3" => Self::sse3,
+//             "ssse3" => Self::ssse3,
+//             "sse4.1" => Self::sse41,
+//             "sse4.2" => Self::sse42,
+//             "popcnt" => Self::popcnt,
+//             "fxsr" => Self::fxsr,
+//             "crt-static" => Self::crt_static,
+//             "rdrand" => Self::rdrand,
+//             "rdseed" => Self::rdseed,
+//             _ => {
+//                 return Err(Reason::Unexpected(&[
+//                     "sse",
+//                     "sse2",
+//                     "sse3",
+//                     "ssse3",
+//                     "sse4.1",
+//                     "sse4.2",
+//                     "popcnt",
+//                     "fxsr",
+//                     "crt-static",
+//                     "rdrand",
+//                     "rdseed",
+//                 ]))
+//             }
+//         })
+//     }
+// }
 
 target_enum! {
     #[derive(Clone, Copy, PartialEq, Debug)]
@@ -262,7 +262,6 @@ pub struct TargetInfo {
     pub env: Option<Env>,
     pub vendor: Option<Vendor>,
     pub family: Option<Family>,
-    pub features: u32,
     pub pointer_width: u8,
     pub endian: Endianness,
 }

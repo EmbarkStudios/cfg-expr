@@ -46,6 +46,10 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
 ",
     );
 
+    // Keep one target triple per architecture, as we need a full
+    // triple even if the only part that matters is the architecture
+    //let mut arches = HashMap::new();
+
     for target in targets.lines() {
         let output = Command::new(&rustc)
             .env("PATH", &path)
@@ -66,7 +70,6 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
 
         let kv = String::from_utf8(output.stdout).unwrap();
 
-        let mut features = String::new();
         let mut num_feats = 0;
         let mut arch = None;
         let mut endian = None;
@@ -87,7 +90,12 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
                     let val = &line[i + 2..line.len() - 1];
 
                     match key {
-                        "arch" => arch = Some(val),
+                        "arch" => {
+                            arch = Some(val);
+                            // if arches.get(val).is_none() {
+                            //     arches.insert(val, target);
+                            // }
+                        }
                         "endian" => endian = Some(val),
                         "env" => {
                             if !val.is_empty() {
@@ -96,18 +104,19 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
                         }
                         "family" => family = Some(val),
                         "feature" => {
-                            num_feats += 1;
-                            write!(
-                                features,
-                                "Features::{} as u32 | ",
-                                match val {
-                                    "sse4.1" => "sse41",
-                                    "sse4.2" => "sse42",
-                                    "crt-static" => "crt_static",
-                                    passthrough => passthrough,
-                                }
-                            )
-                            .unwrap();
+
+                            // num_feats += 1;
+                            // write!(
+                            //     features,
+                            //     "Features::{} as u32 | ",
+                            //     match val {
+                            //         "sse4.1" => "sse41",
+                            //         "sse4.2" => "sse42",
+                            //         "crt-static" => "crt_static",
+                            //         passthrough => passthrough,
+                            //     }
+                            // )
+                            // .unwrap();
                         }
                         "os" => {
                             if val != "none" {
@@ -126,10 +135,10 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
             }
         }
 
-        match num_feats {
-            0 => features.push_str("0x0"),
-            _ => features.truncate(features.len() - 3),
-        }
+        // match num_feats {
+        //     0 => features.push_str("0x0"),
+        //     _ => features.truncate(features.len() - 3),
+        // }
 
         writeln!(
             all_targets,
@@ -140,7 +149,6 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         env: {env},
         vendor: {vendor},
         family: {family},
-        features: {features},
         pointer_width: {width},
         endian: Endianness::{endian},
     }},",
@@ -158,7 +166,6 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
             family = family
                 .map(|f| format!("Some(Family::{})", f))
                 .unwrap_or_else(|| "None".to_owned()),
-            features = features,
             width = width.expect("target had no pointer_width"),
             endian = endian.expect("target had no endian"),
         )
@@ -178,6 +185,46 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
     if !status.success() {
         return Err(format!("failed to successfuly format: {}", status));
     }
+
+    // Now, grab all of the available features for each unique architecture
+    // for (arch, target) in arches {
+    //     let output = Command::new(&rustc)
+    //         .env("PATH", &path)
+    //         .arg("--target")
+    //         .arg(target)
+    //         .args(&["--print", "target-features"])
+    //         .output()
+    //         .map_err(|e| format!("failed to run rustc: {}", e))?;
+
+    //     if !output.status.success() {
+    //         return Err(format!(
+    //             "failed to retrieve target-features {}: {}",
+    //             target,
+    //             String::from_utf8(output.stderr)
+    //                 .map_err(|e| format!("unable to parse stderr: {}", e))?
+    //         ));
+    //     }
+
+    //     let kv = String::from_utf8(output.stdout).unwrap();
+
+    //     for line in kv {
+    //         // The output includes additional text that we don't need
+    //         if !line.starts_with("    ") {
+    //             continue;
+    //         }
+
+    //         // Each kv is of the form "    <name><spaces>-<space><description>"
+    //         let name_end = line[4..]
+    //             .find(' ')
+    //             .ok_or_else(|| format!("invalid target-feature line: {}", line))?;
+
+    //         let name = &line[4..name_end + 4];
+
+    //         // Meh :P
+    //         let name = name.replace('-', "_");
+    //         let name = name.replace('.', "_");
+    //     }
+    // }
 
     Ok(())
 }

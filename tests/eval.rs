@@ -1,13 +1,17 @@
-use cfg_expr::{
-    expr::{Predicate, TargetPredicate},
-    targets::{self, ALL_TARGETS as all},
-    Expression,
-};
+use cfg_expr::{expr::Predicate, targets::ALL_TARGETS as all, Expression};
 
 macro_rules! tg_match {
     ($pred:expr, $target:expr) => {
         match $pred {
             Predicate::Target(tg) => tg.matches(&$target),
+            _ => panic!("not a target predicate"),
+        }
+    };
+
+    ($pred:expr, $target:expr, $feats:expr) => {
+        match $pred {
+            Predicate::Target(tg) => tg.matches(&$target),
+            Predicate::TargetFeature(feat) => $feats.iter().find(|f| *f == feat).is_some(),
             _ => panic!("not a target predicate"),
         }
     };
@@ -52,9 +56,9 @@ fn very_specific() {
 
     for target in all {
         assert_eq!(
-            target.triple == "i686-pc-windows-msvc",
-            specific.eval(|pred| { tg_match!(pred, target) }),
-            "failed {}",
+            target.triple == "i686-pc-windows-msvc" || target.triple == "i586-pc-windows-msvc",
+            specific.eval(|pred| { tg_match!(pred, target, &["fxsr", "sse", "sse2"]) }),
+            "expected true for i686-pc-windows-msvc, but got true for {}",
             target.triple,
         );
     }
@@ -106,7 +110,7 @@ fn features() {
     assert!(feature_and_target_feature.eval(|pred| {
         match pred {
             Predicate::Feature(name) => *name == "make_fast",
-            Predicate::Target(TargetPredicate::Feature(feat)) => *feat == targets::Features::sse42,
+            Predicate::TargetFeature(feat) => *feat == "sse4.2",
             _ => false,
         }
     }));
