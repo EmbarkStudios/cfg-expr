@@ -155,7 +155,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: {vendor},
         family: {family},
         pointer_width: {width},
-        endian: Endianness::{endian},
+        endian: Endian::{endian},
     }},",
             triple = target,
             os = os

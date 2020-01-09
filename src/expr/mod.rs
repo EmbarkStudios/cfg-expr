@@ -16,12 +16,12 @@ use crate::targets as targ;
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub enum TargetPredicate {
     Arch(targ::Arch),
-    Os(Option<targ::Os>),
-    Family(Option<targ::Family>),
+    Endian(targ::Endian),
     Env(Option<targ::Env>),
-    Endian(targ::Endianness),
-    Vendor(Option<targ::Vendor>),
+    Family(Option<targ::Family>),
+    Os(Option<targ::Os>),
     PointerWidth(u8),
+    Vendor(Option<targ::Vendor>),
 }
 
 impl TargetPredicate {
@@ -30,12 +30,12 @@ impl TargetPredicate {
 
         match self {
             Arch(a) => a == target.arch,
-            Os(os) => os == target.os,
-            Family(fam) => fam == target.family,
-            Env(env) => env == target.env,
             Endian(end) => end == target.endian,
-            Vendor(ven) => ven == target.vendor,
+            Env(env) => env == target.env,
+            Family(fam) => fam == target.family,
+            Os(os) => os == target.os,
             PointerWidth(w) => w == target.pointer_width,
+            Vendor(ven) => ven == target.vendor,
         }
     }
 }

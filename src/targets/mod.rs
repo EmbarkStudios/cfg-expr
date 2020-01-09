@@ -84,7 +84,7 @@ target_enum! {
 
 target_enum! {
     #[derive(Clone, Copy, PartialEq, Debug)]
-    pub enum Endianness {
+    pub enum Endian {
         big,
         little,
     }
@@ -159,7 +159,7 @@ pub struct TargetInfo {
     pub vendor: Option<Vendor>,
     pub family: Option<Family>,
     pub pointer_width: u8,
-    pub endian: Endianness,
+    pub endian: Endian,
 }
 
 pub fn get_target_by_triple(triple: &str) -> Option<&'static TargetInfo> {

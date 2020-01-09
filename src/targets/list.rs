@@ -17,7 +17,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::apple),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "aarch64-fuchsia",
@@ -27,7 +27,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: None,
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "aarch64-linux-android",
@@ -37,7 +37,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "aarch64-pc-windows-msvc",
@@ -47,7 +47,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::pc),
         family: Some(Family::windows),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "aarch64-unknown-cloudabi",
@@ -57,7 +57,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: None,
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "aarch64-unknown-freebsd",
@@ -67,7 +67,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "aarch64-unknown-hermit",
@@ -77,7 +77,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: None,
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "aarch64-unknown-linux-gnu",
@@ -87,7 +87,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "aarch64-unknown-linux-musl",
@@ -97,7 +97,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "aarch64-unknown-netbsd",
@@ -107,7 +107,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "aarch64-unknown-none",
@@ -117,7 +117,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: None,
         family: None,
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "aarch64-unknown-none-softfloat",
@@ -127,7 +127,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: None,
         family: None,
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "aarch64-unknown-openbsd",
@@ -137,7 +137,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "aarch64-unknown-redox",
@@ -147,7 +147,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "aarch64-uwp-windows-msvc",
@@ -157,7 +157,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::uwp),
         family: Some(Family::windows),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "aarch64-wrs-vxworks",
@@ -167,7 +167,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::wrs),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "arm-linux-androideabi",
@@ -177,7 +177,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "arm-unknown-linux-gnueabi",
@@ -187,7 +187,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "arm-unknown-linux-gnueabihf",
@@ -197,7 +197,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "arm-unknown-linux-musleabi",
@@ -207,7 +207,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "arm-unknown-linux-musleabihf",
@@ -217,7 +217,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "armebv7r-none-eabi",
@@ -227,7 +227,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: None,
         family: None,
         pointer_width: 32,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "armebv7r-none-eabihf",
@@ -237,7 +237,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: None,
         family: None,
         pointer_width: 32,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "armv4t-unknown-linux-gnueabi",
@@ -247,7 +247,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "armv5te-unknown-linux-gnueabi",
@@ -257,7 +257,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "armv5te-unknown-linux-musleabi",
@@ -267,7 +267,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "armv6-unknown-freebsd",
@@ -277,7 +277,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "armv6-unknown-netbsd-eabihf",
@@ -287,7 +287,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "armv7-apple-ios",
@@ -297,7 +297,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::apple),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "armv7-linux-androideabi",
@@ -307,7 +307,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "armv7-unknown-cloudabi-eabihf",
@@ -317,7 +317,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: None,
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "armv7-unknown-freebsd",
@@ -327,7 +327,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "armv7-unknown-linux-gnueabi",
@@ -337,7 +337,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "armv7-unknown-linux-gnueabihf",
@@ -347,7 +347,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "armv7-unknown-linux-musleabi",
@@ -357,7 +357,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "armv7-unknown-linux-musleabihf",
@@ -367,7 +367,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "armv7-unknown-netbsd-eabihf",
@@ -377,7 +377,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "armv7-wrs-vxworks-eabihf",
@@ -387,7 +387,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::wrs),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "armv7r-none-eabi",
@@ -397,7 +397,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: None,
         family: None,
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "armv7r-none-eabihf",
@@ -407,7 +407,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: None,
         family: None,
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "armv7s-apple-ios",
@@ -417,7 +417,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::apple),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "asmjs-unknown-emscripten",
@@ -427,7 +427,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "hexagon-unknown-linux-musl",
@@ -437,7 +437,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "i386-apple-ios",
@@ -447,7 +447,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::apple),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "i586-pc-windows-msvc",
@@ -457,7 +457,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::pc),
         family: Some(Family::windows),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "i586-unknown-linux-gnu",
@@ -467,7 +467,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "i586-unknown-linux-musl",
@@ -477,7 +477,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "i686-apple-darwin",
@@ -487,7 +487,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::apple),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "i686-linux-android",
@@ -497,7 +497,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "i686-pc-windows-gnu",
@@ -507,7 +507,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::pc),
         family: Some(Family::windows),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "i686-pc-windows-msvc",
@@ -517,7 +517,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::pc),
         family: Some(Family::windows),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "i686-unknown-cloudabi",
@@ -527,7 +527,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: None,
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "i686-unknown-dragonfly",
@@ -537,7 +537,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "i686-unknown-freebsd",
@@ -547,7 +547,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "i686-unknown-haiku",
@@ -557,7 +557,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "i686-unknown-linux-gnu",
@@ -567,7 +567,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "i686-unknown-linux-musl",
@@ -577,7 +577,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "i686-unknown-netbsd",
@@ -587,7 +587,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "i686-unknown-openbsd",
@@ -597,7 +597,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "i686-unknown-uefi",
@@ -607,7 +607,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: None,
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "i686-uwp-windows-gnu",
@@ -617,7 +617,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::uwp),
         family: Some(Family::windows),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "i686-uwp-windows-msvc",
@@ -627,7 +627,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::uwp),
         family: Some(Family::windows),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "i686-wrs-vxworks",
@@ -637,7 +637,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::wrs),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "mips-unknown-linux-gnu",
@@ -647,7 +647,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "mips-unknown-linux-musl",
@@ -657,7 +657,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "mips-unknown-linux-uclibc",
@@ -667,7 +667,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "mips64-unknown-linux-gnuabi64",
@@ -677,7 +677,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "mips64-unknown-linux-muslabi64",
@@ -687,7 +687,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "mips64el-unknown-linux-gnuabi64",
@@ -697,7 +697,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "mips64el-unknown-linux-muslabi64",
@@ -707,7 +707,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "mipsel-unknown-linux-gnu",
@@ -717,7 +717,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "mipsel-unknown-linux-musl",
@@ -727,7 +727,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "mipsel-unknown-linux-uclibc",
@@ -737,7 +737,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "mipsisa32r6-unknown-linux-gnu",
@@ -747,7 +747,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "mipsisa32r6el-unknown-linux-gnu",
@@ -757,7 +757,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "mipsisa64r6-unknown-linux-gnuabi64",
@@ -767,7 +767,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "mipsisa64r6el-unknown-linux-gnuabi64",
@@ -777,7 +777,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "msp430-none-elf",
@@ -787,7 +787,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: None,
         family: None,
         pointer_width: 16,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "nvptx64-nvidia-cuda",
@@ -797,7 +797,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::nvidia),
         family: None,
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "powerpc-unknown-linux-gnu",
@@ -807,7 +807,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "powerpc-unknown-linux-gnuspe",
@@ -817,7 +817,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "powerpc-unknown-linux-musl",
@@ -827,7 +827,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "powerpc-unknown-netbsd",
@@ -837,7 +837,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "powerpc-wrs-vxworks",
@@ -847,7 +847,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::wrs),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "powerpc-wrs-vxworks-spe",
@@ -857,7 +857,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::wrs),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "powerpc64-unknown-freebsd",
@@ -867,7 +867,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "powerpc64-unknown-linux-gnu",
@@ -877,7 +877,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "powerpc64-unknown-linux-musl",
@@ -887,7 +887,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "powerpc64-wrs-vxworks",
@@ -897,7 +897,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::wrs),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "powerpc64le-unknown-linux-gnu",
@@ -907,7 +907,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "powerpc64le-unknown-linux-musl",
@@ -917,7 +917,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "riscv32i-unknown-none-elf",
@@ -927,7 +927,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: None,
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "riscv32imac-unknown-none-elf",
@@ -937,7 +937,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: None,
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "riscv32imc-unknown-none-elf",
@@ -947,7 +947,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: None,
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "riscv64gc-unknown-none-elf",
@@ -957,7 +957,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: None,
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "riscv64imac-unknown-none-elf",
@@ -967,7 +967,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: None,
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "s390x-unknown-linux-gnu",
@@ -977,7 +977,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "sparc-unknown-linux-gnu",
@@ -987,7 +987,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "sparc64-unknown-linux-gnu",
@@ -997,7 +997,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "sparc64-unknown-netbsd",
@@ -1007,7 +1007,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "sparc64-unknown-openbsd",
@@ -1017,7 +1017,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "sparcv9-sun-solaris",
@@ -1027,7 +1027,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::sun),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::big,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "thumbv6m-none-eabi",
@@ -1037,7 +1037,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: None,
         family: None,
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "thumbv7a-pc-windows-msvc",
@@ -1047,7 +1047,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::pc),
         family: Some(Family::windows),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "thumbv7em-none-eabi",
@@ -1057,7 +1057,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: None,
         family: None,
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "thumbv7em-none-eabihf",
@@ -1067,7 +1067,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: None,
         family: None,
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "thumbv7m-none-eabi",
@@ -1077,7 +1077,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: None,
         family: None,
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "thumbv7neon-linux-androideabi",
@@ -1087,7 +1087,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "thumbv7neon-unknown-linux-gnueabihf",
@@ -1097,7 +1097,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "thumbv8m.base-none-eabi",
@@ -1107,7 +1107,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: None,
         family: None,
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "thumbv8m.main-none-eabi",
@@ -1117,7 +1117,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: None,
         family: None,
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "thumbv8m.main-none-eabihf",
@@ -1127,7 +1127,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: None,
         family: None,
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "wasm32-unknown-emscripten",
@@ -1137,7 +1137,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "wasm32-unknown-unknown",
@@ -1147,7 +1147,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: None,
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "wasm32-wasi",
@@ -1157,7 +1157,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: None,
         family: None,
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-apple-darwin",
@@ -1167,7 +1167,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::apple),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-apple-ios",
@@ -1177,7 +1177,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::apple),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-apple-ios-macabi",
@@ -1187,7 +1187,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::apple),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-fortanix-unknown-sgx",
@@ -1197,7 +1197,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::fortanix),
         family: None,
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-fuchsia",
@@ -1207,7 +1207,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: None,
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-linux-android",
@@ -1217,7 +1217,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-linux-kernel",
@@ -1227,7 +1227,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-pc-solaris",
@@ -1237,7 +1237,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::sun),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-pc-windows-gnu",
@@ -1247,7 +1247,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::pc),
         family: Some(Family::windows),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-pc-windows-msvc",
@@ -1257,7 +1257,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::pc),
         family: Some(Family::windows),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-rumprun-netbsd",
@@ -1267,7 +1267,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::rumprun),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-sun-solaris",
@@ -1277,7 +1277,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::sun),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-unknown-cloudabi",
@@ -1287,7 +1287,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: None,
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-unknown-dragonfly",
@@ -1297,7 +1297,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-unknown-freebsd",
@@ -1307,7 +1307,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-unknown-haiku",
@@ -1317,7 +1317,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-unknown-hermit",
@@ -1327,7 +1327,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: None,
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-unknown-l4re-uclibc",
@@ -1337,7 +1337,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-unknown-linux-gnu",
@@ -1347,7 +1347,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-unknown-linux-gnux32",
@@ -1357,7 +1357,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-unknown-linux-musl",
@@ -1367,7 +1367,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-unknown-netbsd",
@@ -1377,7 +1377,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-unknown-openbsd",
@@ -1387,7 +1387,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-unknown-redox",
@@ -1397,7 +1397,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-unknown-uefi",
@@ -1407,7 +1407,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: None,
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-uwp-windows-gnu",
@@ -1417,7 +1417,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::uwp),
         family: Some(Family::windows),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-uwp-windows-msvc",
@@ -1427,7 +1427,7 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::uwp),
         family: Some(Family::windows),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
     TargetInfo {
         triple: "x86_64-wrs-vxworks",
@@ -1437,6 +1437,6 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         vendor: Some(Vendor::wrs),
         family: Some(Family::unix),
         pointer_width: 64,
-        endian: Endianness::little,
+        endian: Endian::little,
     },
 ];
