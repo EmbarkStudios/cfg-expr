@@ -1,22 +1,85 @@
-<!--- FIXME: Pick an emoji! --->
-# 🌻 opensource-template
+# ⚙️ cfg-expr
 
-<!--- FIXME: Update crate and repo names here! --->
-[![Build Status](https://github.com/EmbarkStudios/template/workflows/CI/badge.svg)](https://github.com/EmbarkStudios/template/actions?workflow=CI)
-[![Crates.io](https://img.shields.io/crates/v/tame-oauth.svg)](https://crates.io/crates/tame-oauth)
-[![Docs](https://docs.rs/tame-oauth/badge.svg)](https://docs.rs/tame-oauth)
+[![Build Status](https://github.com/EmbarkStudios/cfg-expr/workflows/CI/badge.svg)](https://github.com/EmbarkStudios/cfg-expr/actions?workflow=CI)
+[![Crates.io](https://img.shields.io/crates/v/cfg-expr.svg)](https://crates.io/crates/cfg-expr)
+[![Docs](https://docs.rs/cfg-expr/badge.svg)](https://docs.rs/cfg-expr)
 [![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 [![Embark](https://img.shields.io/badge/embark-open%20source-blueviolet.svg)](https://embark.dev)
 
-Template for creating new open source repositories that follow the Embark open source guidelines.
+A parser and evaluator for Rust `cfg()` expressions.
 
-## TEMPLATE INSTRUCTIONS
+## Alternatives
 
-1. Create a new repository under EmbarkStudios using this template.
-1. __Title:__ Change the first line of this README to the name of your project, and replace the sunflower with an emoji that represents your project. 🚨 Your emoji selection is critical.
-1. __Badges:__ In the badges section above, change the repo name in each URL. If you are creating something other than a Rust crate, remove the crates.io and docs badges (and feel free to add more appropriate ones for your language).
-1. __CI:__ In `./github/workflows/` rename `rust-ci.yml` (or the appropriate config for your language) to `ci.yml`. And go over it and adapt it to work for your project
-1. __Cleanup:__ Remove this section of the README and any unused files (such as configs for other languages) from the repo.
+- [cargo-platform](https://crates.io/crates/cargo-platform)
+- [parse_cfg](https://crates.io/crates/parse_cfg)
+
+## Usage
+
+```rust
+use cfg_expr::{expr::Predicate, targets, Expression};
+
+fn main() {
+    let specific = Expression::parse(
+        r#"all(
+            target_os = "windows",
+            target_arch = "x86",
+            windows,
+            target_env = "msvc",
+            target_feature = "fxsr",
+            target_feature = "sse",
+            target_feature = "sse2",
+            target_pointer_width = "32",
+            target_endian = "little",
+            not(target_vendor = "uwp"),
+        )"#,
+    )
+    .unwrap();
+
+    // cfg_expr includes a list of every builtin target in rustc (as of 1.40)
+    let x86_win = targets::get_target_by_triple("i686-pc-windows-msvc").unwrap();
+    let x86_pentium_win = targets::get_target_by_triple("i586-pc-windows-msvc").unwrap();
+    let uwp_win = targets::get_target_by_triple("i686-uwp-windows-msvc").unwrap();
+    let mac = targets::get_target_by_triple("x86_64-apple-darwin").unwrap();
+
+    let avail_feats = ["fxsr", "sse", "sse2"];
+
+    // This will satisfy all requirements
+    assert!(specific.eval(|pred| {
+        match pred {
+            Predicate::Target(tp) => tp.matches(x86_win),
+            Predicate::TargetFeature(feat) => avail_feats.contains(feat),
+            _ => false,
+        }
+    }));
+
+    // As will this
+    assert!(specific.eval(|pred| {
+        match pred {
+            Predicate::Target(tp) => tp.matches(x86_pentium_win),
+            Predicate::TargetFeature(feat) => avail_feats.contains(feat),
+            _ => false,
+        }
+    }));
+
+    // This will *not* satisfy the vendor predicate
+    assert!(!specific.eval(|pred| {
+        match pred {
+            Predicate::Target(tp) => tp.matches(uwp_win),
+            Predicate::TargetFeature(feat) => avail_feats.contains(feat),
+            _ => false,
+        }
+    }));
+
+    // This will *not* satisfy the vendor, os, or env predicates
+    assert!(!specific.eval(|pred| {
+        match pred {
+            Predicate::Target(tp) => tp.matches(mac),
+            Predicate::TargetFeature(feat) => avail_feats.contains(feat),
+            _ => false,
+        }
+    }));
+}
+```
 
 ## Contributing
 
