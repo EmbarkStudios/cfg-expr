@@ -8,7 +8,12 @@ fn real_main() -> Result<(), String> {
     let sep = if cfg!(unix) { ':' } else { ';' };
 
     path.push(sep);
-    write!(path, "{}", std::env::current_dir().unwrap().display()).unwrap();
+    write!(
+        path,
+        "{}",
+        std::env::current_exe().unwrap().parent().unwrap().display()
+    )
+    .unwrap();
 
     // Get the list of possible targets
     let output = Command::new(&rustc)
