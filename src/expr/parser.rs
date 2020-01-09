@@ -25,8 +25,9 @@ impl Expression {
         struct FuncAndSpan {
             func: Func,
             parens_index: usize,
-            num_predicates: u32,
             span: std::ops::Range<usize>,
+            predicates: SmallVec<[InnerPredicate; 5]>,
+            nest_level: u8,
         }
 
         let mut func_stack = SmallVec::<[FuncAndSpan; 5]>::new();
@@ -35,10 +36,9 @@ impl Expression {
         // Keep track of the last token to simplify validation of the token stream
         let mut last_token: Option<Token<'_>> = None;
 
-        let apply_pred = |key: Option<(&str, std::ops::Range<usize>)>,
-                          val: Option<(&str, std::ops::Range<usize>)>,
-                          q: &mut SmallVec<[ExprNode; 5]>|
-         -> Result<(), ParseError<'_>> {
+        let parse_predicate = |key: (&str, std::ops::Range<usize>),
+                               val: Option<(&str, std::ops::Range<usize>)>|
+         -> Result<InnerPredicate, ParseError<'_>> {
             // Warning: It is possible for arbitrarily-set configuration
             // options to have the same value as compiler-set configuration
             // options. For example, it is possible to do rustc --cfg "unix" program.rs
@@ -47,7 +47,7 @@ impl Expression {
             // do this.
             //
             // rustc is very permissive in this regard, but I'd rather be really
-            // strict, as it's much easier to loose restrictions over time than add
+            // strict, as it's much easier to loosen restrictions over time than add
             // new ones
             macro_rules! err_if_val {
                 () => {
@@ -61,150 +61,138 @@ impl Expression {
                 };
             }
 
-            match key {
-                None => return Ok(()),
-                Some((key, span)) => match key {
-                    // These are special cases in the cfg language that are
-                    // semantically the same as `target_family = "<family>"`,
-                    // so we just make them not special
-                    "unix" | "windows" => {
-                        err_if_val!();
+            let span = key.1;
+            let key = key.0;
 
-                        let fam = key.parse().map_err(|reason| ParseError {
-                            original,
-                            span,
-                            reason,
-                        })?;
+            Ok(match key {
+                // These are special cases in the cfg language that are
+                // semantically the same as `target_family = "<family>"`,
+                // so we just make them not special
+                "unix" | "windows" => {
+                    err_if_val!();
 
-                        q.push(ExprNode::Predicate(InnerPredicate::Target(
-                            TargetPredicate::Family(Some(fam)),
-                        )));
-                    }
-                    "test" => {
-                        err_if_val!();
-                        q.push(ExprNode::Predicate(InnerPredicate::Test));
-                    }
-                    "debug_assertions" => {
-                        err_if_val!();
-                        q.push(ExprNode::Predicate(InnerPredicate::DebugAssertions));
-                    }
-                    "proc_macro" => {
-                        err_if_val!();
-                        q.push(ExprNode::Predicate(InnerPredicate::ProcMacro));
-                    }
-                    "feature" => {
-                        // rustc allows bare feature without a value, but the only way
-                        // such a predicate would ever evaluate to true would be if they
-                        // explicitly set --cfg feature, which would be terrible, so we
-                        // just error instead
-                        match val {
-                            Some((_, span)) => {
-                                q.push(ExprNode::Predicate(InnerPredicate::Feature(span)))
-                            }
-                            None => {
-                                return Err(ParseError {
-                                    original,
-                                    span,
-                                    reason: Reason::Unexpected(&["= \"<feature_name>\""]),
-                                });
-                            }
+                    let fam = key.parse().map_err(|reason| ParseError {
+                        original,
+                        span,
+                        reason,
+                    })?;
+
+                    InnerPredicate::Target(TargetPredicate::Family(Some(fam)))
+                }
+                "test" => {
+                    err_if_val!();
+                    InnerPredicate::Test
+                }
+                "debug_assertions" => {
+                    err_if_val!();
+                    InnerPredicate::DebugAssertions
+                }
+                "proc_macro" => {
+                    err_if_val!();
+                    InnerPredicate::ProcMacro
+                }
+                "feature" => {
+                    // rustc allows bare feature without a value, but the only way
+                    // such a predicate would ever evaluate to true would be if they
+                    // explicitly set --cfg feature, which would be terrible, so we
+                    // just error instead
+                    match val {
+                        Some((_, span)) => InnerPredicate::Feature(span),
+                        None => {
+                            return Err(ParseError {
+                                original,
+                                span,
+                                reason: Reason::Unexpected(&["= \"<feature_name>\""]),
+                            });
                         }
                     }
-                    target_key if key.starts_with("target_") => {
-                        let (val, vspan) = match val {
-                            None => {
-                                return Err(ParseError {
-                                    original,
-                                    span,
-                                    reason: Reason::Unexpected(&["= \"<target_cfg_value>\""]),
-                                });
-                            }
-                            Some((val, vspan)) => (val, vspan),
+                }
+                target_key if key.starts_with("target_") => {
+                    let (val, vspan) = match val {
+                        None => {
+                            return Err(ParseError {
+                                original,
+                                span,
+                                reason: Reason::Unexpected(&["= \"<target_cfg_value>\""]),
+                            });
+                        }
+                        Some((val, vspan)) => (val, vspan),
+                    };
+
+                    macro_rules! tp {
+                        ($which:ident) => {
+                            TargetPredicate::$which(val.parse().map_err(|r| ParseError {
+                                original,
+                                span: vspan,
+                                reason: r,
+                            })?)
                         };
 
-                        macro_rules! tp {
-                            ($which:ident) => {
-                                TargetPredicate::$which(val.parse().map_err(|r| ParseError {
-                                    original,
-                                    span: vspan,
-                                    reason: r,
-                                })?)
-                            };
-
-                            (opt $which:ident) => {
-                                if !val.is_empty() {
-                                    TargetPredicate::$which(Some(val.parse().map_err(|r| {
-                                        ParseError {
-                                            original,
-                                            span: vspan,
-                                            reason: r,
-                                        }
-                                    })?))
-                                } else {
-                                    TargetPredicate::$which(None)
-                                }
-                            };
-                        }
-
-                        let tp = match &target_key[7..] {
-                            "arch" => tp!(Arch),
-                            "feature" => {
-                                if val.is_empty() {
-                                    return Err(ParseError {
-                                        original,
-                                        span: vspan,
-                                        reason: Reason::Unexpected(&["<feature>"]),
-                                    });
-                                }
-
-                                q.push(ExprNode::Predicate(InnerPredicate::TargetFeature(vspan)));
-
-                                return Ok(());
-                            }
-                            "os" => tp!(opt Os),
-                            "family" => tp!(opt Family),
-                            "env" => tp!(opt Env),
-                            "endian" => tp!(Endian),
-                            "pointer_width" => {
-                                TargetPredicate::PointerWidth(val.parse().map_err(|_| {
+                        (opt $which:ident) => {
+                            if !val.is_empty() {
+                                TargetPredicate::$which(Some(val.parse().map_err(|r| {
                                     ParseError {
                                         original,
                                         span: vspan,
-                                        reason: Reason::InvalidInteger,
+                                        reason: r,
                                     }
-                                })?)
-                            }
-                            "vendor" => tp!(opt Vendor),
-                            _ => {
-                                return Err(ParseError {
-                                    original,
-                                    span,
-                                    reason: Reason::Unexpected(&[
-                                        "target_arch",
-                                        "target_feature",
-                                        "target_os",
-                                        "target_family",
-                                        "target_env",
-                                        "target_endian",
-                                        "target_pointer_width",
-                                        "target_vendor",
-                                    ]),
-                                })
+                                })?))
+                            } else {
+                                TargetPredicate::$which(None)
                             }
                         };
+                    }
 
-                        q.push(ExprNode::Predicate(InnerPredicate::Target(tp)));
-                    }
-                    _other => {
-                        q.push(ExprNode::Predicate(InnerPredicate::Other {
-                            identifier: span,
-                            value: val.map(|(_, span)| span),
-                        }));
-                    }
+                    let tp = match &target_key[7..] {
+                        "arch" => tp!(Arch),
+                        "feature" => {
+                            if val.is_empty() {
+                                return Err(ParseError {
+                                    original,
+                                    span: vspan,
+                                    reason: Reason::Unexpected(&["<feature>"]),
+                                });
+                            }
+
+                            return Ok(InnerPredicate::TargetFeature(vspan));
+                        }
+                        "os" => tp!(opt Os),
+                        "family" => tp!(opt Family),
+                        "env" => tp!(opt Env),
+                        "endian" => tp!(Endian),
+                        "pointer_width" => {
+                            TargetPredicate::PointerWidth(val.parse().map_err(|_| ParseError {
+                                original,
+                                span: vspan,
+                                reason: Reason::InvalidInteger,
+                            })?)
+                        }
+                        "vendor" => tp!(opt Vendor),
+                        _ => {
+                            return Err(ParseError {
+                                original,
+                                span,
+                                reason: Reason::Unexpected(&[
+                                    "target_arch",
+                                    "target_feature",
+                                    "target_os",
+                                    "target_family",
+                                    "target_env",
+                                    "target_endian",
+                                    "target_pointer_width",
+                                    "target_vendor",
+                                ]),
+                            })
+                        }
+                    };
+
+                    InnerPredicate::Target(tp)
+                }
+                _other => InnerPredicate::Other {
+                    identifier: span,
+                    value: val.map(|(_, span)| span),
                 },
-            }
-
-            Ok(())
+            })
         };
 
         macro_rules! token_err {
@@ -268,14 +256,15 @@ impl Expression {
                         };
 
                         if let Some(fs) = func_stack.last_mut() {
-                            fs.num_predicates += 1
+                            fs.nest_level += 1
                         }
 
                         func_stack.push(FuncAndSpan {
                             func: new_op,
                             span: lt.span,
                             parens_index: 0,
-                            num_predicates: 0,
+                            predicates: SmallVec::new(),
+                            nest_level: 0,
                         });
                     }
                     _ => token_err!(lt.span),
@@ -292,33 +281,40 @@ impl Expression {
                     None | Some(Token::All) | Some(Token::Any) | Some(Token::Not)
                     | Some(Token::Equals) => token_err!(lt.span),
                     _ => {
-                        let key = pred_key.take();
-                        let val = pred_val.take();
-
-                        if let (true, Some(fs)) = (key.is_some(), func_stack.last_mut()) {
-                            fs.num_predicates += 1;
-                        }
-
-                        apply_pred(key, val, &mut expr_queue)?;
-
                         if let Some(top) = func_stack.pop() {
+                            let key = pred_key.take();
+                            let val = pred_val.take();
+
                             let func = match top.func {
                                 Func::All => Operator::All,
                                 Func::Any => Operator::Any,
                                 Func::Not => {
                                     // not() doesn't take a predicate list, but only a single predicate,
-                                    // so ensure we only have 1 at the top of the expression stack
-                                    if top.num_predicates != 1 {
+                                    // so ensure we have exactly 1
+                                    let num_predicates = top.predicates.len() as u8
+                                        + if key.is_some() { 1 } else { 0 }
+                                        + top.nest_level;
+
+                                    if num_predicates != 1 {
                                         return Err(ParseError {
                                             original,
                                             span: top.span.start..lt.span.end,
-                                            reason: Reason::InvalidNot(top.num_predicates as u8),
+                                            reason: Reason::InvalidNot(num_predicates),
                                         });
                                     }
 
                                     Operator::Not
                                 }
                             };
+
+                            for pred in top.predicates {
+                                expr_queue.push(ExprNode::Predicate(pred));
+                            }
+
+                            if let Some(key) = key {
+                                let inner_pred = parse_predicate(key, val)?;
+                                expr_queue.push(ExprNode::Predicate(inner_pred));
+                            }
 
                             expr_queue.push(ExprNode::Op(func));
 
@@ -347,13 +343,23 @@ impl Expression {
                         let key = pred_key.take();
                         let val = pred_val.take();
 
-                        match (key.is_some(), func_stack.last_mut()) {
-                            (true, Some(fs)) => fs.num_predicates += 1,
-                            (true, None) => root_predicate_count += 1,
+                        let inner_pred = if let Some(key) = key {
+                            Some(parse_predicate(key, val)?)
+                        } else {
+                            None
+                        };
+
+                        match (inner_pred, func_stack.last_mut()) {
+                            (Some(pred), Some(func)) => {
+                                func.predicates.push(pred);
+                            }
+                            (Some(pred), None) => {
+                                root_predicate_count += 1;
+
+                                expr_queue.push(ExprNode::Predicate(pred));
+                            }
                             _ => {}
                         }
-
-                        apply_pred(key, val, &mut expr_queue)?;
                     }
                 },
             }
@@ -390,11 +396,10 @@ impl Expression {
                 let key = pred_key.take();
                 let val = pred_val.take();
 
-                if key.is_some() {
-                    root_predicate_count += 1
+                if let Some(key) = key {
+                    root_predicate_count += 1;
+                    expr_queue.push(ExprNode::Predicate(parse_predicate(key, val)?));
                 }
-
-                apply_pred(key, val, &mut expr_queue)?;
 
                 if expr_queue.is_empty() {
                     Err(ParseError {
