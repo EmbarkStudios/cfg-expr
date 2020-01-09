@@ -114,6 +114,7 @@ fn fails_unbalanced_quotes() {
 }
 
 #[test]
+#[allow(clippy::cognitive_complexity)]
 fn handles_single_predicate() {
     test_validate!(ok [
         "cfg(key)" => [P::Flag("key")],
