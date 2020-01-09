@@ -130,10 +130,7 @@ fn features() {
 
     assert!(many_features.eval(|pred| {
         match pred {
-            Predicate::Feature(name) => {
-                println!("CHECKING FEATURE `{}`", name);
-                enabled.contains(name)
-            }
+            Predicate::Feature(name) => enabled.contains(name),
             _ => false,
         }
     }));

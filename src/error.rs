@@ -1,7 +1,6 @@
 use std::{error::Error, fmt};
 
-/// An error related to parsing of an SPDX license expression
-/// or identifier
+/// An error related to parsing of a cfg expression
 #[derive(Debug, PartialEq)]
 pub struct ParseError<'a> {
     /// The string that was parsed
@@ -48,7 +47,7 @@ impl<'a> fmt::Display for ParseError<'a> {
             f.write_str(" ")?;
         }
 
-        // Mismatched parens have a slightly different output
+        // Mismatched parens/quotes have a slightly different output
         // than the other errors
         match &self.reason {
             r @ Reason::UnclosedParens | r @ Reason::UnclosedQuotes => {

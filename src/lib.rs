@@ -6,4 +6,4 @@ pub mod expr;
 pub mod targets;
 
 pub use error::ParseError;
-pub use expr::Expression;
+pub use expr::{Expression, Predicate, TargetPredicate};

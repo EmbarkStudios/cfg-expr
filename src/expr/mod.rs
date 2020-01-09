@@ -53,7 +53,7 @@ pub enum Predicate<'a> {
 }
 
 #[derive(Clone, PartialEq, Debug)]
-pub enum InnerPredicate {
+pub(crate) enum InnerPredicate {
     Target(TargetPredicate),
     Test,
     DebugAssertions,
@@ -98,7 +98,8 @@ pub(crate) enum ExprNode {
 #[derive(Debug)]
 pub struct Expression {
     pub(crate) expr: SmallVec<[ExprNode; 5]>,
-    // We keep the original string around for display purposes only
+    // We keep the original string around for providing the arbitrary
+    // strings that can make up an expression
     pub(crate) original: String,
 }
 
@@ -163,23 +164,3 @@ impl Expression {
     }
 }
 
-// impl fmt::Debug for Expression {
-//     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-//         f.debug_struct("Expression")
-//             .field("original", &self.original)
-//             .field(
-//         for (i, node) in self.expr.iter().enumerate() {
-//             if i > 0 {
-//                 f.write_str(" ")?;
-//             }
-
-//             match node {
-//                 ExprNode::Req(req) => write!(f, "{}", req.req)?,
-//                 ExprNode::Op(Operator::And) => f.write_str("AND")?,
-//                 ExprNode::Op(Operator::Or) => f.write_str("OR")?,
-//             }
-//         }
-
-//         Ok(())
-//     }
-// }
