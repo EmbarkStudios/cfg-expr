@@ -3,28 +3,63 @@ mod parser;
 
 use smallvec::SmallVec;
 
-/// The predicate operator
+/// A predicate function, used to combine 1 or more predicates
+/// into a single value
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Copy, Clone)]
 pub enum Func {
+    /// `not()` with a configuration predicate. It is true if its predicate
+    /// is false and false if its predicate is true.
     Not,
+    /// `all()` with a comma separated list of configuration predicates. It
+    /// is false if at least one predicate is false. If there are no predicates,
+    /// it is true.
     All,
+    /// `any()` with a comma separated list of configuration predicates. It
+    /// is true if at least one predicate is true. If there are no predicates,
+    /// it is false.
     Any,
 }
 
 use crate::targets as targ;
 
+/// All predicates that pertains to a target, except for `target_feature`
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub enum TargetPredicate {
+    /// [target_arch](https://doc.rust-lang.org/reference/conditional-compilation.html#target_arch)
     Arch(targ::Arch),
+    /// [target_endian](https://doc.rust-lang.org/reference/conditional-compilation.html#target_endian)
     Endian(targ::Endian),
+    /// [target_env](https://doc.rust-lang.org/reference/conditional-compilation.html#target_env)
     Env(Option<targ::Env>),
+    /// [target_family](https://doc.rust-lang.org/reference/conditional-compilation.html#target_family)
+    /// This also applies to the bare [`unix` and `windows`](https://doc.rust-lang.org/reference/conditional-compilation.html#unix-and-windows)
+    /// predicates.
     Family(Option<targ::Family>),
+    /// [target_os](https://doc.rust-lang.org/reference/conditional-compilation.html#target_os)
     Os(Option<targ::Os>),
+    /// [target_pointer_width](https://doc.rust-lang.org/reference/conditional-compilation.html#target_pointer_width)
     PointerWidth(u8),
+    /// [target_vendor](https://doc.rust-lang.org/reference/conditional-compilation.html#target_vendor)
     Vendor(Option<targ::Vendor>),
 }
 
 impl TargetPredicate {
+    /// Returns true of the predicate matches the specified target
+    ///
+    /// ```
+    /// use cfg_expr::{targets::*, expr::TargetPredicate as tp};
+    /// let win = get_target_by_triple("x86_64-pc-windows-msvc").unwrap();
+    ///
+    /// assert!(
+    ///     tp::Arch(Arch::x86_64).matches(win) &&
+    ///     tp::Endian(Endian::little).matches(win) &&
+    ///     tp::Env(Some(Env::msvc)).matches(win) &&
+    ///     tp::Family(Some(Family::windows)).matches(win) &&
+    ///     tp::Os(Some(Os::windows)).matches(win) &&
+    ///     tp::PointerWidth(64).matches(win) &&
+    ///     tp::Vendor(Some(Vendor::pc)).matches(win)
+    /// );
+    /// ```
     pub fn matches(self, target: &targ::TargetInfo) -> bool {
         use TargetPredicate::*;
 
@@ -40,15 +75,26 @@ impl TargetPredicate {
     }
 }
 
+/// A single predicate in a `cfg()` expression
 #[derive(Debug, PartialEq)]
 pub enum Predicate<'a> {
+    /// A target predicate, with the `target_` prefix
     Target(TargetPredicate),
+    /// Whether rustc's test harness is [enabled](https://doc.rust-lang.org/reference/conditional-compilation.html#test)
     Test,
+    /// [Enabled](https://doc.rust-lang.org/reference/conditional-compilation.html#debug_assertions)
+    ///  when compiling without optimizations.
     DebugAssertions,
+    /// [Enabled](https://doc.rust-lang.org/reference/conditional-compilation.html#proc_macro) for
+    /// crates of the proc_macro type.
     ProcMacro,
+    /// A [`feature = "<name>"`](https://doc.rust-lang.org/nightly/cargo/reference/features.html)
     Feature(&'a str),
+    /// [target_feature](https://doc.rust-lang.org/reference/conditional-compilation.html#target_feature)
     TargetFeature(&'a str),
+    /// A generic bare predicate key that doesn't match one of the known options, eg `cfg(bare)`
     Flag(&'a str),
+    /// A generic key = "value" predicate that doesn't match one of the known options, eg `cfg(foo = "bar")`
     KeyValue { key: &'a str, val: &'a str },
 }
 
@@ -95,6 +141,7 @@ pub(crate) enum ExprNode {
     Predicate(InnerPredicate),
 }
 
+/// A parsed `cfg()` expression that can evaluated
 #[derive(Debug)]
 pub struct Expression {
     pub(crate) expr: SmallVec<[ExprNode; 5]>,
@@ -104,6 +151,7 @@ pub struct Expression {
 }
 
 impl Expression {
+    /// An iterator over each predicate in the expression
     pub fn predicates(&self) -> impl Iterator<Item = Predicate<'_>> {
         self.expr.iter().filter_map(move |item| match item {
             ExprNode::Predicate(pred) => {
@@ -114,6 +162,24 @@ impl Expression {
         })
     }
 
+    /// Evaluates the expression, using the provided closure to determine the value of
+    /// each predicate, which are then combined into a final result depending on the
+    /// functions not(), all(), or any() in the expression
+    ///
+    /// ```
+    /// use cfg_expr::{targets::*, Expression, Predicate};
+    ///
+    /// let linux_musl = get_target_by_triple("x86_64-unknown-linux-musl").unwrap();
+    ///
+    /// let expr = Expression::parse(r#"all(not(windows), target_env = "musl", any(target_arch = "x86", target_arch = "x86_64"))"#).unwrap();
+    ///
+    /// assert!(expr.eval(|pred| {
+    ///     match pred {
+    ///         Predicate::Target(tp) => tp.matches(linux_musl),
+    ///         _ => false,
+    ///     }
+    /// }));
+    /// ```
     pub fn eval<EP: FnMut(&Predicate<'_>) -> bool>(&self, mut eval_predicate: EP) -> bool {
         let mut result_stack = SmallVec::<[bool; 8]>::new();
 
@@ -163,4 +229,3 @@ impl Expression {
         result_stack.pop().unwrap()
     }
 }
-

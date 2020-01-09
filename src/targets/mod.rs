@@ -1,6 +1,9 @@
 use crate::error::Reason;
 
 mod list;
+
+/// A list of all of the [builtin](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_target/spec/index.html#modules)
+/// targets known to rustc, as of 1.40
 pub use list::ALL_TARGETS as ALL;
 
 macro_rules! target_enum {
@@ -55,6 +58,7 @@ macro_rules! impl_from_str {
 }
 
 target_enum! {
+    /// All of the operating systems known to rustc
     #[derive(Clone, Copy, PartialEq, Debug)]
     pub enum Os {
         haiku,
@@ -83,6 +87,7 @@ target_enum! {
 }
 
 target_enum! {
+    /// The endian types known to rustc
     #[derive(Clone, Copy, PartialEq, Debug)]
     pub enum Endian {
         big,
@@ -91,6 +96,7 @@ target_enum! {
 }
 
 target_enum! {
+    /// All of the target environments known to rustc
     #[derive(Clone, Copy, PartialEq, Debug)]
     pub enum Env {
         uclibc,
@@ -105,6 +111,7 @@ target_enum! {
 }
 
 target_enum! {
+    /// All of the target vendors known to rustc
     #[derive(Clone, Copy, PartialEq, Debug)]
     pub enum Vendor {
         pc,
@@ -120,6 +127,7 @@ target_enum! {
 }
 
 target_enum! {
+    /// All of the CPU architectures known to rustc
     #[derive(Clone, Copy, PartialEq, Debug)]
     pub enum Arch {
         x86_64,
@@ -143,25 +151,56 @@ target_enum! {
 }
 
 target_enum! {
+    /// All of the target families known to rustc
     #[derive(Clone, Copy, PartialEq, Debug)]
     pub enum Family {
+        /// Everything that isn't windows, and has a family!
         unix,
+        /// The lone wolf of target families.
         windows,
     }
 }
 
+/// Contains information regarding a particular target known to rustc
 #[derive(Debug)]
 pub struct TargetInfo {
+    /// The target's unique identifier
     pub triple: &'static str,
+    /// The target's operating system, if any. Used by the
+    /// [target_os](https://doc.rust-lang.org/reference/conditional-compilation.html#target_os)
+    /// predicate.
     pub os: Option<Os>,
+    /// The target's CPU architecture. Used by the
+    /// [target_arch](https://doc.rust-lang.org/reference/conditional-compilation.html#target_arch)
+    /// predicate.
     pub arch: Arch,
+    /// The target's ABI/libc used, if any. Used by the
+    /// [target_env](https://doc.rust-lang.org/reference/conditional-compilation.html#target_env)
+    /// predicate.
     pub env: Option<Env>,
+    /// The target's vendor, if any. Used by the
+    /// [target_vendor](https://doc.rust-lang.org/reference/conditional-compilation.html#target_vendor)
+    /// predicate.
     pub vendor: Option<Vendor>,
+    /// The target's family, if any. Used by the
+    /// [target_family](https://doc.rust-lang.org/reference/conditional-compilation.html#target_family)
+    /// predicate.
     pub family: Option<Family>,
+    /// The size of the target's pointer type. Used by the
+    /// [target_pointer_width](https://doc.rust-lang.org/reference/conditional-compilation.html#target_pointer_width)
+    /// predicate.
     pub pointer_width: u8,
+    /// The target's endianness. Used by the
+    /// [target_endian](https://doc.rust-lang.org/reference/conditional-compilation.html#target_endian)
+    /// predicate.
     pub endian: Endian,
 }
 
+/// Attempts to find the `TargetInfo` for the specified target triple
+///
+/// ```
+/// assert!(cfg_expr::targets::get_target_by_triple("x86_64-unknown-linux-musl").is_some());
+/// ```
 pub fn get_target_by_triple(triple: &str) -> Option<&'static TargetInfo> {
     ALL.binary_search_by(|ti| ti.triple.cmp(triple))
         .map(|i| &ALL[i])

@@ -8,6 +8,12 @@ use crate::{
 use smallvec::SmallVec;
 
 impl Expression {
+    /// Given a cfg() expression (the cfg( and ) are optional), attempts to
+    /// parse it into a form where it can be evaluated
+    ///
+    /// ```
+    /// assert!(cfg_expr::Expression::parse(r#"cfg(all(unix, target_arch = "x86_64"))"#).is_ok());
+    /// ```
     pub fn parse(original: &str) -> Result<Self, ParseError<'_>> {
         let lexer = Lexer::new(original);
 

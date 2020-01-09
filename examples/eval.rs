@@ -1,4 +1,4 @@
-use cfg_expr::{expr::Predicate, targets, Expression};
+use cfg_expr::{targets::get_target_by_triple, Expression, Predicate};
 
 fn main() {
     let specific = Expression::parse(
@@ -13,32 +13,34 @@ fn main() {
             target_pointer_width = "32",
             target_endian = "little",
             not(target_vendor = "uwp"),
+            feature = "cool_thing",
         )"#,
     )
     .unwrap();
 
     // cfg_expr includes a list of every builtin target in rustc (as of 1.40)
-    let x86_win = targets::get_target_by_triple("i686-pc-windows-msvc").unwrap();
-    let x86_pentium_win = targets::get_target_by_triple("i586-pc-windows-msvc").unwrap();
-    let uwp_win = targets::get_target_by_triple("i686-uwp-windows-msvc").unwrap();
-    let mac = targets::get_target_by_triple("x86_64-apple-darwin").unwrap();
+    let x86_win = get_target_by_triple("i686-pc-windows-msvc").unwrap();
+    let x86_pentium_win = get_target_by_triple("i586-pc-windows-msvc").unwrap();
+    let uwp_win = get_target_by_triple("i686-uwp-windows-msvc").unwrap();
+    let mac = get_target_by_triple("x86_64-apple-darwin").unwrap();
 
-    let avail_feats = ["fxsr", "sse", "sse2"];
+    let avail_targ_feats = ["fxsr", "sse", "sse2"];
 
     // This will satisfy all requirements
     assert!(specific.eval(|pred| {
         match pred {
             Predicate::Target(tp) => tp.matches(x86_win),
-            Predicate::TargetFeature(feat) => avail_feats.contains(feat),
+            Predicate::TargetFeature(feat) => avail_targ_feats.contains(feat),
+            Predicate::Feature(feat) => *feat == "cool_thing",
             _ => false,
         }
     }));
 
-    // As will this
-    assert!(specific.eval(|pred| {
+    // This won't, it doesnt' have the cool_thing feature!
+    assert!(!specific.eval(|pred| {
         match pred {
             Predicate::Target(tp) => tp.matches(x86_pentium_win),
-            Predicate::TargetFeature(feat) => avail_feats.contains(feat),
+            Predicate::TargetFeature(feat) => avail_targ_feats.contains(feat),
             _ => false,
         }
     }));
@@ -47,7 +49,7 @@ fn main() {
     assert!(!specific.eval(|pred| {
         match pred {
             Predicate::Target(tp) => tp.matches(uwp_win),
-            Predicate::TargetFeature(feat) => avail_feats.contains(feat),
+            Predicate::TargetFeature(feat) => avail_targ_feats.contains(feat),
             _ => false,
         }
     }));
@@ -56,7 +58,7 @@ fn main() {
     assert!(!specific.eval(|pred| {
         match pred {
             Predicate::Target(tp) => tp.matches(mac),
-            Predicate::TargetFeature(feat) => avail_feats.contains(feat),
+            Predicate::TargetFeature(feat) => avail_targ_feats.contains(feat),
             _ => false,
         }
     }));
