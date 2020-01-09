@@ -5,7 +5,7 @@ use smallvec::SmallVec;
 
 /// The predicate operator
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Copy, Clone)]
-pub enum Operator {
+pub enum Func {
     Not,
     All,
     Any,
@@ -91,7 +91,7 @@ impl InnerPredicate {
 
 #[derive(Clone, PartialEq, Debug)]
 pub(crate) enum ExprNode {
-    Op(Operator),
+    Fn(Func),
     Predicate(InnerPredicate),
 }
 
@@ -125,7 +125,7 @@ impl Expression {
                     let pred = pred.to_pred(&self.original);
                     result_stack.push(eval_predicate(&pred));
                 }
-                ExprNode::Op(Operator::All) => {
+                ExprNode::Fn(Func::All) => {
                     // all() with a comma separated list of configuration predicates.
                     // It is false if at least one predicate is false.
                     // If there are no predicates, it is true.
@@ -137,7 +137,7 @@ impl Expression {
 
                     result_stack.push(result);
                 }
-                ExprNode::Op(Operator::Any) => {
+                ExprNode::Fn(Func::Any) => {
                     // any() with a comma separated list of configuration predicates.
                     // It is true if at least one predicate is true.
                     // If there are no predicates, it is false.
@@ -149,7 +149,7 @@ impl Expression {
 
                     result_stack.push(result);
                 }
-                ExprNode::Op(Operator::Not) => {
+                ExprNode::Fn(Func::Not) => {
                     // not() with a configuration predicate.
                     // It is true if its predicate is false
                     // and false if its predicate is true.

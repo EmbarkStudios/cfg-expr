@@ -2,7 +2,7 @@ use crate::{
     error::{ParseError, Reason},
     expr::{
         lexer::{Lexer, Token},
-        ExprNode, Expression, InnerPredicate, Operator, TargetPredicate,
+        ExprNode, Expression, Func, InnerPredicate, TargetPredicate,
     },
 };
 use smallvec::SmallVec;
@@ -14,13 +14,6 @@ impl Expression {
         // The lexer automatically trims any cfg( ), so reacquire
         // the string before we start walking tokens
         let original = lexer.inner;
-
-        #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug)]
-        enum Func {
-            All,
-            Any,
-            Not,
-        }
 
         struct FuncAndSpan {
             func: Func,
@@ -248,7 +241,7 @@ impl Expression {
                 },
                 Token::All | Token::Any | Token::Not => match last_token {
                     None | Some(Token::OpenParen) | Some(Token::Comma) => {
-                        let new_op = match lt.token {
+                        let new_fn = match lt.token {
                             Token::All => Func::All,
                             Token::Any => Func::Any,
                             Token::Not => Func::Not,
@@ -260,7 +253,7 @@ impl Expression {
                         }
 
                         func_stack.push(FuncAndSpan {
-                            func: new_op,
+                            func: new_fn,
                             span: lt.span,
                             parens_index: 0,
                             predicates: SmallVec::new(),
@@ -286,8 +279,8 @@ impl Expression {
                             let val = pred_val.take();
 
                             let func = match top.func {
-                                Func::All => Operator::All,
-                                Func::Any => Operator::Any,
+                                Func::All => Func::All,
+                                Func::Any => Func::Any,
                                 Func::Not => {
                                     // not() doesn't take a predicate list, but only a single predicate,
                                     // so ensure we have exactly 1
@@ -303,7 +296,7 @@ impl Expression {
                                         });
                                     }
 
-                                    Operator::Not
+                                    Func::Not
                                 }
                             };
 
@@ -316,7 +309,7 @@ impl Expression {
                                 expr_queue.push(ExprNode::Predicate(inner_pred));
                             }
 
-                            expr_queue.push(ExprNode::Op(func));
+                            expr_queue.push(ExprNode::Fn(func));
 
                             // This is the only place we go back to the top of the outer loop,
                             // so make sure we correctly record this token
