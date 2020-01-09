@@ -1,8 +1,15 @@
 [package]
 name = "cfg-expr"
+description = "A parser and evaluator for Rust `cfg()` expressions."
+repository = "https://github.com/EmbarkStudios/cfg-expr"
 version = "0.1.0"
-authors = ["Jake Shadle <jake.shadle@embark-studios.com>"]
+authors = ["Embark <opensource@embark-studios.com>", "Jake Shadle <jake.shadle@embark-studios.com>"]
 edition = "2018"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+documentation = "https://docs.rs/cfg-expr"
+homepage = "https://github.com/EmbarkStudios/cfg-expr"
+keywords = ["cargo", "rustc", "cfg"]
 
 [dependencies]
 smallvec = "1.1.0"
