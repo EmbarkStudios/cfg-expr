@@ -41,6 +41,16 @@ fn target_family() {
 }
 
 #[test]
+fn tiny() {
+    assert!(Expression::parse("all()").unwrap().eval(|_| false));
+    assert!(!Expression::parse("any()").unwrap().eval(|_| true));
+    assert!(!Expression::parse("not(all())").unwrap().eval(|_| false));
+    assert!(Expression::parse("not(any())").unwrap().eval(|_| true));
+    assert!(Expression::parse("all(not(blah))").unwrap().eval(|_| false));
+    assert!(!Expression::parse("any(not(blah))").unwrap().eval(|_| true));
+}
+
+#[test]
 fn very_specific() {
     let specific = Expression::parse(
         r#"all(
