@@ -8,6 +8,8 @@
 
 use super::*;
 
+pub(crate) const RUSTC_VERSION: &str = "1.41.0";
+
 pub const ALL_TARGETS: &[TargetInfo] = &[
     TargetInfo {
         triple: "aarch64-apple-ios",
@@ -530,16 +532,6 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         endian: Endian::little,
     },
     TargetInfo {
-        triple: "i686-unknown-dragonfly",
-        os: Some(Os::dragonfly),
-        arch: Arch::x86,
-        env: None,
-        vendor: Some(Vendor::unknown),
-        family: Some(Family::unix),
-        pointer_width: 32,
-        endian: Endian::little,
-    },
-    TargetInfo {
         triple: "i686-unknown-freebsd",
         os: Some(Os::freebsd),
         arch: Arch::x86,
@@ -950,6 +942,16 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         endian: Endian::little,
     },
     TargetInfo {
+        triple: "riscv64gc-unknown-linux-gnu",
+        os: Some(Os::linux),
+        arch: Arch::riscv64,
+        env: Some(Env::gnu),
+        vendor: Some(Vendor::unknown),
+        family: Some(Family::unix),
+        pointer_width: 64,
+        endian: Endian::little,
+    },
+    TargetInfo {
         triple: "riscv64gc-unknown-none-elf",
         os: None,
         arch: Arch::riscv64,
@@ -1094,6 +1096,16 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
         os: Some(Os::linux),
         arch: Arch::arm,
         env: Some(Env::gnu),
+        vendor: Some(Vendor::unknown),
+        family: Some(Family::unix),
+        pointer_width: 32,
+        endian: Endian::little,
+    },
+    TargetInfo {
+        triple: "thumbv7neon-unknown-linux-musleabihf",
+        os: Some(Os::linux),
+        arch: Arch::arm,
+        env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
@@ -1321,6 +1333,16 @@ pub const ALL_TARGETS: &[TargetInfo] = &[
     },
     TargetInfo {
         triple: "x86_64-unknown-hermit",
+        os: Some(Os::hermit),
+        arch: Arch::x86_64,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        family: None,
+        pointer_width: 64,
+        endian: Endian::little,
+    },
+    TargetInfo {
+        triple: "x86_64-unknown-hermit-kernel",
         os: Some(Os::hermit),
         arch: Arch::x86_64,
         env: None,

@@ -15,12 +15,27 @@ fn real_main() -> Result<(), String> {
     )
     .unwrap();
 
+    // Get the rustc version
+    let output = Command::new(&rustc)
+        .env("PATH", &path)
+        .arg("--version")
+        .output()
+        .map_err(|e| format!("failed to run rustc --version: {}", e))?;
+
+    if !output.status.success() {
+        return Err(format!("rustc --version {}", output.status));
+    }
+
+    let version = String::from_utf8(output.stdout).unwrap();
+
+    let version = version.splitn(3, ' ').nth(1).unwrap();
+
     // Get the list of possible targets
     let output = Command::new(&rustc)
         .env("PATH", &path)
         .args(&["--print", "target-list"])
         .output()
-        .map_err(|e| format!("failed to run --print target-list: {}", e))?;
+        .map_err(|e| format!("failed to run rustc --print target-list: {}", e))?;
 
     if !output.status.success() {
         return Err(format!(
@@ -45,9 +60,22 @@ fn real_main() -> Result<(), String> {
     all_targets.push_str(
         "
 
-use super::*;
+    use super::*;
 
-pub const ALL_TARGETS: &[TargetInfo] = &[
+    ",
+    );
+
+    write!(
+        all_targets,
+        "pub(crate) const RUSTC_VERSION: &str = \"{}\";",
+        version
+    )
+    .unwrap();
+
+    all_targets.push_str(
+        "
+
+        pub const ALL_TARGETS: &[TargetInfo] = &[
 ",
     );
 
