@@ -4,7 +4,7 @@
 //! cfg-expr is a crate that can be used to parse and evaluate Rust cfg() expressions,
 //! both as declarable in Rust code itself, as well in cargo's `[target.'cfg()'.dependencies]` sections.
 //!
-//! It contains a list of all builtin targets known to rustc as of 1.40 that can be used
+//! It contains a list of all builtin targets known to rustc as of 1.41 that can be used
 //! to determine if a particular cfg expression is satisfiable.
 //!
 //! ```
@@ -27,7 +27,7 @@
 //! )
 //! .unwrap();
 //!
-//! // cfg_expr includes a list of every builtin target in rustc (as of 1.40)
+//! // cfg_expr includes a list of every builtin target in rustc (as of 1.41)
 //! let x86_win = get_target_by_triple("i686-pc-windows-msvc").unwrap();
 //! let x86_pentium_win = get_target_by_triple("i586-pc-windows-msvc").unwrap();
 //! let uwp_win = get_target_by_triple("i686-uwp-windows-msvc").unwrap();

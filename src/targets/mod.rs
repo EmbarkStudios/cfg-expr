@@ -3,7 +3,7 @@ use crate::error::Reason;
 mod list;
 
 /// A list of all of the [builtin](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_target/spec/index.html#modules)
-/// targets known to rustc, as of 1.40
+/// targets known to rustc, as of 1.41
 pub use list::ALL_TARGETS as ALL;
 
 macro_rules! target_enum {
