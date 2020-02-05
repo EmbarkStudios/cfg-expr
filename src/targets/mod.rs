@@ -3,7 +3,7 @@ use crate::error::Reason;
 mod list;
 
 /// A list of all of the [builtin](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_target/spec/index.html#modules)
-/// targets known to rustc, as of 1.40
+/// targets known to rustc, as of 1.41
 pub use list::ALL_TARGETS as ALL;
 
 macro_rules! target_enum {
@@ -205,6 +205,17 @@ pub fn get_target_by_triple(triple: &str) -> Option<&'static TargetInfo> {
     ALL.binary_search_by(|ti| ti.triple.cmp(triple))
         .map(|i| &ALL[i])
         .ok()
+}
+
+/// Retrieves the version of rustc for which the built-in targets were
+/// retrieved from. Targets may be added and removed between different rustc
+/// versions.
+///
+/// ```
+/// assert_eq!("1.41.0", cfg_expr::targets::rustc_version());
+/// ```
+pub fn rustc_version() -> &'static str {
+    list::RUSTC_VERSION
 }
 
 #[cfg(test)]
