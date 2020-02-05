@@ -207,6 +207,17 @@ pub fn get_target_by_triple(triple: &str) -> Option<&'static TargetInfo> {
         .ok()
 }
 
+/// Retrieves the version of rustc for which the built-in targets were
+/// retrieved from. Targets may be added and removed between different rustc
+/// versions.
+///
+/// ```
+/// assert_eq!("1.41.0", cfg_expr::targets::rustc_version());
+/// ```
+pub fn rustc_version() -> &'static str {
+    list::RUSTC_VERSION
+}
+
 #[cfg(test)]
 mod test {
     // rustc's target-list is currently sorted lexicographically
