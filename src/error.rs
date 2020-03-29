@@ -16,7 +16,7 @@ pub struct ParseError<'a> {
 #[derive(Debug, PartialEq)]
 pub enum Reason {
     /// not() takes exactly 1 predicate, unlike all() and any()
-    InvalidNot(u8),
+    InvalidNot(usize),
     /// The characters are not valid in an SDPX license expression
     InvalidCharacters,
     /// An opening parens was unmatched with a closing parens

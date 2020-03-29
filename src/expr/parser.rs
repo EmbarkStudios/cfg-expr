@@ -21,6 +21,7 @@ impl Expression {
         // the string before we start walking tokens
         let original = lexer.inner;
 
+        #[derive(Debug)]
         struct FuncAndSpan {
             func: Func,
             parens_index: usize,
@@ -248,8 +249,10 @@ impl Expression {
                 Token::All | Token::Any | Token::Not => match last_token {
                     None | Some(Token::OpenParen) | Some(Token::Comma) => {
                         let new_fn = match lt.token {
-                            Token::All => Func::All,
-                            Token::Any => Func::Any,
+                            // the 0 is a dummy value -- it will be substituted for the real
+                            // number of predicates in the `CloseParen` branch below.
+                            Token::All => Func::All(0),
+                            Token::Any => Func::Any(0),
                             Token::Not => Func::Not,
                             _ => unreachable!(),
                         };
@@ -284,16 +287,16 @@ impl Expression {
                             let key = pred_key.take();
                             let val = pred_val.take();
 
+                            let num_predicates = top.predicates.len()
+                                + if key.is_some() { 1 } else { 0 }
+                                + top.nest_level as usize;
+
                             let func = match top.func {
-                                Func::All => Func::All,
-                                Func::Any => Func::Any,
+                                Func::All(_) => Func::All(num_predicates),
+                                Func::Any(_) => Func::Any(num_predicates),
                                 Func::Not => {
                                     // not() doesn't take a predicate list, but only a single predicate,
                                     // so ensure we have exactly 1
-                                    let num_predicates = top.predicates.len() as u8
-                                        + if key.is_some() { 1 } else { 0 }
-                                        + top.nest_level;
-
                                     if num_predicates != 1 {
                                         return Err(ParseError {
                                             original,
