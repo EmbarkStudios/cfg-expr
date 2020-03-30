@@ -166,4 +166,28 @@ fn features() {
             _ => false,
         }
     }));
+
+    assert_eq!(
+        feature_and_target_feature.eval(|pred| {
+            match pred {
+                Predicate::Feature(_) => Some(false),
+                Predicate::TargetFeature(_) => None,
+                _ => panic!("unexpected predicate"),
+            }
+        }),
+        Some(false),
+        "all() with Some(false) and None evaluates to Some(false)"
+    );
+
+    assert_eq!(
+        feature_and_target_feature.eval(|pred| {
+            match pred {
+                Predicate::Feature(_) => Some(true),
+                Predicate::TargetFeature(_) => None,
+                _ => panic!("unexpected predicate"),
+            }
+        }),
+        None,
+        "all() with Some(true) and None evaluates to None"
+    );
 }
