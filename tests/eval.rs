@@ -127,6 +127,17 @@ fn complex() {
     assert!(complex.eval(|pred| tg_match!(pred, windows_msvc)));
     assert!(complex.eval(|pred| tg_match!(pred, mac)));
     assert!(!complex.eval(|pred| tg_match!(pred, android)));
+
+    let complex = Expression::parse(r#"all(any(unix, target_arch="x86"), not(any(target_os="android", target_os="emscripten")))"#).unwrap();
+
+    // Should match linuxes and mac
+    assert!(complex.eval(|pred| tg_match!(pred, linux_gnu)));
+    assert!(complex.eval(|pred| tg_match!(pred, linux_musl)));
+    assert!(complex.eval(|pred| tg_match!(pred, mac)));
+
+    // Should *not* match x86_64 windows or android
+    assert!(!complex.eval(|pred| tg_match!(pred, windows_msvc)));
+    assert!(!complex.eval(|pred| tg_match!(pred, android)));
 }
 
 #[test]

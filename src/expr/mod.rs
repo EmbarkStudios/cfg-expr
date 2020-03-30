@@ -13,11 +13,15 @@ pub enum Func {
     /// `all()` with a comma separated list of configuration predicates. It
     /// is false if at least one predicate is false. If there are no predicates,
     /// it is true.
-    All,
+    ///
+    /// The associated `usize` is the number of predicates inside the `all()`.
+    All(usize),
     /// `any()` with a comma separated list of configuration predicates. It
     /// is true if at least one predicate is true. If there are no predicates,
     /// it is false.
-    Any,
+    ///
+    /// The associated `usize` is the number of predicates inside the `any()`.
+    Any(usize),
 }
 
 use crate::targets as targ;
@@ -192,26 +196,28 @@ impl Expression {
                     let pred = pred.to_pred(&self.original);
                     result_stack.push(eval_predicate(&pred));
                 }
-                ExprNode::Fn(Func::All) => {
+                ExprNode::Fn(Func::All(count)) => {
                     // all() with a comma separated list of configuration predicates.
                     // It is false if at least one predicate is false.
                     // If there are no predicates, it is true.
                     let mut result = true;
 
-                    while let Some(rs) = result_stack.pop() {
-                        result = result && rs;
+                    for _ in 0..*count {
+                        let r = result_stack.pop().unwrap();
+                        result = result && r;
                     }
 
                     result_stack.push(result);
                 }
-                ExprNode::Fn(Func::Any) => {
+                ExprNode::Fn(Func::Any(count)) => {
                     // any() with a comma separated list of configuration predicates.
                     // It is true if at least one predicate is true.
                     // If there are no predicates, it is false.
                     let mut result = false;
 
-                    while let Some(rs) = result_stack.pop() {
-                        result = result || rs;
+                    for _ in 0..*count {
+                        let r = result_stack.pop().unwrap();
+                        result = result || r;
                     }
 
                     result_stack.push(result);
