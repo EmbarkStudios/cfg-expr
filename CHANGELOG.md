@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+### Fixed
+- [PR#6](https://github.com/EmbarkStudios/cfg-expr/pull/6) fixed nested predicate evalution. Thanks [@sunshowers](https://github.com/sunshowers)!
+
 ## [0.2.0] - 2020-02-05
 ### Added
 - Added `targets::rustc_version` which can be used to retrieve the version string of the the rustc used to generate the list of targets.
