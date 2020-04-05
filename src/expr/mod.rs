@@ -168,7 +168,12 @@ impl Expression {
 
     /// Evaluates the expression, using the provided closure to determine the value of
     /// each predicate, which are then combined into a final result depending on the
-    /// functions not(), all(), or any() in the expression
+    /// functions not(), all(), or any() in the expression.
+    ///
+    /// `eval_predicate` typically returns `bool`, but may return any type that implements
+    /// the `Logic` trait.
+    ///
+    /// ## Examples
     ///
     /// ```
     /// use cfg_expr::{targets::*, Expression, Predicate};
@@ -184,8 +189,41 @@ impl Expression {
     ///     }
     /// }));
     /// ```
-    pub fn eval<EP: FnMut(&Predicate<'_>) -> bool>(&self, mut eval_predicate: EP) -> bool {
-        let mut result_stack = SmallVec::<[bool; 8]>::new();
+    ///
+    /// Returning `Option<bool>`, where `None` indicates the result is unknown:
+    ///
+    /// ```
+    /// use cfg_expr::{targets::*, Expression, Predicate};
+    ///
+    /// let expr = Expression::parse(r#"any(target_feature = "sse2", target_env = "musl")"#).unwrap();
+    ///
+    /// let linux_gnu = get_target_by_triple("x86_64-unknown-linux-gnu").unwrap();
+    /// let linux_musl = get_target_by_triple("x86_64-unknown-linux-musl").unwrap();
+    ///
+    /// fn eval(expr: &Expression, target: &TargetInfo) -> Option<bool> {
+    ///     expr.eval(|pred| {
+    ///         match pred {
+    ///             Predicate::Target(tp) => Some(tp.matches(target)),
+    ///             Predicate::TargetFeature(_) => None,
+    ///             _ => panic!("unexpected predicate"),
+    ///         }
+    ///     })
+    /// }
+    ///
+    /// // Whether the target feature is present is unknown, so the whole expression evaluates to
+    /// // None (unknown).
+    /// assert_eq!(eval(&expr, linux_gnu), None);
+    ///
+    /// // Whether the target feature is present is irrelevant for musl, since the any() always
+    /// // evaluates to true.
+    /// assert_eq!(eval(&expr, linux_musl), Some(true));
+    /// ```
+    pub fn eval<EP, T>(&self, mut eval_predicate: EP) -> T
+    where
+        EP: FnMut(&Predicate<'_>) -> T,
+        T: Logic,
+    {
+        let mut result_stack = SmallVec::<[T; 8]>::new();
 
         // We store the expression as postfix, so just evaluate each license
         // requirement in the order it comes, and then combining the previous
@@ -198,26 +236,22 @@ impl Expression {
                 }
                 ExprNode::Fn(Func::All(count)) => {
                     // all() with a comma separated list of configuration predicates.
-                    // It is false if at least one predicate is false.
-                    // If there are no predicates, it is true.
-                    let mut result = true;
+                    let mut result = T::top();
 
                     for _ in 0..*count {
                         let r = result_stack.pop().unwrap();
-                        result = result && r;
+                        result = result.and(r);
                     }
 
                     result_stack.push(result);
                 }
                 ExprNode::Fn(Func::Any(count)) => {
                     // any() with a comma separated list of configuration predicates.
-                    // It is true if at least one predicate is true.
-                    // If there are no predicates, it is false.
-                    let mut result = false;
+                    let mut result = T::bottom();
 
                     for _ in 0..*count {
                         let r = result_stack.pop().unwrap();
-                        result = result || r;
+                        result = result.or(r);
                     }
 
                     result_stack.push(result);
@@ -227,11 +261,110 @@ impl Expression {
                     // It is true if its predicate is false
                     // and false if its predicate is true.
                     let r = result_stack.pop().unwrap();
-                    result_stack.push(!r);
+                    result_stack.push(r.not());
                 }
             }
         }
 
         result_stack.pop().unwrap()
+    }
+}
+
+/// A propositional logic used to evaluate `Expression` instances.
+///
+/// An `Expression` consists of some predicates and the `any`, `all` and `not` operators. An
+/// implementation of `Logic` defines how the `any`, `all` and `not` operators should be evaluated.
+pub trait Logic {
+    /// The result of an `all` operation with no operands, akin to Boolean `true`.
+    fn top() -> Self;
+
+    /// The result of an `any` operation with no operands, akin to Boolean `false`.
+    fn bottom() -> Self;
+
+    /// `AND`, which corresponds to the `all` operator.
+    fn and(self, other: Self) -> Self;
+
+    /// `OR`, which corresponds to the `any` operator.
+    fn or(self, other: Self) -> Self;
+
+    /// `NOT`, which corresponds to the `not` operator.
+    fn not(self) -> Self;
+}
+
+/// A boolean logic.
+impl Logic for bool {
+    #[inline]
+    fn top() -> Self {
+        true
+    }
+
+    #[inline]
+    fn bottom() -> Self {
+        false
+    }
+
+    #[inline]
+    fn and(self, other: Self) -> Self {
+        self && other
+    }
+
+    #[inline]
+    fn or(self, other: Self) -> Self {
+        self || other
+    }
+
+    #[inline]
+    fn not(self) -> Self {
+        !self
+    }
+}
+
+/// A three-valued logic -- `None` stands for the value being unknown.
+///
+/// The truth tables for this logic are described on
+/// [Wikipedia](https://en.wikipedia.org/wiki/Three-valued_logic#Kleene_and_Priest_logics).
+impl Logic for Option<bool> {
+    #[inline]
+    fn top() -> Self {
+        Some(true)
+    }
+
+    #[inline]
+    fn bottom() -> Self {
+        Some(false)
+    }
+
+    #[inline]
+    fn and(self, other: Self) -> Self {
+        match (self, other) {
+            // If either is false, the expression is false.
+            (Some(false), _) => Some(false),
+            (_, Some(false)) => Some(false),
+            // If both are true, the expression is true.
+            (Some(true), Some(true)) => Some(true),
+            // One or both are unknown -- the result is unknown.
+            _ => None,
+        }
+    }
+
+    #[inline]
+    fn or(self, other: Self) -> Self {
+        match (self, other) {
+            // If either is true, the expression is true.
+            (Some(true), _) => Some(true),
+            (_, Some(true)) => Some(true),
+            // If both are false, the expression is false.
+            (Some(false), Some(false)) => Some(false),
+            // One or both are unknown -- the result is unknown.
+            _ => None,
+        }
+    }
+
+    #[inline]
+    fn not(self) -> Self {
+        match self {
+            Some(v) => Some(!v),
+            None => None,
+        }
     }
 }
