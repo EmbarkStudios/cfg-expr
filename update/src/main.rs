@@ -75,7 +75,7 @@ fn real_main() -> Result<(), String> {
     all_targets.push_str(
         "
 
-        pub const ALL_TARGETS: &[TargetInfo] = &[
+        pub const ALL_BUILTINS: &[TargetInfo] = &[
 ",
     );
 
@@ -207,11 +207,11 @@ fn real_main() -> Result<(), String> {
 
     writeln!(all_targets, "];").unwrap();
 
-    std::fs::write("src/targets/list.rs", all_targets)
+    std::fs::write("src/targets/builtins.rs", all_targets)
         .map_err(|e| format!("failed to write target_list.rs: {}", e))?;
 
     let status = Command::new("rustfmt")
-        .args(&["--edition", "2018", "src/targets/list.rs"])
+        .args(&["--edition", "2018", "src/targets/builtins.rs"])
         .status()
         .map_err(|e| format!("failed to run rustfmt: {}", e))?;
 

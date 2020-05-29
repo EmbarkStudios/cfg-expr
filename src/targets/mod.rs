@@ -1,10 +1,10 @@
 use crate::error::Reason;
 
-mod list;
+mod builtins;
 
 /// A list of all of the [builtin](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_target/spec/index.html#modules)
-/// targets known to rustc, as of 1.41
-pub use list::ALL_TARGETS as ALL;
+/// targets known to rustc, as of 1.43.1
+pub use builtins::ALL_BUILTINS;
 
 macro_rules! target_enum {
     (
@@ -199,11 +199,12 @@ pub struct TargetInfo {
 /// Attempts to find the `TargetInfo` for the specified target triple
 ///
 /// ```
-/// assert!(cfg_expr::targets::get_target_by_triple("x86_64-unknown-linux-musl").is_some());
+/// assert!(cfg_expr::targets::get_builtin_target_by_triple("x86_64-unknown-linux-musl").is_some());
 /// ```
-pub fn get_target_by_triple(triple: &str) -> Option<&'static TargetInfo> {
-    ALL.binary_search_by(|ti| ti.triple.cmp(triple))
-        .map(|i| &ALL[i])
+pub fn get_builtin_target_by_triple(triple: &str) -> Option<&'static TargetInfo> {
+    ALL_BUILTINS
+        .binary_search_by(|ti| ti.triple.cmp(triple))
+        .map(|i| &ALL_BUILTINS[i])
         .ok()
 }
 
@@ -212,10 +213,10 @@ pub fn get_target_by_triple(triple: &str) -> Option<&'static TargetInfo> {
 /// versions.
 ///
 /// ```
-/// assert_eq!("1.41.0", cfg_expr::targets::rustc_version());
+/// assert_eq!("1.43.1", cfg_expr::targets::rustc_version());
 /// ```
 pub fn rustc_version() -> &'static str {
-    list::RUSTC_VERSION
+    builtins::RUSTC_VERSION
 }
 
 #[cfg(test)]
@@ -224,7 +225,7 @@ mod test {
     // by the target-triple, so ensure that stays the case
     #[test]
     fn targets_are_sorted() {
-        for window in super::ALL.windows(2) {
+        for window in super::ALL_BUILTINS.windows(2) {
             assert!(window[0].triple < window[1].triple);
         }
     }
@@ -235,7 +236,7 @@ mod test {
     fn has_ios() {
         assert_eq!(
             6,
-            super::ALL
+            super::ALL_BUILTINS
                 .iter()
                 .filter(|ti| ti.os == Some(super::Os::ios))
                 .count()

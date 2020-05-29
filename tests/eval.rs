@@ -1,6 +1,6 @@
 use cfg_expr::{
     expr::Predicate,
-    targets::{get_target_by_triple, ALL as all},
+    targets::{get_builtin_target_by_triple, ALL_BUILTINS as all},
     Expression,
 };
 
@@ -104,16 +104,16 @@ fn complex() {
     let complex = Expression::parse(r#"cfg(all(unix, not(any(target_os="macos", target_os="android", target_os="emscripten"))))"#).unwrap();
 
     // Should match linuxes
-    let linux_gnu = get_target_by_triple("x86_64-unknown-linux-gnu").unwrap();
-    let linux_musl = get_target_by_triple("x86_64-unknown-linux-musl").unwrap();
+    let linux_gnu = get_builtin_target_by_triple("x86_64-unknown-linux-gnu").unwrap();
+    let linux_musl = get_builtin_target_by_triple("x86_64-unknown-linux-musl").unwrap();
 
     assert!(complex.eval(|pred| tg_match!(pred, linux_gnu)));
     assert!(complex.eval(|pred| tg_match!(pred, linux_musl)));
 
     // Should *not* match windows or mac or android
-    let windows_msvc = get_target_by_triple("x86_64-pc-windows-msvc").unwrap();
-    let mac = get_target_by_triple("x86_64-apple-darwin").unwrap();
-    let android = get_target_by_triple("aarch64-linux-android").unwrap();
+    let windows_msvc = get_builtin_target_by_triple("x86_64-pc-windows-msvc").unwrap();
+    let mac = get_builtin_target_by_triple("x86_64-apple-darwin").unwrap();
+    let android = get_builtin_target_by_triple("aarch64-linux-android").unwrap();
 
     assert!(!complex.eval(|pred| tg_match!(pred, windows_msvc)));
     assert!(!complex.eval(|pred| tg_match!(pred, mac)));

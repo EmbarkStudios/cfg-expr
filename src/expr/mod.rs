@@ -52,7 +52,7 @@ impl TargetPredicate {
     ///
     /// ```
     /// use cfg_expr::{targets::*, expr::TargetPredicate as tp};
-    /// let win = get_target_by_triple("x86_64-pc-windows-msvc").unwrap();
+    /// let win = get_builtin_target_by_triple("x86_64-pc-windows-msvc").unwrap();
     ///
     /// assert!(
     ///     tp::Arch(Arch::x86_64).matches(win) &&
@@ -178,7 +178,7 @@ impl Expression {
     /// ```
     /// use cfg_expr::{targets::*, Expression, Predicate};
     ///
-    /// let linux_musl = get_target_by_triple("x86_64-unknown-linux-musl").unwrap();
+    /// let linux_musl = get_builtin_target_by_triple("x86_64-unknown-linux-musl").unwrap();
     ///
     /// let expr = Expression::parse(r#"all(not(windows), target_env = "musl", any(target_arch = "x86", target_arch = "x86_64"))"#).unwrap();
     ///
@@ -197,8 +197,8 @@ impl Expression {
     ///
     /// let expr = Expression::parse(r#"any(target_feature = "sse2", target_env = "musl")"#).unwrap();
     ///
-    /// let linux_gnu = get_target_by_triple("x86_64-unknown-linux-gnu").unwrap();
-    /// let linux_musl = get_target_by_triple("x86_64-unknown-linux-musl").unwrap();
+    /// let linux_gnu = get_builtin_target_by_triple("x86_64-unknown-linux-gnu").unwrap();
+    /// let linux_musl = get_builtin_target_by_triple("x86_64-unknown-linux-musl").unwrap();
     ///
     /// fn eval(expr: &Expression, target: &TargetInfo) -> Option<bool> {
     ///     expr.eval(|pred| {
