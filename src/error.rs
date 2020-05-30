@@ -2,9 +2,9 @@ use std::{error::Error, fmt};
 
 /// An error related to parsing of a cfg expression
 #[derive(Debug, PartialEq)]
-pub struct ParseError<'a> {
+pub struct ParseError {
     /// The string that was parsed
-    pub original: &'a str,
+    pub original: String,
     /// The range of characters in the original string that result
     /// in this error
     pub span: std::ops::Range<usize>,
@@ -38,9 +38,9 @@ pub enum Reason {
     MultipleRootPredicates,
 }
 
-impl<'a> fmt::Display for ParseError<'a> {
+impl fmt::Display for ParseError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.write_str(self.original)?;
+        f.write_str(&self.original)?;
         f.write_str("\n")?;
 
         for _ in 0..self.span.start {
@@ -99,7 +99,7 @@ impl fmt::Display for Reason {
     }
 }
 
-impl<'a> Error for ParseError<'a> {
+impl Error for ParseError {
     fn description(&self) -> &str {
         use Reason::*;
 

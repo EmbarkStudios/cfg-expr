@@ -14,7 +14,7 @@ impl Expression {
     /// ```
     /// assert!(cfg_expr::Expression::parse(r#"cfg(all(unix, target_arch = "x86_64"))"#).is_ok());
     /// ```
-    pub fn parse(original: &str) -> Result<Self, ParseError<'_>> {
+    pub fn parse(original: &str) -> Result<Self, ParseError> {
         let lexer = Lexer::new(original);
 
         // The lexer automatically trims any cfg( ), so reacquire
@@ -38,7 +38,7 @@ impl Expression {
 
         let parse_predicate = |key: (&str, std::ops::Range<usize>),
                                val: Option<(&str, std::ops::Range<usize>)>|
-         -> Result<InnerPredicate, ParseError<'_>> {
+         -> Result<InnerPredicate, ParseError> {
             // Warning: It is possible for arbitrarily-set configuration
             // options to have the same value as compiler-set configuration
             // options. For example, it is possible to do rustc --cfg "unix" program.rs
@@ -53,7 +53,7 @@ impl Expression {
                 () => {
                     if let Some((_, vspan)) = val {
                         return Err(ParseError {
-                            original,
+                            original: original.to_owned(),
                             span: vspan,
                             reason: Reason::Unexpected(&[]),
                         });
@@ -72,7 +72,7 @@ impl Expression {
                     err_if_val!();
 
                     let fam = key.parse().map_err(|reason| ParseError {
-                        original,
+                        original: original.to_owned(),
                         span,
                         reason,
                     })?;
@@ -100,7 +100,7 @@ impl Expression {
                         Some((_, span)) => InnerPredicate::Feature(span),
                         None => {
                             return Err(ParseError {
-                                original,
+                                original: original.to_owned(),
                                 span,
                                 reason: Reason::Unexpected(&["= \"<feature_name>\""]),
                             });
@@ -111,7 +111,7 @@ impl Expression {
                     let (val, vspan) = match val {
                         None => {
                             return Err(ParseError {
-                                original,
+                                original: original.to_owned(),
                                 span,
                                 reason: Reason::Unexpected(&["= \"<target_cfg_value>\""]),
                             });
@@ -148,7 +148,7 @@ impl Expression {
                         "feature" => {
                             if val.is_empty() {
                                 return Err(ParseError {
-                                    original,
+                                    original: original.to_owned(),
                                     span: vspan,
                                     reason: Reason::Unexpected(&["<feature>"]),
                                 });
@@ -170,7 +170,7 @@ impl Expression {
                         "vendor" => tp!(opt Vendor),
                         _ => {
                             return Err(ParseError {
-                                original,
+                                original: original.to_owned(),
                                 span,
                                 reason: Reason::Unexpected(&[
                                     "target_arch",
@@ -209,7 +209,7 @@ impl Expression {
                 };
 
                 return Err(ParseError {
-                    original,
+                    original: original.to_owned(),
                     span: $span,
                     reason: Reason::Unexpected(&expected),
                 });
@@ -299,7 +299,7 @@ impl Expression {
                                     // so ensure we have exactly 1
                                     if num_predicates != 1 {
                                         return Err(ParseError {
-                                            original,
+                                            original: original.to_owned(),
                                             span: top.span.start..lt.span.end,
                                             reason: Reason::InvalidNot(num_predicates),
                                         });
@@ -328,7 +328,7 @@ impl Expression {
 
                         // We didn't have an opening parentheses if we get here
                         return Err(ParseError {
-                            original,
+                            original: original.to_owned(),
                             span: lt.span,
                             reason: Reason::UnopenedParens,
                         });
@@ -371,7 +371,7 @@ impl Expression {
 
         if let Some(Token::Equals) = last_token {
             return Err(ParseError {
-                original,
+                original: original.to_owned(),
                 span: original.len()..original.len(),
                 reason: Reason::Unexpected(&["\"<value>\""]),
             });
@@ -382,13 +382,13 @@ impl Expression {
             Some(top) => {
                 if top.parens_index != 0 {
                     Err(ParseError {
-                        original,
+                        original: original.to_owned(),
                         span: top.parens_index..original.len(),
                         reason: Reason::UnclosedParens,
                     })
                 } else {
                     Err(ParseError {
-                        original,
+                        original: original.to_owned(),
                         span: top.span,
                         reason: Reason::Unexpected(&["("]),
                     })
@@ -405,13 +405,13 @@ impl Expression {
 
                 if expr_queue.is_empty() {
                     Err(ParseError {
-                        original,
+                        original: original.to_owned(),
                         span: 0..original.len(),
                         reason: Reason::Empty,
                     })
                 } else if root_predicate_count > 1 {
                     Err(ParseError {
-                        original,
+                        original: original.to_owned(),
                         span: 0..original.len(),
                         reason: Reason::MultipleRootPredicates,
                     })
