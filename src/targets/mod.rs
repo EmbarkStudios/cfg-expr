@@ -6,6 +6,26 @@ mod builtins;
 /// targets known to rustc, as of 1.43.1
 pub use builtins::ALL_BUILTINS;
 
+/// The "vendor" field, which in practice is little more than an arbitrary modifier.
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub struct Vendor<'a>(pub &'a str);
+
+/// The "operating system" field, which sometimes implies an environment, and
+/// sometimes isn't an actual operating system.
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub struct Os<'a>(pub &'a str);
+
+/// The "environment" field, which specifies an ABI environment on top of the
+/// operating system. In many configurations, this field is omitted, and the
+/// environment is implied by the operating system.
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub struct Env<'a>(pub &'a str);
+
+/// The "architecture" field, which in some cases also specifies a specific
+/// subarchitecture.
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub struct Arch<'a>(pub &'a str);
+
 macro_rules! target_enum {
     (
         $(#[$outer:meta])*
@@ -58,95 +78,11 @@ macro_rules! impl_from_str {
 }
 
 target_enum! {
-    /// All of the operating systems known to rustc
-    #[derive(Clone, Copy, PartialEq, Debug)]
-    pub enum Os {
-        haiku,
-        openbsd,
-        freebsd,
-        redox,
-        vxworks,
-        uefi,
-        emscripten,
-        netbsd,
-        fuchsia,
-        cloudabi,
-        wasi,
-        solaris,
-        cuda,
-        dragonfly,
-        l4re,
-        android,
-        macos,
-        hermit,
-        linux,
-        windows,
-        unknown,
-        ios,
-    }
-}
-
-target_enum! {
     /// The endian types known to rustc
     #[derive(Clone, Copy, PartialEq, Debug)]
     pub enum Endian {
         big,
         little,
-    }
-}
-
-target_enum! {
-    /// All of the target environments known to rustc
-    #[derive(Clone, Copy, PartialEq, Debug)]
-    pub enum Env {
-        uclibc,
-        sgx,
-        eabihf,
-        relibc,
-        gnu,
-        musl,
-        msvc,
-        gnueabihf,
-    }
-}
-
-target_enum! {
-    /// All of the target vendors known to rustc
-    #[derive(Clone, Copy, PartialEq, Debug)]
-    pub enum Vendor {
-        pc,
-        unknown,
-        uwp,
-        nvidia,
-        sun,
-        fortanix,
-        wrs,
-        rumprun,
-        apple,
-    }
-}
-
-target_enum! {
-    /// All of the CPU architectures known to rustc
-    #[derive(Clone, Copy, PartialEq, Debug)]
-    pub enum Arch {
-        x86_64,
-        wasm32,
-        msp430,
-        mips,
-        powerpc,
-        arm,
-        mips64,
-        sparc64,
-        hexagon,
-        riscv64,
-        aarch64,
-        powerpc64,
-        riscv32,
-        sparc,
-        nvptx64,
-        x86,
-        s390x,
     }
 }
 
@@ -163,25 +99,25 @@ target_enum! {
 
 /// Contains information regarding a particular target known to rustc
 #[derive(Debug)]
-pub struct TargetInfo {
+pub struct TargetInfo<'a> {
     /// The target's unique identifier
-    pub triple: &'static str,
+    pub triple: &'a str,
     /// The target's operating system, if any. Used by the
     /// [target_os](https://doc.rust-lang.org/reference/conditional-compilation.html#target_os)
     /// predicate.
-    pub os: Option<Os>,
+    pub os: Option<Os<'a>>,
     /// The target's CPU architecture. Used by the
     /// [target_arch](https://doc.rust-lang.org/reference/conditional-compilation.html#target_arch)
     /// predicate.
-    pub arch: Arch,
+    pub arch: Arch<'a>,
     /// The target's ABI/libc used, if any. Used by the
     /// [target_env](https://doc.rust-lang.org/reference/conditional-compilation.html#target_env)
     /// predicate.
-    pub env: Option<Env>,
+    pub env: Option<Env<'a>>,
     /// The target's vendor, if any. Used by the
     /// [target_vendor](https://doc.rust-lang.org/reference/conditional-compilation.html#target_vendor)
     /// predicate.
-    pub vendor: Option<Vendor>,
+    pub vendor: Option<Vendor<'a>>,
     /// The target's family, if any. Used by the
     /// [target_family](https://doc.rust-lang.org/reference/conditional-compilation.html#target_family)
     /// predicate.
@@ -201,7 +137,7 @@ pub struct TargetInfo {
 /// ```
 /// assert!(cfg_expr::targets::get_builtin_target_by_triple("x86_64-unknown-linux-musl").is_some());
 /// ```
-pub fn get_builtin_target_by_triple(triple: &str) -> Option<&'static TargetInfo> {
+pub fn get_builtin_target_by_triple(triple: &str) -> Option<&'static TargetInfo<'static>> {
     ALL_BUILTINS
         .binary_search_by(|ti| ti.triple.cmp(triple))
         .map(|i| &ALL_BUILTINS[i])

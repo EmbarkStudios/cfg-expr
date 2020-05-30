@@ -60,6 +60,8 @@ fn real_main() -> Result<(), String> {
     all_targets.push_str(
         "
 
+    #![allow(non_upper_case_globals)]
+
     use super::*;
 
     ",
@@ -75,13 +77,18 @@ fn real_main() -> Result<(), String> {
     all_targets.push_str(
         "
 
-        pub const ALL_BUILTINS: &[TargetInfo] = &[
+        pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
 ",
     );
 
     // Keep one target triple per architecture, as we need a full
     // triple even if the only part that matters is the architecture
     //let mut arches = HashMap::new();
+
+    let mut arches: Vec<String> = Vec::new();
+    let mut vendors: Vec<String> = Vec::new();
+    let mut oses: Vec<String> = Vec::new();
+    let mut envs: Vec<String> = Vec::new();
 
     for target in targets.lines() {
         let output = Command::new(&rustc)
@@ -103,7 +110,7 @@ fn real_main() -> Result<(), String> {
 
         let kv = String::from_utf8(output.stdout).unwrap();
 
-        let mut num_feats = 0;
+        //let mut num_feats = 0;
         let mut arch = None;
         let mut endian = None;
         let mut env = None;
@@ -168,10 +175,18 @@ fn real_main() -> Result<(), String> {
             }
         }
 
-        // match num_feats {
-        //     0 => features.push_str("0x0"),
-        //     _ => features.truncate(features.len() - 3),
-        // }
+        fn insert(thing: Option<&str>, things: &mut Vec<String>) {
+            if let Some(v) = thing {
+                if let Err(i) = things.binary_search_by(|t| t.as_str().cmp(v)) {
+                    things.insert(i, v.to_owned());
+                }
+            }
+        }
+
+        insert(arch, &mut arches);
+        insert(vendor, &mut vendors);
+        insert(os, &mut oses);
+        insert(env, &mut envs);
 
         writeln!(
             all_targets,
@@ -206,6 +221,11 @@ fn real_main() -> Result<(), String> {
     }
 
     writeln!(all_targets, "];").unwrap();
+
+    write_impls(&mut all_targets, "Arch", arches);
+    write_impls(&mut all_targets, "Vendor", vendors);
+    write_impls(&mut all_targets, "Os", oses);
+    write_impls(&mut all_targets, "Env", envs);
 
     std::fs::write("src/targets/builtins.rs", all_targets)
         .map_err(|e| format!("failed to write target_list.rs: {}", e))?;
@@ -260,6 +280,21 @@ fn real_main() -> Result<(), String> {
     // }
 
     Ok(())
+}
+
+fn write_impls(out: &mut String, typ: &'static str, builtins: Vec<String>) {
+    writeln!(out, "\nimpl<'a> super::{}<'a> {{", typ).unwrap();
+
+    for thing in builtins {
+        writeln!(
+            out,
+            "pub const {}: {}<'static> = {}(\"{}\");",
+            thing, typ, typ, thing
+        )
+        .unwrap();
+    }
+
+    writeln!(out, "}}").unwrap();
 }
 
 fn main() {

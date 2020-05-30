@@ -6,11 +6,13 @@
  * cargo run --manifest-path update/Cargo.toml
  */
 
+#![allow(non_upper_case_globals)]
+
 use super::*;
 
 pub(crate) const RUSTC_VERSION: &str = "1.43.1";
 
-pub const ALL_BUILTINS: &[TargetInfo] = &[
+pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
     TargetInfo {
         triple: "aarch64-apple-ios",
         os: Some(Os::ios),
@@ -1482,3 +1484,71 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         endian: Endian::little,
     },
 ];
+
+impl<'a> super::Arch<'a> {
+    pub const aarch64: Arch<'static> = Arch("aarch64");
+    pub const arm: Arch<'static> = Arch("arm");
+    pub const hexagon: Arch<'static> = Arch("hexagon");
+    pub const mips: Arch<'static> = Arch("mips");
+    pub const mips64: Arch<'static> = Arch("mips64");
+    pub const msp430: Arch<'static> = Arch("msp430");
+    pub const nvptx64: Arch<'static> = Arch("nvptx64");
+    pub const powerpc: Arch<'static> = Arch("powerpc");
+    pub const powerpc64: Arch<'static> = Arch("powerpc64");
+    pub const riscv32: Arch<'static> = Arch("riscv32");
+    pub const riscv64: Arch<'static> = Arch("riscv64");
+    pub const s390x: Arch<'static> = Arch("s390x");
+    pub const sparc: Arch<'static> = Arch("sparc");
+    pub const sparc64: Arch<'static> = Arch("sparc64");
+    pub const wasm32: Arch<'static> = Arch("wasm32");
+    pub const x86: Arch<'static> = Arch("x86");
+    pub const x86_64: Arch<'static> = Arch("x86_64");
+}
+
+impl<'a> super::Vendor<'a> {
+    pub const apple: Vendor<'static> = Vendor("apple");
+    pub const fortanix: Vendor<'static> = Vendor("fortanix");
+    pub const nvidia: Vendor<'static> = Vendor("nvidia");
+    pub const pc: Vendor<'static> = Vendor("pc");
+    pub const rumprun: Vendor<'static> = Vendor("rumprun");
+    pub const sun: Vendor<'static> = Vendor("sun");
+    pub const unknown: Vendor<'static> = Vendor("unknown");
+    pub const uwp: Vendor<'static> = Vendor("uwp");
+    pub const wrs: Vendor<'static> = Vendor("wrs");
+}
+
+impl<'a> super::Os<'a> {
+    pub const android: Os<'static> = Os("android");
+    pub const cloudabi: Os<'static> = Os("cloudabi");
+    pub const cuda: Os<'static> = Os("cuda");
+    pub const dragonfly: Os<'static> = Os("dragonfly");
+    pub const emscripten: Os<'static> = Os("emscripten");
+    pub const freebsd: Os<'static> = Os("freebsd");
+    pub const fuchsia: Os<'static> = Os("fuchsia");
+    pub const haiku: Os<'static> = Os("haiku");
+    pub const hermit: Os<'static> = Os("hermit");
+    pub const ios: Os<'static> = Os("ios");
+    pub const l4re: Os<'static> = Os("l4re");
+    pub const linux: Os<'static> = Os("linux");
+    pub const macos: Os<'static> = Os("macos");
+    pub const netbsd: Os<'static> = Os("netbsd");
+    pub const openbsd: Os<'static> = Os("openbsd");
+    pub const redox: Os<'static> = Os("redox");
+    pub const solaris: Os<'static> = Os("solaris");
+    pub const uefi: Os<'static> = Os("uefi");
+    pub const unknown: Os<'static> = Os("unknown");
+    pub const vxworks: Os<'static> = Os("vxworks");
+    pub const wasi: Os<'static> = Os("wasi");
+    pub const windows: Os<'static> = Os("windows");
+}
+
+impl<'a> super::Env<'a> {
+    pub const eabihf: Env<'static> = Env("eabihf");
+    pub const gnu: Env<'static> = Env("gnu");
+    pub const gnueabihf: Env<'static> = Env("gnueabihf");
+    pub const msvc: Env<'static> = Env("msvc");
+    pub const musl: Env<'static> = Env("musl");
+    pub const relibc: Env<'static> = Env("relibc");
+    pub const sgx: Env<'static> = Env("sgx");
+    pub const uclibc: Env<'static> = Env("uclibc");
+}
