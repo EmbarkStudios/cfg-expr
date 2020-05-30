@@ -2,7 +2,7 @@ use crate::{
     error::{ParseError, Reason},
     expr::{
         lexer::{Lexer, Token},
-        ExprNode, Expression, Func, InnerPredicate, TargetPredicate,
+        ExprNode, Expression, Func, InnerPredicate,
     },
 };
 use smallvec::SmallVec;
@@ -64,6 +64,8 @@ impl Expression {
             let span = key.1;
             let key = key.0;
 
+            use super::{InnerTarget, Which};
+
             Ok(match key {
                 // These are special cases in the cfg language that are
                 // semantically the same as `target_family = "<family>"`,
@@ -77,7 +79,10 @@ impl Expression {
                         reason,
                     })?;
 
-                    InnerPredicate::Target(TargetPredicate::Family(Some(fam)))
+                    InnerPredicate::Target(InnerTarget {
+                        which: Which::Family(fam),
+                        span: None,
+                    })
                 }
                 "test" => {
                     err_if_val!();
@@ -121,24 +126,9 @@ impl Expression {
 
                     macro_rules! tp {
                         ($which:ident) => {
-                            TargetPredicate::$which(val.parse().map_err(|r| ParseError {
-                                original,
-                                span: vspan,
-                                reason: r,
-                            })?)
-                        };
-
-                        (opt $which:ident) => {
-                            if !val.is_empty() {
-                                TargetPredicate::$which(Some(val.parse().map_err(|r| {
-                                    ParseError {
-                                        original,
-                                        span: vspan,
-                                        reason: r,
-                                    }
-                                })?))
-                            } else {
-                                TargetPredicate::$which(None)
+                            InnerTarget {
+                                which: Which::$which,
+                                span: Some(vspan),
                             }
                         };
                     }
@@ -156,18 +146,37 @@ impl Expression {
 
                             return Ok(InnerPredicate::TargetFeature(vspan));
                         }
-                        "os" => tp!(opt Os),
-                        "family" => tp!(opt Family),
-                        "env" => tp!(opt Env),
-                        "endian" => tp!(Endian),
-                        "pointer_width" => {
-                            TargetPredicate::PointerWidth(val.parse().map_err(|_| ParseError {
-                                original,
+                        "os" => tp!(Os),
+                        "family" => {
+                            let fam = val.parse().map_err(|reason| ParseError {
+                                original: original.to_owned(),
+                                span,
+                                reason,
+                            })?;
+
+                            InnerTarget {
+                                which: Which::Family(fam),
+                                span: None,
+                            }
+                        }
+                        "env" => tp!(Env),
+                        "endian" => InnerTarget {
+                            which: Which::Endian(val.parse().map_err(|_| ParseError {
+                                original: original.to_owned(),
                                 span: vspan,
                                 reason: Reason::InvalidInteger,
-                            })?)
-                        }
-                        "vendor" => tp!(opt Vendor),
+                            })?),
+                            span: None,
+                        },
+                        "pointer_width" => InnerTarget {
+                            which: Which::PointerWidth(val.parse().map_err(|_| ParseError {
+                                original: original.to_owned(),
+                                span: vspan,
+                                reason: Reason::InvalidInteger,
+                            })?),
+                            span: None,
+                        },
+                        "vendor" => tp!(Vendor),
                         _ => {
                             return Err(ParseError {
                                 original: original.to_owned(),

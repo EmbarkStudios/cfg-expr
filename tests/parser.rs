@@ -118,7 +118,7 @@ fn fails_unbalanced_quotes() {
 fn handles_single_predicate() {
     test_validate!(ok [
         "cfg(key)" => [P::Flag("key")],
-        "unix"  => [P::Target(TP::Family(Some(Family::unix)))],
+        "unix"  => [P::Target(TP::Family(Family::unix))],
         "target_arch = \"mips\"" => [P::Target(TP::Arch(Arch::mips))],
         "feature = \"awesome\"" => [P::Feature("awesome")],
         "_key" => [P::Flag("_key")],

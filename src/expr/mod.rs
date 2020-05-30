@@ -2,6 +2,7 @@ pub mod lexer;
 mod parser;
 
 use smallvec::SmallVec;
+use std::ops::Range;
 
 /// A predicate function, used to combine 1 or more predicates
 /// into a single value
@@ -28,26 +29,26 @@ use crate::targets as targ;
 
 /// All predicates that pertains to a target, except for `target_feature`
 #[derive(Clone, Copy, PartialEq, Debug)]
-pub enum TargetPredicate {
+pub enum TargetPredicate<'a> {
     /// [target_arch](https://doc.rust-lang.org/reference/conditional-compilation.html#target_arch)
-    Arch(targ::Arch),
+    Arch(targ::Arch<'a>),
     /// [target_endian](https://doc.rust-lang.org/reference/conditional-compilation.html#target_endian)
     Endian(targ::Endian),
     /// [target_env](https://doc.rust-lang.org/reference/conditional-compilation.html#target_env)
-    Env(Option<targ::Env>),
+    Env(targ::Env<'a>),
     /// [target_family](https://doc.rust-lang.org/reference/conditional-compilation.html#target_family)
     /// This also applies to the bare [`unix` and `windows`](https://doc.rust-lang.org/reference/conditional-compilation.html#unix-and-windows)
     /// predicates.
-    Family(Option<targ::Family>),
+    Family(targ::Family),
     /// [target_os](https://doc.rust-lang.org/reference/conditional-compilation.html#target_os)
-    Os(Option<targ::Os>),
+    Os(targ::Os<'a>),
     /// [target_pointer_width](https://doc.rust-lang.org/reference/conditional-compilation.html#target_pointer_width)
     PointerWidth(u8),
     /// [target_vendor](https://doc.rust-lang.org/reference/conditional-compilation.html#target_vendor)
-    Vendor(Option<targ::Vendor>),
+    Vendor(targ::Vendor<'a>),
 }
 
-impl TargetPredicate {
+impl<'a> TargetPredicate<'a> {
     /// Returns true of the predicate matches the specified target
     ///
     /// ```
@@ -57,37 +58,58 @@ impl TargetPredicate {
     /// assert!(
     ///     tp::Arch(Arch::x86_64).matches(win) &&
     ///     tp::Endian(Endian::little).matches(win) &&
-    ///     tp::Env(Some(Env::msvc)).matches(win) &&
-    ///     tp::Family(Some(Family::windows)).matches(win) &&
-    ///     tp::Os(Some(Os::windows)).matches(win) &&
+    ///     tp::Env(Env::msvc).matches(win) &&
+    ///     tp::Family(Family::windows).matches(win) &&
+    ///     tp::Os(Os::windows).matches(win) &&
     ///     tp::PointerWidth(64).matches(win) &&
-    ///     tp::Vendor(Some(Vendor::pc)).matches(win)
+    ///     tp::Vendor(Vendor::pc).matches(win)
     /// );
     /// ```
-    pub fn matches(self, target: &targ::TargetInfo) -> bool {
+    pub fn matches(self, target: &targ::TargetInfo<'a>) -> bool {
         use TargetPredicate::*;
 
         match self {
             Arch(a) => a == target.arch,
             Endian(end) => end == target.endian,
-            Env(env) => env == target.env,
-            Family(fam) => fam == target.family,
-            Os(os) => os == target.os,
+            // The environment is allowed to be an empty string
+            Env(env) => match target.env {
+                Some(e) => env == e,
+                None => env.0 == "",
+            },
+            Family(fam) => Some(fam) == target.family,
+            Os(os) => Some(os) == target.os,
             PointerWidth(w) => w == target.pointer_width,
-            Vendor(ven) => ven == target.vendor,
+            Vendor(ven) => Some(ven) == target.vendor,
         }
     }
+}
+
+#[derive(Clone, Debug)]
+pub(crate) enum Which {
+    Arch,
+    Endian(targ::Endian),
+    Env,
+    Family(targ::Family),
+    Os,
+    PointerWidth(u8),
+    Vendor,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct InnerTarget {
+    which: Which,
+    span: Option<Range<usize>>,
 }
 
 /// A single predicate in a `cfg()` expression
 #[derive(Debug, PartialEq)]
 pub enum Predicate<'a> {
     /// A target predicate, with the `target_` prefix
-    Target(TargetPredicate),
+    Target(TargetPredicate<'a>),
     /// Whether rustc's test harness is [enabled](https://doc.rust-lang.org/reference/conditional-compilation.html#test)
     Test,
     /// [Enabled](https://doc.rust-lang.org/reference/conditional-compilation.html#debug_assertions)
-    ///  when compiling without optimizations.
+    /// when compiling without optimizations.
     DebugAssertions,
     /// [Enabled](https://doc.rust-lang.org/reference/conditional-compilation.html#proc_macro) for
     /// crates of the proc_macro type.
@@ -102,17 +124,17 @@ pub enum Predicate<'a> {
     KeyValue { key: &'a str, val: &'a str },
 }
 
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, Debug)]
 pub(crate) enum InnerPredicate {
-    Target(TargetPredicate),
+    Target(InnerTarget),
     Test,
     DebugAssertions,
     ProcMacro,
-    Feature(std::ops::Range<usize>),
-    TargetFeature(std::ops::Range<usize>),
+    Feature(Range<usize>),
+    TargetFeature(Range<usize>),
     Other {
-        identifier: std::ops::Range<usize>,
-        value: Option<std::ops::Range<usize>>,
+        identifier: Range<usize>,
+        value: Option<Range<usize>>,
     },
 }
 
@@ -122,7 +144,21 @@ impl InnerPredicate {
         use Predicate::*;
 
         match self {
-            IP::Target(tp) => Target(*tp),
+            IP::Target(it) => match &it.which {
+                Which::Arch => Target(TargetPredicate::Arch(targ::Arch(
+                    &s[it.span.clone().unwrap()],
+                ))),
+                Which::Os => Target(TargetPredicate::Os(targ::Os(&s[it.span.clone().unwrap()]))),
+                Which::Vendor => Target(TargetPredicate::Vendor(targ::Vendor(
+                    &s[it.span.clone().unwrap()],
+                ))),
+                Which::Env => Target(TargetPredicate::Env(targ::Env(
+                    &s[it.span.clone().unwrap()],
+                ))),
+                Which::Endian(end) => Target(TargetPredicate::Endian(*end)),
+                Which::Family(fam) => Target(TargetPredicate::Family(*fam)),
+                Which::PointerWidth(pw) => Target(TargetPredicate::PointerWidth(*pw)),
+            },
             IP::Test => Test,
             IP::DebugAssertions => DebugAssertions,
             IP::ProcMacro => ProcMacro,
@@ -139,7 +175,7 @@ impl InnerPredicate {
     }
 }
 
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, Debug)]
 pub(crate) enum ExprNode {
     Fn(Func),
     Predicate(InnerPredicate),
