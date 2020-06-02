@@ -82,6 +82,70 @@ impl<'a> TargetPredicate<'a> {
             Vendor(ven) => Some(ven) == target.vendor,
         }
     }
+
+    #[cfg(feature = "targets")]
+    pub fn matches_target(self, target: &target_lexicon::Triple) -> bool {
+        use target_lexicon::*;
+        use TargetPredicate::*;
+
+        match self {
+            Arch(arch) => match arch.0.parse::<Architecture>() {
+                Ok(a) => target.architecture == a,
+                Err(_) => false,
+            },
+            Endian(end) => match target.architecture.endianness() {
+                Ok(endian) => match (end, endian) {
+                    (crate::targets::Endian::little, Endianness::Little) => true,
+                    (crate::targets::Endian::big, Endianness::Big) => true,
+                    _ => false,
+                },
+
+                Err(_) => false,
+            },
+            Env(env) => match env.0.parse::<Environment>() {
+                Ok(e) => target.environment == e,
+                Err(_) => false,
+            },
+            Family(fam) => {
+                use target_lexicon::OperatingSystem::*;
+                Some(fam)
+                    == match target.operating_system {
+                        Unknown | AmdHsa | Bitrig | Cloudabi | Cuda | Hermit | Nebulet | None_
+                        | Uefi | Wasi => None,
+                        Darwin
+                        | Dragonfly
+                        | Emscripten
+                        | Freebsd
+                        | Fuchsia
+                        | Haiku
+                        | Ios
+                        | L4re
+                        | Linux
+                        | MacOSX { .. }
+                        | Netbsd
+                        | Openbsd
+                        | Redox
+                        | Solaris
+                        | VxWorks => Some(crate::targets::Family::unix),
+                        Windows => Some(crate::targets::Family::windows),
+                    }
+            }
+            Os(os) => match os.0.parse::<OperatingSystem>() {
+                Ok(o) => target.operating_system == o,
+                Err(_) => false,
+            },
+            Vendor(ven) => match ven.0.parse::<target_lexicon::Vendor>() {
+                Ok(v) => target.vendor == v,
+                Err(_) => false,
+            },
+            PointerWidth(pw) => {
+                pw == match target.pointer_width() {
+                    Ok(pw) => pw.bits(),
+                    Err(_) => return false,
+                }
+            }
+        }
+    }
 }
 
 #[derive(Clone, Debug)]

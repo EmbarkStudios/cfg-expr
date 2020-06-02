@@ -82,3 +82,6 @@ pub mod targets;
 
 pub use error::ParseError;
 pub use expr::{Expression, Predicate, TargetPredicate};
+
+#[cfg(feature = "targets")]
+pub use target_lexicon;

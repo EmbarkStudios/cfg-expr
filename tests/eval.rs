@@ -1,13 +1,36 @@
+#![cfg(feature = "targets")]
+
 use cfg_expr::{
     expr::Predicate,
     targets::{get_builtin_target_by_triple, ALL_BUILTINS as all},
     Expression,
 };
 
+struct Target {
+    builtin: &'static cfg_expr::targets::TargetInfo<'static>,
+    lexicon: target_lexicon::Triple,
+}
+
+impl Target {
+    fn make(s: &str) -> Self {
+        Self {
+            builtin: get_builtin_target_by_triple(s).unwrap(),
+            lexicon: s.parse().unwrap(),
+        }
+    }
+}
+
 macro_rules! tg_match {
     ($pred:expr, $target:expr) => {
         match $pred {
-            Predicate::Target(tg) => tg.matches(&$target),
+            Predicate::Target(tg) => {
+                let tinfo = tg.matches($target.builtin);
+                let linfo = tg.matches_target(&$target.lexicon);
+
+                assert_eq!(tinfo, linfo);
+
+                linfo
+            }
             _ => panic!("not a target predicate"),
         }
     };
