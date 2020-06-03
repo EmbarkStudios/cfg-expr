@@ -28,7 +28,7 @@ macro_rules! tg_match {
 
                 #[cfg(feature = "targets")]
                 {
-                    let linfo = tg.matches_target(&$target.lexicon);
+                    let linfo = tg.matches($target.lexicon);
                     assert_eq!(
                         tinfo, linfo,
                         "{:#?} builtin didn't match lexicon {:#?}",
@@ -52,7 +52,7 @@ macro_rules! tg_match {
 
                 #[cfg(feature = "targets")]
                 {
-                    let linfo = tg.matches_target(&$target.lexicon);
+                    let linfo = tg.matches(&$target.lexicon);
                     assert_eq!(
                         tinfo, linfo,
                         "{:#?} builtin didn't match lexicon {:#?}",

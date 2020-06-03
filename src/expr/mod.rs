@@ -48,61 +48,51 @@ pub enum TargetPredicate<'a> {
     Vendor(targ::Vendor<'a>),
 }
 
-impl<'a> TargetPredicate<'a> {
-    /// Returns true of the predicate matches the specified target
-    ///
-    /// ```
-    /// use cfg_expr::{targets::*, expr::TargetPredicate as tp};
-    /// let win = get_builtin_target_by_triple("x86_64-pc-windows-msvc").unwrap();
-    ///
-    /// assert!(
-    ///     tp::Arch(Arch::x86_64).matches(win) &&
-    ///     tp::Endian(Endian::little).matches(win) &&
-    ///     tp::Env(Env::msvc).matches(win) &&
-    ///     tp::Family(Family::windows).matches(win) &&
-    ///     tp::Os(Os::windows).matches(win) &&
-    ///     tp::PointerWidth(64).matches(win) &&
-    ///     tp::Vendor(Vendor::pc).matches(win)
-    /// );
-    /// ```
-    pub fn matches(self, target: &targ::TargetInfo<'a>) -> bool {
+pub trait TargetMatcher {
+    fn matches(&self, tp: TargetPredicate<'_>) -> bool;
+}
+
+impl<'a> TargetMatcher for targ::TargetInfo<'a> {
+    fn matches(&self, tp: TargetPredicate<'_>) -> bool {
         use TargetPredicate::*;
 
-        match self {
-            Arch(a) => a == target.arch,
-            Endian(end) => end == target.endian,
+        match tp {
+            Arch(a) => a == self.arch,
+            Endian(end) => end == self.endian,
             // The environment is allowed to be an empty string
-            Env(env) => match target.env {
+            Env(env) => match self.env {
                 Some(e) => env == e,
                 None => env.0 == "",
             },
-            Family(fam) => Some(fam) == target.family,
-            Os(os) => Some(os) == target.os,
-            PointerWidth(w) => w == target.pointer_width,
-            Vendor(ven) => Some(ven) == target.vendor,
+            Family(fam) => Some(fam) == self.family,
+            Os(os) => Some(os) == self.os,
+            PointerWidth(w) => w == self.pointer_width,
+            Vendor(ven) => Some(ven) == self.vendor,
         }
     }
+}
 
-    #[cfg(feature = "targets")]
-    pub fn matches_target(self, target: &target_lexicon::Triple) -> bool {
+#[cfg(feature = "targets")]
+impl TargetMatcher for target_lexicon::Triple {
+    fn matches(&self, tp: TargetPredicate<'_>) -> bool {
         use target_lexicon::*;
         use TargetPredicate::*;
 
-        match self {
+        match tp {
             Arch(arch) => {
                 if arch.0 == "x86" {
-                    match target.architecture {
+                    match self.architecture {
                         Architecture::X86_32(_) => true,
                         _ => false,
                     }
                 } else {
                     match arch.0.parse::<Architecture>() {
-                        Ok(a) => target.architecture == a,
+                        Ok(a) => self.architecture == a,
                         Err(_) => false,
                     }
                 }
             }
-            Endian(end) => match target.architecture.endianness() {
+            Endian(end) => match self.architecture.endianness() {
                 Ok(endian) => match (end, endian) {
                     (crate::targets::Endian::little, Endianness::Little) => true,
                     (crate::targets::Endian::big, Endianness::Big) => true,
@@ -113,13 +103,13 @@ impl<'a> TargetPredicate<'a> {
             },
             Env(env) => {
                 if env.0.is_empty() {
-                    target.environment == Environment::Unknown
+                    self.environment == Environment::Unknown
                 } else {
                     match env.0.parse::<Environment>() {
                         Ok(e) => {
                             // Rustc shortens multiple "gnu*" environments to just "gnu"
                             if env.0 == "gnu" {
-                                match target.environment {
+                                match self.environment {
                                     Environment::Gnu
                                     | Environment::Gnuabi64
                                     | Environment::Gnueabi
@@ -128,7 +118,7 @@ impl<'a> TargetPredicate<'a> {
                                     _ => false,
                                 }
                             } else {
-                                target.environment == e
+                                self.environment == e
                             }
                         }
                         Err(_) => false,
@@ -138,7 +128,7 @@ impl<'a> TargetPredicate<'a> {
             Family(fam) => {
                 use target_lexicon::OperatingSystem::*;
                 Some(fam)
-                    == match target.operating_system {
+                    == match self.operating_system {
                         Unknown | AmdHsa | Bitrig | Cloudabi | Cuda | Hermit | Nebulet | None_
                         | Uefi | Wasi => None,
                         Darwin
@@ -162,29 +152,29 @@ impl<'a> TargetPredicate<'a> {
                     }
             }
             Os(os) => match os.0.parse::<OperatingSystem>() {
-                Ok(o) => target.operating_system == o,
+                Ok(o) => self.operating_system == o,
                 Err(_) => {
                     // Handle special case for darwin/macos, where the triple is
                     // "darwin", but rustc identifies the OS as "macos"
-                    if os.0 == "macos" && target.operating_system == OperatingSystem::Darwin {
+                    if os.0 == "macos" && self.operating_system == OperatingSystem::Darwin {
                         true
                     } else {
                         // For android, the os is still linux, but the environment is android
                         os.0 == "android"
-                            && target.operating_system == OperatingSystem::Linux
-                            && target.environment == Environment::Android
+                            && self.operating_system == OperatingSystem::Linux
+                            && self.environment == Environment::Android
                     }
                 }
             },
             Vendor(ven) => match ven.0.parse::<target_lexicon::Vendor>() {
-                Ok(v) => target.vendor == v,
+                Ok(v) => self.vendor == v,
                 Err(_) => false,
             },
             PointerWidth(pw) => {
                 // The gnux32 environment is a special case, where it has an
                 // x86_64 architecture, but a 32-bit pointer width
-                if target.environment != Environment::Gnux32 {
-                    pw == match target.pointer_width() {
+                if self.environment != Environment::Gnux32 {
+                    pw == match self.pointer_width() {
                         Ok(pw) => pw.bits(),
                         Err(_) => return false,
                     }
@@ -193,6 +183,31 @@ impl<'a> TargetPredicate<'a> {
                 }
             }
         }
+    }
+}
+
+impl<'a> TargetPredicate<'a> {
+    /// Returns true of the predicate matches the specified target
+    ///
+    /// ```
+    /// use cfg_expr::{targets::*, expr::TargetPredicate as tp};
+    /// let win = get_builtin_target_by_triple("x86_64-pc-windows-msvc").unwrap();
+    ///
+    /// assert!(
+    ///     tp::Arch(Arch::x86_64).matches(win) &&
+    ///     tp::Endian(Endian::little).matches(win) &&
+    ///     tp::Env(Env::msvc).matches(win) &&
+    ///     tp::Family(Family::windows).matches(win) &&
+    ///     tp::Os(Os::windows).matches(win) &&
+    ///     tp::PointerWidth(64).matches(win) &&
+    ///     tp::Vendor(Vendor::pc).matches(win)
+    /// );
+    /// ```
+    pub fn matches<T>(self, target: &T) -> bool
+    where
+        T: TargetMatcher,
+    {
+        target.matches(self)
     }
 }
 
@@ -381,7 +396,7 @@ impl Expression {
                 ExprNode::Predicate(pred) => {
                     let pred = pred.to_pred(&self.original);
 
-                    result_stack.push(dbg!(eval_predicate(&dbg!(pred))));
+                    result_stack.push(eval_predicate(&pred));
                 }
                 ExprNode::Fn(Func::All(count)) => {
                     // all() with a comma separated list of configuration predicates.
