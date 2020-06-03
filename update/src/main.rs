@@ -222,37 +222,6 @@ fn real_main() -> Result<(), String> {
 
     writeln!(out, "];").unwrap();
 
-    // {
-    //     writeln!(out, "\npub enum Arch {{").unwrap();
-
-    //     for arch in &arches {
-    //         writeln!(out, "{},", arch,).unwrap();
-    //     }
-
-    //     writeln!(out, "}}").unwrap();
-
-    //     writeln!(
-    //         out,
-    //         "
-    //         impl std::str::FromStr for Arch {{
-    //             type Err = crate::error::Reason;
-
-    //             fn from_str(s: &str) -> Result<Self, Self::Err> {{
-    //                 match s {{"
-    //     )
-    //     .unwrap();
-
-    //     for arch in arches {
-    //         writeln!(&mut out, "\"{}\" => Ok(Self::{}),", arch, arch).unwrap();
-    //     }
-
-    //     writeln!(
-    //         out,
-    //         "_ => Err(crate::error::Reason::UnknownBuiltin), }} }} }}"
-    //     )
-    //     .unwrap();
-    // }
-
     write_impls(&mut out, "Arch", arches);
     write_impls(&mut out, "Vendor", vendors);
     write_impls(&mut out, "Os", oses);
@@ -269,46 +238,6 @@ fn real_main() -> Result<(), String> {
     if !status.success() {
         return Err(format!("failed to successfuly format: {}", status));
     }
-
-    // Now, grab all of the available features for each unique architecture
-    // for (arch, target) in arches {
-    //     let output = Command::new(&rustc)
-    //         .env("PATH", &path)
-    //         .arg("--target")
-    //         .arg(target)
-    //         .args(&["--print", "target-features"])
-    //         .output()
-    //         .map_err(|e| format!("failed to run rustc: {}", e))?;
-
-    //     if !output.status.success() {
-    //         return Err(format!(
-    //             "failed to retrieve target-features {}: {}",
-    //             target,
-    //             String::from_utf8(output.stderr)
-    //                 .map_err(|e| format!("unable to parse stderr: {}", e))?
-    //         ));
-    //     }
-
-    //     let kv = String::from_utf8(output.stdout).unwrap();
-
-    //     for line in kv {
-    //         // The output includes additional text that we don't need
-    //         if !line.starts_with("    ") {
-    //             continue;
-    //         }
-
-    //         // Each kv is of the form "    <name><spaces>-<space><description>"
-    //         let name_end = line[4..]
-    //             .find(' ')
-    //             .ok_or_else(|| format!("invalid target-feature line: {}", line))?;
-
-    //         let name = &line[4..name_end + 4];
-
-    //         // Meh :P
-    //         let name = name.replace('-', "_");
-    //         let name = name.replace('.', "_");
-    //     }
-    // }
 
     Ok(())
 }
