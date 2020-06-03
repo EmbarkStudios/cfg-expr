@@ -89,10 +89,19 @@ impl<'a> TargetPredicate<'a> {
         use TargetPredicate::*;
 
         match self {
-            Arch(arch) => match arch.0.parse::<Architecture>() {
-                Ok(a) => target.architecture == a,
-                Err(_) => false,
-            },
+            Arch(arch) => {
+                if arch.0 == "x86" {
+                    match target.architecture {
+                        Architecture::X86_32(_) => true,
+                        _ => false,
+                    }
+                } else {
+                    match arch.0.parse::<Architecture>() {
+                        Ok(a) => target.architecture == a,
+                        Err(_) => false,
+                    }
+                }
+            }
             Endian(end) => match target.architecture.endianness() {
                 Ok(endian) => match (end, endian) {
                     (crate::targets::Endian::little, Endianness::Little) => true,
@@ -102,10 +111,30 @@ impl<'a> TargetPredicate<'a> {
 
                 Err(_) => false,
             },
-            Env(env) => match env.0.parse::<Environment>() {
-                Ok(e) => target.environment == e,
-                Err(_) => false,
-            },
+            Env(env) => {
+                if env.0.is_empty() {
+                    target.environment == Environment::Unknown
+                } else {
+                    match env.0.parse::<Environment>() {
+                        Ok(e) => {
+                            // Rustc shortens multiple "gnu*" environments to just "gnu"
+                            if env.0 == "gnu" {
+                                match target.environment {
+                                    Environment::Gnu
+                                    | Environment::Gnuabi64
+                                    | Environment::Gnueabi
+                                    | Environment::Gnuspe
+                                    | Environment::Gnux32 => true,
+                                    _ => false,
+                                }
+                            } else {
+                                target.environment == e
+                            }
+                        }
+                        Err(_) => false,
+                    }
+                }
+            }
             Family(fam) => {
                 use target_lexicon::OperatingSystem::*;
                 Some(fam)
@@ -128,20 +157,39 @@ impl<'a> TargetPredicate<'a> {
                         | Solaris
                         | VxWorks => Some(crate::targets::Family::unix),
                         Windows => Some(crate::targets::Family::windows),
+                        // I really dislike non-exhaustive :(
+                        _ => None,
                     }
             }
             Os(os) => match os.0.parse::<OperatingSystem>() {
                 Ok(o) => target.operating_system == o,
-                Err(_) => false,
+                Err(_) => {
+                    // Handle special case for darwin/macos, where the triple is
+                    // "darwin", but rustc identifies the OS as "macos"
+                    if os.0 == "macos" && target.operating_system == OperatingSystem::Darwin {
+                        true
+                    } else {
+                        // For android, the os is still linux, but the environment is android
+                        os.0 == "android"
+                            && target.operating_system == OperatingSystem::Linux
+                            && target.environment == Environment::Android
+                    }
+                }
             },
             Vendor(ven) => match ven.0.parse::<target_lexicon::Vendor>() {
                 Ok(v) => target.vendor == v,
                 Err(_) => false,
             },
             PointerWidth(pw) => {
-                pw == match target.pointer_width() {
-                    Ok(pw) => pw.bits(),
-                    Err(_) => return false,
+                // The gnux32 environment is a special case, where it has an
+                // x86_64 architecture, but a 32-bit pointer width
+                if target.environment != Environment::Gnux32 {
+                    pw == match target.pointer_width() {
+                        Ok(pw) => pw.bits(),
+                        Err(_) => return false,
+                    }
+                } else {
+                    pw == 32
                 }
             }
         }
@@ -321,7 +369,7 @@ impl Expression {
     pub fn eval<EP, T>(&self, mut eval_predicate: EP) -> T
     where
         EP: FnMut(&Predicate<'_>) -> T,
-        T: Logic,
+        T: Logic + std::fmt::Debug,
     {
         let mut result_stack = SmallVec::<[T; 8]>::new();
 
@@ -332,7 +380,8 @@ impl Expression {
             match node {
                 ExprNode::Predicate(pred) => {
                     let pred = pred.to_pred(&self.original);
-                    result_stack.push(eval_predicate(&pred));
+
+                    result_stack.push(dbg!(eval_predicate(&dbg!(pred))));
                 }
                 ExprNode::Fn(Func::All(count)) => {
                     // all() with a comma separated list of configuration predicates.

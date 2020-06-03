@@ -1,5 +1,3 @@
-#![cfg(feature = "targets")]
-
 use cfg_expr::{
     expr::Predicate,
     targets::{get_builtin_target_by_triple, ALL_BUILTINS as all},
@@ -8,6 +6,7 @@ use cfg_expr::{
 
 struct Target {
     builtin: &'static cfg_expr::targets::TargetInfo<'static>,
+    #[cfg(feature = "targets")]
     lexicon: target_lexicon::Triple,
 }
 
@@ -15,6 +14,7 @@ impl Target {
     fn make(s: &str) -> Self {
         Self {
             builtin: get_builtin_target_by_triple(s).unwrap(),
+            #[cfg(feature = "targets")]
             lexicon: s.parse().unwrap(),
         }
     }
@@ -25,11 +25,21 @@ macro_rules! tg_match {
         match $pred {
             Predicate::Target(tg) => {
                 let tinfo = tg.matches($target.builtin);
-                let linfo = tg.matches_target(&$target.lexicon);
 
-                assert_eq!(tinfo, linfo);
+                #[cfg(feature = "targets")]
+                {
+                    let linfo = tg.matches_target(&$target.lexicon);
+                    assert_eq!(
+                        tinfo, linfo,
+                        "{:#?} builtin didn't match lexicon {:#?}",
+                        $target.builtin, $target.lexicon
+                    );
 
-                linfo
+                    return linfo;
+                }
+
+                #[cfg(not(feature = "targets"))]
+                tinfo
             }
             _ => panic!("not a target predicate"),
         }
@@ -37,7 +47,24 @@ macro_rules! tg_match {
 
     ($pred:expr, $target:expr, $feats:expr) => {
         match $pred {
-            Predicate::Target(tg) => tg.matches(&$target),
+            Predicate::Target(tg) => {
+                let tinfo = tg.matches($target.builtin);
+
+                #[cfg(feature = "targets")]
+                {
+                    let linfo = tg.matches_target(&$target.lexicon);
+                    assert_eq!(
+                        tinfo, linfo,
+                        "{:#?} builtin didn't match lexicon {:#?}",
+                        $target.builtin, $target.lexicon
+                    );
+
+                    return linfo;
+                }
+
+                #[cfg(not(feature = "targets"))]
+                tinfo
+            }
             Predicate::TargetFeature(feat) => $feats.iter().find(|f| *f == feat).is_some(),
             _ => panic!("not a target predicate"),
         }
@@ -50,7 +77,8 @@ fn target_family() {
     let impossible = Expression::parse("all(windows, target_family = \"unix\")").unwrap();
 
     for target in all {
-        match target.family {
+        let target = Target::make(target.triple);
+        match target.builtin.family {
             Some(_) => {
                 assert!(matches_any_family.eval(|pred| { tg_match!(pred, target) }));
                 assert!(!impossible.eval(|pred| { tg_match!(pred, target) }));
@@ -92,9 +120,10 @@ fn very_specific() {
     .unwrap();
 
     for target in all {
+        let t = Target::make(target.triple);
         assert_eq!(
             target.triple == "i686-pc-windows-msvc" || target.triple == "i586-pc-windows-msvc",
-            specific.eval(|pred| { tg_match!(pred, target, &["fxsr", "sse", "sse2"]) }),
+            specific.eval(|pred| { tg_match!(pred, t, &["fxsr", "sse", "sse2"]) }),
             "expected true for i686-pc-windows-msvc, but got true for {}",
             target.triple,
         );
@@ -113,12 +142,16 @@ fn very_specific() {
     .unwrap();
 
     for target in all {
-        assert_eq!(
-            target.triple == "wasm32-unknown-unknown",
-            specific.eval(|pred| { tg_match!(pred, target) }),
-            "failed {}",
-            target.triple,
-        );
+        let t = Target::make(target.triple);
+
+        if target.triple == "aarch64-apple-ios" {
+            assert_eq!(
+                target.triple == "wasm32-unknown-unknown",
+                specific.eval(|pred| { tg_match!(pred, t) }),
+                "failed {}",
+                target.triple,
+            );
+        }
     }
 }
 
@@ -127,16 +160,16 @@ fn complex() {
     let complex = Expression::parse(r#"cfg(all(unix, not(any(target_os="macos", target_os="android", target_os="emscripten"))))"#).unwrap();
 
     // Should match linuxes
-    let linux_gnu = get_builtin_target_by_triple("x86_64-unknown-linux-gnu").unwrap();
-    let linux_musl = get_builtin_target_by_triple("x86_64-unknown-linux-musl").unwrap();
+    let linux_gnu = Target::make("x86_64-unknown-linux-gnu");
+    let linux_musl = Target::make("x86_64-unknown-linux-musl");
 
     assert!(complex.eval(|pred| tg_match!(pred, linux_gnu)));
     assert!(complex.eval(|pred| tg_match!(pred, linux_musl)));
 
     // Should *not* match windows or mac or android
-    let windows_msvc = get_builtin_target_by_triple("x86_64-pc-windows-msvc").unwrap();
-    let mac = get_builtin_target_by_triple("x86_64-apple-darwin").unwrap();
-    let android = get_builtin_target_by_triple("aarch64-linux-android").unwrap();
+    let windows_msvc = Target::make("x86_64-pc-windows-msvc");
+    let mac = Target::make("x86_64-apple-darwin");
+    let android = Target::make("aarch64-linux-android");
 
     assert!(!complex.eval(|pred| tg_match!(pred, windows_msvc)));
     assert!(!complex.eval(|pred| tg_match!(pred, mac)));
