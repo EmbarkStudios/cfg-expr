@@ -67,7 +67,10 @@ impl<'a> TargetMatcher for targ::TargetInfo<'a> {
             Family(fam) => Some(fam) == self.family,
             Os(os) => Some(os) == self.os,
             PointerWidth(w) => w == self.pointer_width,
-            Vendor(ven) => Some(ven) == self.vendor,
+            Vendor(ven) => match self.vendor {
+                Some(v) => ven == v,
+                None => ven.0 == "unknown",
+            },
         }
     }
 }
@@ -82,9 +85,13 @@ impl TargetMatcher for target_lexicon::Triple {
             Arch(arch) => {
                 if arch.0 == "x86" {
                     match self.architecture {
-                        Architecture::X86_32(_) => true,
+                        //Architecture::X86_32(_) => true,
+                        Architecture::I386 | Architecture::I586 | Architecture::I686 => true,
                         _ => false,
                     }
+                } else if arch.0 == "wasm32" {
+                    self.architecture == Architecture::Wasm32
+                        || self.architecture == Architecture::Asmjs
                 } else {
                     match arch.0.parse::<Architecture>() {
                         Ok(a) => self.architecture == a,
@@ -102,26 +109,50 @@ impl TargetMatcher for target_lexicon::Triple {
                 Err(_) => false,
             },
             Env(env) => {
-                if env.0.is_empty() {
-                    self.environment == Environment::Unknown
-                } else {
-                    match env.0.parse::<Environment>() {
-                        Ok(e) => {
-                            // Rustc shortens multiple "gnu*" environments to just "gnu"
-                            if env.0 == "gnu" {
-                                match self.environment {
-                                    Environment::Gnu
-                                    | Environment::Gnuabi64
-                                    | Environment::Gnueabi
-                                    | Environment::Gnuspe
-                                    | Environment::Gnux32 => true,
-                                    _ => false,
+                // The environment is implied by some operating systems
+                match self.operating_system {
+                    OperatingSystem::Redox => env.0 == "relibc",
+                    OperatingSystem::VxWorks => env.0 == "gnu",
+                    OperatingSystem::Freebsd => match self.architecture {
+                        Architecture::Arm(ArmArchitecture::Armv6) => env.0 == "gnueabihf",
+                        _ => env.0 == "",
+                    },
+                    OperatingSystem::Netbsd => match self.architecture {
+                        Architecture::Arm(ArmArchitecture::Armv6) => env.0 == "eabihf",
+                        _ => env.0 == "",
+                    },
+                    OperatingSystem::None_ => env.0 == "",
+                    OperatingSystem::Cloudabi => env.0 == "",
+                    _ => {
+                        if env.0.is_empty() {
+                            match self.environment {
+                                Environment::Unknown
+                                | Environment::Android
+                                | Environment::Softfloat
+                                | Environment::Androideabi
+                                | Environment::Eabi => true,
+                                _ => false,
+                            }
+                        } else {
+                            match env.0.parse::<Environment>() {
+                                Ok(e) => {
+                                    // Rustc shortens multiple "gnu*" environments to just "gnu"
+                                    if env.0 == "gnu" {
+                                        match self.environment {
+                                            Environment::Gnu
+                                            | Environment::Gnuabi64
+                                            | Environment::Gnueabi
+                                            | Environment::Gnuspe
+                                            | Environment::Gnux32 => true,
+                                            _ => false,
+                                        }
+                                    } else {
+                                        self.environment == e
+                                    }
                                 }
-                            } else {
-                                self.environment == e
+                                Err(_) => false,
                             }
                         }
-                        Err(_) => false,
                     }
                 }
             }
@@ -148,7 +179,7 @@ impl TargetMatcher for target_lexicon::Triple {
                         | VxWorks => Some(crate::targets::Family::unix),
                         Windows => Some(crate::targets::Family::windows),
                         // I really dislike non-exhaustive :(
-                        _ => None,
+                        //_ => None,
                     }
             }
             Os(os) => match os.0.parse::<OperatingSystem>() {
@@ -167,7 +198,7 @@ impl TargetMatcher for target_lexicon::Triple {
                 }
             },
             Vendor(ven) => match ven.0.parse::<target_lexicon::Vendor>() {
-                Ok(v) => self.vendor == v,
+                Ok(v) => *dbg!(&self.vendor) == dbg!(v),
                 Err(_) => false,
             },
             PointerWidth(pw) => {
@@ -396,7 +427,7 @@ impl Expression {
                 ExprNode::Predicate(pred) => {
                     let pred = pred.to_pred(&self.original);
 
-                    result_stack.push(eval_predicate(&pred));
+                    result_stack.push(dbg!(eval_predicate(&dbg!(pred))));
                 }
                 ExprNode::Fn(Func::All(count)) => {
                     // all() with a comma separated list of configuration predicates.
