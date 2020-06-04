@@ -8,7 +8,7 @@
 //! to determine if a particular cfg expression is satisfiable.
 //!
 //! ```
-//! use cfg_expr::{targets::get_target_by_triple, Expression, Predicate};
+//! use cfg_expr::{targets::get_builtin_target_by_triple, Expression, Predicate};
 //!
 //! let specific = Expression::parse(
 //!     r#"all(
@@ -28,10 +28,10 @@
 //! .unwrap();
 //!
 //! // cfg_expr includes a list of every builtin target in rustc (as of 1.41)
-//! let x86_win = get_target_by_triple("i686-pc-windows-msvc").unwrap();
-//! let x86_pentium_win = get_target_by_triple("i586-pc-windows-msvc").unwrap();
-//! let uwp_win = get_target_by_triple("i686-uwp-windows-msvc").unwrap();
-//! let mac = get_target_by_triple("x86_64-apple-darwin").unwrap();
+//! let x86_win = get_builtin_target_by_triple("i686-pc-windows-msvc").unwrap();
+//! let x86_pentium_win = get_builtin_target_by_triple("i586-pc-windows-msvc").unwrap();
+//! let uwp_win = get_builtin_target_by_triple("i686-uwp-windows-msvc").unwrap();
+//! let mac = get_builtin_target_by_triple("x86_64-apple-darwin").unwrap();
 //!
 //! let avail_targ_feats = ["fxsr", "sse", "sse2"];
 //!
@@ -82,3 +82,6 @@ pub mod targets;
 
 pub use error::ParseError;
 pub use expr::{Expression, Predicate, TargetPredicate};
+
+#[cfg(feature = "targets")]
+pub use target_lexicon;

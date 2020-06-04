@@ -39,7 +39,7 @@ macro_rules! err {
         let act_err = Expression::parse($text).unwrap_err();
 
         let expected = ParseError {
-            original: $text,
+            original: $text.to_owned(),
             span: $range,
             reason: Reason::$reason,
         };
@@ -60,7 +60,7 @@ macro_rules! err {
         let act_err = Expression::parse($text).unwrap_err();
 
         let expected = ParseError {
-            original: $text,
+            original: $text.to_owned(),
             span: $range,
             reason: Reason::Unexpected($unexpected),
         };
@@ -118,7 +118,7 @@ fn fails_unbalanced_quotes() {
 fn handles_single_predicate() {
     test_validate!(ok [
         "cfg(key)" => [P::Flag("key")],
-        "unix"  => [P::Target(TP::Family(Some(Family::unix)))],
+        "unix"  => [P::Target(TP::Family(Family::unix))],
         "target_arch = \"mips\"" => [P::Target(TP::Arch(Arch::mips))],
         "feature = \"awesome\"" => [P::Feature("awesome")],
         "_key" => [P::Flag("_key")],
@@ -153,7 +153,7 @@ fn ensures_not_has_one_predicate() {
     assert_eq!(
         Expression::parse("not()").unwrap_err(),
         ParseError {
-            original: "not()",
+            original: "not()".to_owned(),
             span: 0..5,
             reason: Reason::InvalidNot(0),
         }
@@ -162,7 +162,7 @@ fn ensures_not_has_one_predicate() {
     assert_eq!(
         Expression::parse("not(key_one, key_two)").unwrap_err(),
         ParseError {
-            original: "not(key_one, key_two)",
+            original: "not(key_one, key_two)".to_owned(),
             span: 0..21,
             reason: Reason::InvalidNot(2),
         }
@@ -171,7 +171,7 @@ fn ensures_not_has_one_predicate() {
     assert_eq!(
         Expression::parse("any(not(not(key_one, key_two)))").unwrap_err(),
         ParseError {
-            original: "any(not(not(key_one, key_two)))",
+            original: "any(not(not(key_one, key_two)))".to_owned(),
             span: 8..29,
             reason: Reason::InvalidNot(2),
         }

@@ -2,6 +2,7 @@ pub mod lexer;
 mod parser;
 
 use smallvec::SmallVec;
+use std::ops::Range;
 
 /// A predicate function, used to combine 1 or more predicates
 /// into a single value
@@ -28,66 +29,278 @@ use crate::targets as targ;
 
 /// All predicates that pertains to a target, except for `target_feature`
 #[derive(Clone, Copy, PartialEq, Debug)]
-pub enum TargetPredicate {
+pub enum TargetPredicate<'a> {
     /// [target_arch](https://doc.rust-lang.org/reference/conditional-compilation.html#target_arch)
-    Arch(targ::Arch),
+    Arch(targ::Arch<'a>),
     /// [target_endian](https://doc.rust-lang.org/reference/conditional-compilation.html#target_endian)
     Endian(targ::Endian),
     /// [target_env](https://doc.rust-lang.org/reference/conditional-compilation.html#target_env)
-    Env(Option<targ::Env>),
+    Env(targ::Env<'a>),
     /// [target_family](https://doc.rust-lang.org/reference/conditional-compilation.html#target_family)
     /// This also applies to the bare [`unix` and `windows`](https://doc.rust-lang.org/reference/conditional-compilation.html#unix-and-windows)
     /// predicates.
-    Family(Option<targ::Family>),
+    Family(targ::Family),
     /// [target_os](https://doc.rust-lang.org/reference/conditional-compilation.html#target_os)
-    Os(Option<targ::Os>),
+    Os(targ::Os<'a>),
     /// [target_pointer_width](https://doc.rust-lang.org/reference/conditional-compilation.html#target_pointer_width)
     PointerWidth(u8),
     /// [target_vendor](https://doc.rust-lang.org/reference/conditional-compilation.html#target_vendor)
-    Vendor(Option<targ::Vendor>),
+    Vendor(targ::Vendor<'a>),
 }
 
-impl TargetPredicate {
+pub trait TargetMatcher {
+    fn matches(&self, tp: TargetPredicate<'_>) -> bool;
+}
+
+impl<'a> TargetMatcher for targ::TargetInfo<'a> {
+    fn matches(&self, tp: TargetPredicate<'_>) -> bool {
+        use TargetPredicate::*;
+
+        match tp {
+            Arch(a) => a == self.arch,
+            Endian(end) => end == self.endian,
+            // The environment is allowed to be an empty string
+            Env(env) => match self.env {
+                Some(e) => env == e,
+                None => env.0 == "",
+            },
+            Family(fam) => Some(fam) == self.family,
+            Os(os) => Some(os) == self.os,
+            PointerWidth(w) => w == self.pointer_width,
+            Vendor(ven) => match self.vendor {
+                Some(v) => ven == v,
+                None => ven.0 == "unknown",
+            },
+        }
+    }
+}
+
+#[cfg(feature = "targets")]
+impl TargetMatcher for target_lexicon::Triple {
+    #[allow(clippy::cognitive_complexity)]
+    fn matches(&self, tp: TargetPredicate<'_>) -> bool {
+        use target_lexicon::*;
+        use TargetPredicate::*;
+
+        match tp {
+            Arch(arch) => {
+                if arch.0 == "x86" {
+                    match self.architecture {
+                        Architecture::X86_32(_) => true,
+                        _ => false,
+                    }
+                } else if arch.0 == "wasm32" {
+                    self.architecture == Architecture::Wasm32
+                        || self.architecture == Architecture::Asmjs
+                } else if arch.0 == "arm" {
+                    match self.architecture {
+                        Architecture::Arm(_) => true,
+                        _ => false,
+                    }
+                } else {
+                    match arch.0.parse::<Architecture>() {
+                        Ok(a) => match (self.architecture, a) {
+                            (Architecture::Mips32(_), Architecture::Mips32(_)) => true,
+                            (Architecture::Mips64(_), Architecture::Mips64(_)) => true,
+                            (Architecture::Powerpc64le, Architecture::Powerpc64) => true,
+                            (Architecture::Riscv32(_), Architecture::Riscv32(_)) => true,
+                            (Architecture::Riscv64(_), Architecture::Riscv64(_)) => true,
+                            (Architecture::Sparcv9, Architecture::Sparc64) => true,
+                            (a, b) => a == b,
+                        },
+                        Err(_) => false,
+                    }
+                }
+            }
+            Endian(end) => match self.architecture.endianness() {
+                Ok(endian) => match (end, endian) {
+                    (crate::targets::Endian::little, Endianness::Little) => true,
+                    (crate::targets::Endian::big, Endianness::Big) => true,
+                    _ => false,
+                },
+
+                Err(_) => false,
+            },
+            Env(env) => {
+                // The environment is implied by some operating systems
+                match self.operating_system {
+                    OperatingSystem::Redox => env.0 == "relibc",
+                    OperatingSystem::VxWorks => env.0 == "gnu",
+                    OperatingSystem::Freebsd => match self.architecture {
+                        Architecture::Arm(ArmArchitecture::Armv6)
+                        | Architecture::Arm(ArmArchitecture::Armv7) => env.0 == "gnueabihf",
+                        _ => env.0 == "",
+                    },
+                    OperatingSystem::Netbsd => match self.architecture {
+                        Architecture::Arm(ArmArchitecture::Armv6)
+                        | Architecture::Arm(ArmArchitecture::Armv7) => env.0 == "eabihf",
+                        _ => env.0 == "",
+                    },
+                    OperatingSystem::None_
+                    | OperatingSystem::Cloudabi
+                    | OperatingSystem::Hermit
+                    | OperatingSystem::Ios => env.0 == "",
+                    _ => {
+                        if env.0.is_empty() {
+                            match self.environment {
+                                Environment::Unknown
+                                | Environment::Android
+                                | Environment::Softfloat
+                                | Environment::Androideabi
+                                | Environment::Eabi => true,
+                                _ => false,
+                            }
+                        } else {
+                            match env.0.parse::<Environment>() {
+                                Ok(e) => {
+                                    // Rustc shortens multiple "gnu*" environments to just "gnu"
+                                    if env.0 == "gnu" {
+                                        match self.environment {
+                                            Environment::Gnu
+                                            | Environment::Gnuabi64
+                                            | Environment::Gnueabi
+                                            | Environment::Gnuspe
+                                            | Environment::Gnux32
+                                            | Environment::Gnueabihf => true,
+                                            Environment::Kernel => {
+                                                self.operating_system == OperatingSystem::Linux
+                                            }
+                                            _ => false,
+                                        }
+                                    } else if env.0 == "musl" {
+                                        match self.environment {
+                                            Environment::Musl
+                                            | Environment::Musleabi
+                                            | Environment::Musleabihf
+                                            | Environment::Muslabi64 => true,
+                                            _ => false,
+                                        }
+                                    } else {
+                                        self.environment == e
+                                    }
+                                }
+                                Err(_) => false,
+                            }
+                        }
+                    }
+                }
+            }
+            Family(fam) => {
+                use target_lexicon::OperatingSystem::*;
+                Some(fam)
+                    == match self.operating_system {
+                        Unknown | AmdHsa | Bitrig | Cloudabi | Cuda | Hermit | Nebulet | None_
+                        | Uefi | Wasi => None,
+                        Darwin
+                        | Dragonfly
+                        | Emscripten
+                        | Freebsd
+                        | Fuchsia
+                        | Haiku
+                        | Ios
+                        | L4re
+                        | Linux
+                        | MacOSX { .. }
+                        | Netbsd
+                        | Openbsd
+                        | Redox
+                        | Solaris
+                        | VxWorks => Some(crate::targets::Family::unix),
+                        Windows => Some(crate::targets::Family::windows),
+                        // I really dislike non-exhaustive :(
+                        _ => None,
+                    }
+            }
+            Os(os) => match os.0.parse::<OperatingSystem>() {
+                Ok(o) => self.operating_system == o,
+                Err(_) => {
+                    // Handle special case for darwin/macos, where the triple is
+                    // "darwin", but rustc identifies the OS as "macos"
+                    if os.0 == "macos" && self.operating_system == OperatingSystem::Darwin {
+                        true
+                    } else {
+                        // For android, the os is still linux, but the environment is android
+                        os.0 == "android"
+                            && self.operating_system == OperatingSystem::Linux
+                            && (self.environment == Environment::Android
+                                || self.environment == Environment::Androideabi)
+                    }
+                }
+            },
+            Vendor(ven) => match ven.0.parse::<target_lexicon::Vendor>() {
+                Ok(v) => match self.operating_system {
+                    OperatingSystem::Solaris => v == target_lexicon::Vendor::Sun,
+                    _ => self.vendor == v,
+                },
+                Err(_) => false,
+            },
+            PointerWidth(pw) => {
+                // The gnux32 environment is a special case, where it has an
+                // x86_64 architecture, but a 32-bit pointer width
+                if self.environment != Environment::Gnux32 {
+                    pw == match self.pointer_width() {
+                        Ok(pw) => pw.bits(),
+                        Err(_) => return false,
+                    }
+                } else {
+                    pw == 32
+                }
+            }
+        }
+    }
+}
+
+impl<'a> TargetPredicate<'a> {
     /// Returns true of the predicate matches the specified target
     ///
     /// ```
     /// use cfg_expr::{targets::*, expr::TargetPredicate as tp};
-    /// let win = get_target_by_triple("x86_64-pc-windows-msvc").unwrap();
+    /// let win = get_builtin_target_by_triple("x86_64-pc-windows-msvc").unwrap();
     ///
     /// assert!(
     ///     tp::Arch(Arch::x86_64).matches(win) &&
     ///     tp::Endian(Endian::little).matches(win) &&
-    ///     tp::Env(Some(Env::msvc)).matches(win) &&
-    ///     tp::Family(Some(Family::windows)).matches(win) &&
-    ///     tp::Os(Some(Os::windows)).matches(win) &&
+    ///     tp::Env(Env::msvc).matches(win) &&
+    ///     tp::Family(Family::windows).matches(win) &&
+    ///     tp::Os(Os::windows).matches(win) &&
     ///     tp::PointerWidth(64).matches(win) &&
-    ///     tp::Vendor(Some(Vendor::pc)).matches(win)
+    ///     tp::Vendor(Vendor::pc).matches(win)
     /// );
     /// ```
-    pub fn matches(self, target: &targ::TargetInfo) -> bool {
-        use TargetPredicate::*;
-
-        match self {
-            Arch(a) => a == target.arch,
-            Endian(end) => end == target.endian,
-            Env(env) => env == target.env,
-            Family(fam) => fam == target.family,
-            Os(os) => os == target.os,
-            PointerWidth(w) => w == target.pointer_width,
-            Vendor(ven) => ven == target.vendor,
-        }
+    pub fn matches<T>(self, target: &T) -> bool
+    where
+        T: TargetMatcher,
+    {
+        target.matches(self)
     }
+}
+
+#[derive(Clone, Debug)]
+pub(crate) enum Which {
+    Arch,
+    Endian(targ::Endian),
+    Env,
+    Family(targ::Family),
+    Os,
+    PointerWidth(u8),
+    Vendor,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct InnerTarget {
+    which: Which,
+    span: Option<Range<usize>>,
 }
 
 /// A single predicate in a `cfg()` expression
 #[derive(Debug, PartialEq)]
 pub enum Predicate<'a> {
     /// A target predicate, with the `target_` prefix
-    Target(TargetPredicate),
+    Target(TargetPredicate<'a>),
     /// Whether rustc's test harness is [enabled](https://doc.rust-lang.org/reference/conditional-compilation.html#test)
     Test,
     /// [Enabled](https://doc.rust-lang.org/reference/conditional-compilation.html#debug_assertions)
-    ///  when compiling without optimizations.
+    /// when compiling without optimizations.
     DebugAssertions,
     /// [Enabled](https://doc.rust-lang.org/reference/conditional-compilation.html#proc_macro) for
     /// crates of the proc_macro type.
@@ -102,17 +315,17 @@ pub enum Predicate<'a> {
     KeyValue { key: &'a str, val: &'a str },
 }
 
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, Debug)]
 pub(crate) enum InnerPredicate {
-    Target(TargetPredicate),
+    Target(InnerTarget),
     Test,
     DebugAssertions,
     ProcMacro,
-    Feature(std::ops::Range<usize>),
-    TargetFeature(std::ops::Range<usize>),
+    Feature(Range<usize>),
+    TargetFeature(Range<usize>),
     Other {
-        identifier: std::ops::Range<usize>,
-        value: Option<std::ops::Range<usize>>,
+        identifier: Range<usize>,
+        value: Option<Range<usize>>,
     },
 }
 
@@ -122,7 +335,21 @@ impl InnerPredicate {
         use Predicate::*;
 
         match self {
-            IP::Target(tp) => Target(*tp),
+            IP::Target(it) => match &it.which {
+                Which::Arch => Target(TargetPredicate::Arch(targ::Arch(
+                    &s[it.span.clone().unwrap()],
+                ))),
+                Which::Os => Target(TargetPredicate::Os(targ::Os(&s[it.span.clone().unwrap()]))),
+                Which::Vendor => Target(TargetPredicate::Vendor(targ::Vendor(
+                    &s[it.span.clone().unwrap()],
+                ))),
+                Which::Env => Target(TargetPredicate::Env(targ::Env(
+                    &s[it.span.clone().unwrap()],
+                ))),
+                Which::Endian(end) => Target(TargetPredicate::Endian(*end)),
+                Which::Family(fam) => Target(TargetPredicate::Family(*fam)),
+                Which::PointerWidth(pw) => Target(TargetPredicate::PointerWidth(*pw)),
+            },
             IP::Test => Test,
             IP::DebugAssertions => DebugAssertions,
             IP::ProcMacro => ProcMacro,
@@ -139,7 +366,7 @@ impl InnerPredicate {
     }
 }
 
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, Debug)]
 pub(crate) enum ExprNode {
     Fn(Func),
     Predicate(InnerPredicate),
@@ -178,7 +405,7 @@ impl Expression {
     /// ```
     /// use cfg_expr::{targets::*, Expression, Predicate};
     ///
-    /// let linux_musl = get_target_by_triple("x86_64-unknown-linux-musl").unwrap();
+    /// let linux_musl = get_builtin_target_by_triple("x86_64-unknown-linux-musl").unwrap();
     ///
     /// let expr = Expression::parse(r#"all(not(windows), target_env = "musl", any(target_arch = "x86", target_arch = "x86_64"))"#).unwrap();
     ///
@@ -197,8 +424,8 @@ impl Expression {
     ///
     /// let expr = Expression::parse(r#"any(target_feature = "sse2", target_env = "musl")"#).unwrap();
     ///
-    /// let linux_gnu = get_target_by_triple("x86_64-unknown-linux-gnu").unwrap();
-    /// let linux_musl = get_target_by_triple("x86_64-unknown-linux-musl").unwrap();
+    /// let linux_gnu = get_builtin_target_by_triple("x86_64-unknown-linux-gnu").unwrap();
+    /// let linux_musl = get_builtin_target_by_triple("x86_64-unknown-linux-musl").unwrap();
     ///
     /// fn eval(expr: &Expression, target: &TargetInfo) -> Option<bool> {
     ///     expr.eval(|pred| {
@@ -221,7 +448,7 @@ impl Expression {
     pub fn eval<EP, T>(&self, mut eval_predicate: EP) -> T
     where
         EP: FnMut(&Predicate<'_>) -> T,
-        T: Logic,
+        T: Logic + std::fmt::Debug,
     {
         let mut result_stack = SmallVec::<[T; 8]>::new();
 
@@ -232,7 +459,8 @@ impl Expression {
             match node {
                 ExprNode::Predicate(pred) => {
                     let pred = pred.to_pred(&self.original);
-                    result_stack.push(eval_predicate(&pred));
+
+                    result_stack.push(dbg!(eval_predicate(&dbg!(pred))));
                 }
                 ExprNode::Fn(Func::All(count)) => {
                     // all() with a comma separated list of configuration predicates.

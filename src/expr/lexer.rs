@@ -81,7 +81,7 @@ pub struct LexerToken<'a> {
 }
 
 impl<'a> Iterator for Lexer<'a> {
-    type Item = Result<LexerToken<'a>, ParseError<'a>>;
+    type Item = Result<LexerToken<'a>, ParseError>;
 
     fn next(&mut self) -> Option<Self::Item> {
         // Jump over any whitespace, updating `self.inner` and `self.offset` appropriately
@@ -114,7 +114,7 @@ impl<'a> Iterator for Lexer<'a> {
                     match self.inner[1..].find('"') {
                         Some(ind) => Some(Ok(Token::Value(&self.inner[1..=ind]))),
                         None => Some(Err(ParseError {
-                            original: self.original,
+                            original: self.original.to_owned(),
                             span: self.offset..self.original.len(),
                             reason: Reason::UnclosedQuotes,
                         })),
@@ -136,7 +136,7 @@ impl<'a> Iterator for Lexer<'a> {
                     // a Range here, not a RangeInclusive<>
                     #[allow(clippy::range_plus_one)]
                     Some(Err(ParseError {
-                        original: self.original,
+                        original: self.original.to_owned(),
                         span: self.offset..self.offset + 1,
                         reason: Reason::Unexpected(&["<key>", "all", "any", "not"]),
                     }))

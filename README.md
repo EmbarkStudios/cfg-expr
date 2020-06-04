@@ -7,7 +7,7 @@
 [![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 [![Embark](https://img.shields.io/badge/embark-open%20source-blueviolet.svg)](https://embark.dev)
 
-A parser and evaluator for Rust `cfg()` expressions. Targets as of [Rust 1.41.0](https://forge.rust-lang.org/release/platform-support.html) are supported.
+A parser and evaluator for Rust `cfg()` expressions. Targets as of [Rust 1.43.1](https://forge.rust-lang.org/release/platform-support.html) are supported.
 
 ## Alternatives
 
@@ -17,7 +17,7 @@ A parser and evaluator for Rust `cfg()` expressions. Targets as of [Rust 1.41.0]
 ## Usage
 
 ```rust
-use cfg_expr::{targets::get_target_by_triple, Expression, Predicate};
+use cfg_expr::{targets::get_builtin_target_by_triple, Expression, Predicate};
 
 fn main() {
     let specific = Expression::parse(
@@ -38,10 +38,10 @@ fn main() {
     .unwrap();
 
     // cfg_expr includes a list of every builtin target in rustc (as of 1.41)
-    let x86_win = get_target_by_triple("i686-pc-windows-msvc").unwrap();
-    let x86_pentium_win = get_target_by_triple("i586-pc-windows-msvc").unwrap();
-    let uwp_win = get_target_by_triple("i686-uwp-windows-msvc").unwrap();
-    let mac = get_target_by_triple("x86_64-apple-darwin").unwrap();
+    let x86_win = get_builtin_target_by_triple("i686-pc-windows-msvc").unwrap();
+    let x86_pentium_win = get_builtin_target_by_triple("i586-pc-windows-msvc").unwrap();
+    let uwp_win = get_builtin_target_by_triple("i686-uwp-windows-msvc").unwrap();
+    let mac = get_builtin_target_by_triple("x86_64-apple-darwin").unwrap();
 
     let avail_targ_feats = ["fxsr", "sse", "sse2"];
 

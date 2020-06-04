@@ -2,9 +2,9 @@ use std::{error::Error, fmt};
 
 /// An error related to parsing of a cfg expression
 #[derive(Debug, PartialEq)]
-pub struct ParseError<'a> {
+pub struct ParseError {
     /// The string that was parsed
-    pub original: &'a str,
+    pub original: String,
     /// The range of characters in the original string that result
     /// in this error
     pub span: std::ops::Range<usize>,
@@ -17,7 +17,7 @@ pub struct ParseError<'a> {
 pub enum Reason {
     /// not() takes exactly 1 predicate, unlike all() and any()
     InvalidNot(usize),
-    /// The characters are not valid in an SDPX license expression
+    /// The characters are not valid in an cfg expression
     InvalidCharacters,
     /// An opening parens was unmatched with a closing parens
     UnclosedParens,
@@ -29,18 +29,20 @@ pub enum Reason {
     UnopenedQuotes,
     /// The expression does not contain any valid terms
     Empty,
-    /// Found an unexpected term, which wasn't one of the
-    /// expected terms that is listed
+    /// Found an unexpected term, which wasn't one of the expected terms that
+    /// is listed
     Unexpected(&'static [&'static str]),
     /// Failed to parse an integer value
     InvalidInteger,
     /// The root cfg() may only contain a single predicate
     MultipleRootPredicates,
+    /// An element was not part of the builtin information in rustc
+    UnknownBuiltin,
 }
 
-impl<'a> fmt::Display for ParseError<'a> {
+impl fmt::Display for ParseError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.write_str(self.original)?;
+        f.write_str(&self.original)?;
         f.write_str("\n")?;
 
         for _ in 0..self.span.start {
@@ -95,11 +97,12 @@ impl fmt::Display for Reason {
             InvalidNot(np) => f.write_fmt(format_args!("not() takes 1 predicate, found {}", np)),
             InvalidInteger => f.write_str("invalid integer"),
             MultipleRootPredicates => f.write_str("multiple root predicates"),
+            UnknownBuiltin => f.write_str("unknown built-in"),
         }
     }
 }
 
-impl<'a> Error for ParseError<'a> {
+impl Error for ParseError {
     fn description(&self) -> &str {
         use Reason::*;
 
@@ -114,6 +117,7 @@ impl<'a> Error for ParseError<'a> {
             InvalidNot(_) => "not() takes 1 predicate",
             InvalidInteger => "invalid integer",
             MultipleRootPredicates => "multiple root predicates",
+            UnknownBuiltin => "unknown built-in",
         }
     }
 }
