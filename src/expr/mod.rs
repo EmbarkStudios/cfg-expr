@@ -460,7 +460,7 @@ impl Expression {
                 ExprNode::Predicate(pred) => {
                     let pred = pred.to_pred(&self.original);
 
-                    result_stack.push(dbg!(eval_predicate(&dbg!(pred))));
+                    result_stack.push(eval_predicate(&pred));
                 }
                 ExprNode::Fn(Func::All(count)) => {
                     // all() with a comma separated list of configuration predicates.
