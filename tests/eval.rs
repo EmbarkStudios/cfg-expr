@@ -77,11 +77,6 @@ fn target_family() {
     let impossible = Expression::parse("all(windows, target_family = \"unix\")").unwrap();
 
     for target in all {
-        if target.triple.ends_with("macabi") {
-            println!("skipping macabi target until https://github.com/bytecodealliance/target-lexicon/pull/54 is merged");
-            continue;
-        }
-
         let target = Target::make(target.triple);
         match target.builtin.family {
             Some(_) => {
@@ -108,56 +103,64 @@ fn tiny() {
 
 #[test]
 fn very_specific() {
-    // let specific = Expression::parse(
-    //     r#"all(
-    //         target_os = "windows",
-    //         target_arch = "x86",
-    //         windows,
-    //         target_env = "msvc",
-    //         target_feature = "fxsr",
-    //         target_feature = "sse",
-    //         target_feature = "sse2",
-    //         target_pointer_width = "32",
-    //         target_endian = "little",
-    //         not(target_vendor = "uwp"),
-    //     )"#,
-    // )
-    // .unwrap();
-
-    // for target in all {
-    //     if target.triple.ends_with("macabi") {
-    //         println!("skipping macabi target until https://github.com/bytecodealliance/target-lexicon/pull/54 is merged");
-    //         continue;
-    //     }
-
-    //     let t = Target::make(target.triple);
-    //     assert_eq!(
-    //         target.triple == "i686-pc-windows-msvc" || target.triple == "i586-pc-windows-msvc",
-    //         specific.eval(|pred| { tg_match!(pred, t, &["fxsr", "sse", "sse2"]) }),
-    //         "expected true for i686-pc-windows-msvc, but got true for {}",
-    //         target.triple,
-    //     );
-    // }
-
     let specific = Expression::parse(
-        r#"cfg(
-        all(
-            target_arch = "wasm32", 
-            target_vendor = "unknown", 
-            target_os = "unknown", 
-            target_env = ""
-        )
-    )"#,
+        r#"all(
+            target_os = "windows",
+            target_arch = "x86",
+            windows,
+            target_env = "msvc",
+            target_feature = "fxsr",
+            target_feature = "sse",
+            target_feature = "sse2",
+            target_pointer_width = "32",
+            target_endian = "little",
+            not(target_vendor = "uwp"),
+        )"#,
     )
     .unwrap();
 
     for target in all {
         let t = Target::make(target.triple);
         assert_eq!(
-            target.triple == "wasm32-unknown-unknown",
-            specific.eval(|pred| { tg_match!(pred, t) }),
-            "failed {}",
+            target.triple == "i686-pc-windows-msvc" || target.triple == "i586-pc-windows-msvc",
+            specific.eval(|pred| { tg_match!(pred, t, &["fxsr", "sse", "sse2"]) }),
+            "expected true for i686-pc-windows-msvc, but got true for {}",
             target.triple,
+        );
+    }
+
+    for target in all {
+        let expr = format!(
+            r#"cfg(
+            all(
+                target_arch = "{}",
+                {}
+                {}
+                target_env = "{}"
+            )
+        )"#,
+            target.arch.0,
+            if let Some(v) = target.vendor {
+                format!(r#"target_vendor = "{}","#, v.0)
+            } else {
+                "".to_owned()
+            },
+            if let Some(v) = target.os {
+                format!(r#"target_os = "{}","#, v.0)
+            } else {
+                "".to_owned()
+            },
+            target.env.map(|e| e.0).unwrap_or_else(|| ""),
+        );
+
+        let specific = Expression::parse(&expr).unwrap();
+
+        let t = Target::make(target.triple);
+        assert!(
+            specific.eval(|pred| { tg_match!(pred, t) }),
+            "failed expression '{}' for {:#?}",
+            expr,
+            t.builtin,
         );
     }
 }

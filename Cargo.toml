@@ -13,7 +13,7 @@ keywords = ["cargo", "rustc", "cfg"]
 
 [dependencies]
 smallvec = "1.4"
-target-lexicon = { version = "0.10", optional = true }
+target-lexicon = { version = "0.11", optional = true }
 
 [dev-dependencies]
 difference = "2.0"
@@ -21,6 +21,3 @@ difference = "2.0"
 [features]
 default = []
 targets = ["target-lexicon"]
-
-# [patch.crates-io]
-# target-lexicon = { path = "../target-lexicon" }

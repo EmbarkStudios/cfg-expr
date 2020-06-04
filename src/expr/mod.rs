@@ -85,16 +85,28 @@ impl TargetMatcher for target_lexicon::Triple {
             Arch(arch) => {
                 if arch.0 == "x86" {
                     match self.architecture {
-                        //Architecture::X86_32(_) => true,
-                        Architecture::I386 | Architecture::I586 | Architecture::I686 => true,
+                        Architecture::X86_32(_) => true,
                         _ => false,
                     }
                 } else if arch.0 == "wasm32" {
                     self.architecture == Architecture::Wasm32
                         || self.architecture == Architecture::Asmjs
+                } else if arch.0 == "arm" {
+                    match self.architecture {
+                        Architecture::Arm(_) => true,
+                        _ => false,
+                    }
                 } else {
                     match arch.0.parse::<Architecture>() {
-                        Ok(a) => self.architecture == a,
+                        Ok(a) => match (self.architecture, a) {
+                            (Architecture::Mips32(_), Architecture::Mips32(_)) => true,
+                            (Architecture::Mips64(_), Architecture::Mips64(_)) => true,
+                            (Architecture::Powerpc64le, Architecture::Powerpc64) => true,
+                            (Architecture::Riscv32(_), Architecture::Riscv32(_)) => true,
+                            (Architecture::Riscv64(_), Architecture::Riscv64(_)) => true,
+                            (Architecture::Sparcv9, Architecture::Sparc64) => true,
+                            (a, b) => a == b,
+                        },
                         Err(_) => false,
                     }
                 }
@@ -114,15 +126,19 @@ impl TargetMatcher for target_lexicon::Triple {
                     OperatingSystem::Redox => env.0 == "relibc",
                     OperatingSystem::VxWorks => env.0 == "gnu",
                     OperatingSystem::Freebsd => match self.architecture {
-                        Architecture::Arm(ArmArchitecture::Armv6) => env.0 == "gnueabihf",
+                        Architecture::Arm(ArmArchitecture::Armv6)
+                        | Architecture::Arm(ArmArchitecture::Armv7) => env.0 == "gnueabihf",
                         _ => env.0 == "",
                     },
                     OperatingSystem::Netbsd => match self.architecture {
-                        Architecture::Arm(ArmArchitecture::Armv6) => env.0 == "eabihf",
+                        Architecture::Arm(ArmArchitecture::Armv6)
+                        | Architecture::Arm(ArmArchitecture::Armv7) => env.0 == "eabihf",
                         _ => env.0 == "",
                     },
-                    OperatingSystem::None_ => env.0 == "",
-                    OperatingSystem::Cloudabi => env.0 == "",
+                    OperatingSystem::None_
+                    | OperatingSystem::Cloudabi
+                    | OperatingSystem::Hermit
+                    | OperatingSystem::Ios => env.0 == "",
                     _ => {
                         if env.0.is_empty() {
                             match self.environment {
@@ -143,7 +159,19 @@ impl TargetMatcher for target_lexicon::Triple {
                                             | Environment::Gnuabi64
                                             | Environment::Gnueabi
                                             | Environment::Gnuspe
-                                            | Environment::Gnux32 => true,
+                                            | Environment::Gnux32
+                                            | Environment::Gnueabihf => true,
+                                            Environment::Kernel => {
+                                                self.operating_system == OperatingSystem::Linux
+                                            }
+                                            _ => false,
+                                        }
+                                    } else if env.0 == "musl" {
+                                        match self.environment {
+                                            Environment::Musl
+                                            | Environment::Musleabi
+                                            | Environment::Musleabihf
+                                            | Environment::Muslabi64 => true,
                                             _ => false,
                                         }
                                     } else {
@@ -179,7 +207,7 @@ impl TargetMatcher for target_lexicon::Triple {
                         | VxWorks => Some(crate::targets::Family::unix),
                         Windows => Some(crate::targets::Family::windows),
                         // I really dislike non-exhaustive :(
-                        //_ => None,
+                        _ => None,
                     }
             }
             Os(os) => match os.0.parse::<OperatingSystem>() {
@@ -193,12 +221,16 @@ impl TargetMatcher for target_lexicon::Triple {
                         // For android, the os is still linux, but the environment is android
                         os.0 == "android"
                             && self.operating_system == OperatingSystem::Linux
-                            && self.environment == Environment::Android
+                            && (self.environment == Environment::Android
+                                || self.environment == Environment::Androideabi)
                     }
                 }
             },
             Vendor(ven) => match ven.0.parse::<target_lexicon::Vendor>() {
-                Ok(v) => *dbg!(&self.vendor) == dbg!(v),
+                Ok(v) => match self.operating_system {
+                    OperatingSystem::Solaris => v == target_lexicon::Vendor::Sun,
+                    _ => self.vendor == v,
+                },
                 Err(_) => false,
             },
             PointerWidth(pw) => {
