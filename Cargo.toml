@@ -23,4 +23,4 @@ default = []
 targets = ["target-lexicon"]
 
 [patch.crates-io]
-target-lexicon = { path = "../target-lexicon" }
+target-lexicon = { git = "https://github.com/EmbarkStudios/target-lexicon", rev = "c826006" }
