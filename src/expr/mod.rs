@@ -197,15 +197,24 @@ impl TargetMatcher for target_lexicon::Triple {
                         | Freebsd
                         | Fuchsia
                         | Haiku
+                        | Illumos
                         | Ios
                         | L4re
-                        | Linux
                         | MacOSX { .. }
                         | Netbsd
                         | Openbsd
                         | Redox
                         | Solaris
+                        | Tvos
                         | VxWorks => Some(crate::targets::Family::unix),
+                        Linux => {
+                            // The 'kernel' environment is treated specially as not-unix
+                            if self.environment != Environment::Kernel {
+                                Some(crate::targets::Family::unix)
+                            } else {
+                                None
+                            }
+                        }
                         Windows => Some(crate::targets::Family::windows),
                         // I really dislike non-exhaustive :(
                         _ => None,
