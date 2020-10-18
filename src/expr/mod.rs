@@ -85,18 +85,12 @@ impl TargetMatcher for target_lexicon::Triple {
         match tp {
             Arch(arch) => {
                 if arch.0 == "x86" {
-                    match self.architecture {
-                        Architecture::X86_32(_) => true,
-                        _ => false,
-                    }
+                    matches!(self.architecture, Architecture::X86_32(_))
                 } else if arch.0 == "wasm32" {
                     self.architecture == Architecture::Wasm32
                         || self.architecture == Architecture::Asmjs
                 } else if arch.0 == "arm" {
-                    match self.architecture {
-                        Architecture::Arm(_) => true,
-                        _ => false,
-                    }
+                    matches!(self.architecture, Architecture::Arm(_))
                 } else {
                     match arch.0.parse::<Architecture>() {
                         Ok(a) => match (self.architecture, a) {
@@ -142,14 +136,14 @@ impl TargetMatcher for target_lexicon::Triple {
                     | OperatingSystem::Ios => env.0 == "",
                     _ => {
                         if env.0.is_empty() {
-                            match self.environment {
+                            matches!(
+                                self.environment,
                                 Environment::Unknown
-                                | Environment::Android
-                                | Environment::Softfloat
-                                | Environment::Androideabi
-                                | Environment::Eabi => true,
-                                _ => false,
-                            }
+                                    | Environment::Android
+                                    | Environment::Softfloat
+                                    | Environment::Androideabi
+                                    | Environment::Eabi
+                            )
                         } else {
                             match env.0.parse::<Environment>() {
                                 Ok(e) => {
@@ -168,13 +162,13 @@ impl TargetMatcher for target_lexicon::Triple {
                                             _ => false,
                                         }
                                     } else if env.0 == "musl" {
-                                        match self.environment {
+                                        matches!(
+                                            self.environment,
                                             Environment::Musl
-                                            | Environment::Musleabi
-                                            | Environment::Musleabihf
-                                            | Environment::Muslabi64 => true,
-                                            _ => false,
-                                        }
+                                                | Environment::Musleabi
+                                                | Environment::Musleabihf
+                                                | Environment::Muslabi64
+                                        )
                                     } else {
                                         self.environment == e
                                     }
