@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+### Changed
+- Updated the builtin target list to Rust 1.47.0
+
 ## [0.4.1] - 2020-06-04
 ### Fixed
 - Removed `dbg!` prints accidentally left in.

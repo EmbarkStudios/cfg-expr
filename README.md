@@ -7,7 +7,7 @@
 [![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 [![Embark](https://img.shields.io/badge/embark-open%20source-blueviolet.svg)](https://embark.dev)
 
-A parser and evaluator for Rust `cfg()` expressions. Targets as of [Rust 1.43.1](https://forge.rust-lang.org/release/platform-support.html) are supported.
+A parser and evaluator for Rust `cfg()` expressions. Targets as of [Rust 1.47.0](https://forge.rust-lang.org/release/platform-support.html) are supported.
 
 ## Alternatives
 
