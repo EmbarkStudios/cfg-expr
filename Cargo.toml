@@ -11,13 +11,15 @@ documentation = "https://docs.rs/cfg-expr"
 homepage = "https://github.com/EmbarkStudios/cfg-expr"
 keywords = ["cargo", "rustc", "cfg"]
 
+[features]
+default = []
+# Allows parsing and handling of arbitrary target triples, including ones that
+# are not builtin to rustc
+targets = ["target-lexicon"]
+
 [dependencies]
 smallvec = "1.4"
 target-lexicon = { version = "0.11", optional = true }
 
 [dev-dependencies]
 difference = "2.0"
-
-[features]
-default = []
-targets = ["target-lexicon"]

@@ -10,12 +10,32 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.43.1";
+pub(crate) const RUSTC_VERSION: &str = "1.47.0";
 
 pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
     TargetInfo {
+        triple: "aarch64-apple-darwin",
+        os: Some(Os::macos),
+        arch: Arch::aarch64,
+        env: None,
+        vendor: Some(Vendor::apple),
+        family: Some(Family::unix),
+        pointer_width: 64,
+        endian: Endian::little,
+    },
+    TargetInfo {
         triple: "aarch64-apple-ios",
         os: Some(Os::ios),
+        arch: Arch::aarch64,
+        env: None,
+        vendor: Some(Vendor::apple),
+        family: Some(Family::unix),
+        pointer_width: 64,
+        endian: Endian::little,
+    },
+    TargetInfo {
+        triple: "aarch64-apple-tvos",
+        os: Some(Os::tvos),
         arch: Arch::aarch64,
         env: None,
         vendor: Some(Vendor::apple),
@@ -454,6 +474,16 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
         endian: Endian::little,
     },
     TargetInfo {
+        triple: "avr-unknown-unknown",
+        os: Some(Os::unknown),
+        arch: Arch::avr,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        family: None,
+        pointer_width: 16,
+        endian: Endian::little,
+    },
+    TargetInfo {
         triple: "hexagon-unknown-linux-musl",
         os: Some(Os::linux),
         arch: Arch::hexagon,
@@ -721,6 +751,16 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
+        endian: Endian::little,
+    },
+    TargetInfo {
+        triple: "mipsel-sony-psp",
+        os: Some(Os::psp),
+        arch: Arch::mips,
+        env: None,
+        vendor: Some(Vendor::sony),
+        family: None,
+        pointer_width: 32,
         endian: Endian::little,
     },
     TargetInfo {
@@ -1054,6 +1094,16 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
         endian: Endian::big,
     },
     TargetInfo {
+        triple: "thumbv4t-none-eabi",
+        os: None,
+        arch: Arch::arm,
+        env: None,
+        vendor: None,
+        family: None,
+        pointer_width: 32,
+        endian: Endian::little,
+    },
+    TargetInfo {
         triple: "thumbv6m-none-eabi",
         os: None,
         arch: Arch::arm,
@@ -1069,6 +1119,16 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
         arch: Arch::arm,
         env: Some(Env::msvc),
         vendor: Some(Vendor::pc),
+        family: Some(Family::windows),
+        pointer_width: 32,
+        endian: Endian::little,
+    },
+    TargetInfo {
+        triple: "thumbv7a-uwp-windows-msvc",
+        os: Some(Os::windows),
+        arch: Arch::arm,
+        env: Some(Env::msvc),
+        vendor: Some(Vendor::uwp),
         family: Some(Family::windows),
         pointer_width: 32,
         endian: Endian::little,
@@ -1224,6 +1284,16 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
         endian: Endian::little,
     },
     TargetInfo {
+        triple: "x86_64-apple-tvos",
+        os: Some(Os::tvos),
+        arch: Arch::x86_64,
+        env: None,
+        vendor: Some(Vendor::apple),
+        family: Some(Family::unix),
+        pointer_width: 64,
+        endian: Endian::little,
+    },
+    TargetInfo {
         triple: "x86_64-fortanix-unknown-sgx",
         os: Some(Os::unknown),
         arch: Arch::x86_64,
@@ -1259,7 +1329,7 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
         arch: Arch::x86_64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
-        family: Some(Family::unix),
+        family: None,
         pointer_width: 64,
         endian: Endian::little,
     },
@@ -1370,6 +1440,16 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
         env: None,
         vendor: Some(Vendor::unknown),
         family: None,
+        pointer_width: 64,
+        endian: Endian::little,
+    },
+    TargetInfo {
+        triple: "x86_64-unknown-illumos",
+        os: Some(Os::illumos),
+        arch: Arch::x86_64,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        family: Some(Family::unix),
         pointer_width: 64,
         endian: Endian::little,
     },
@@ -1488,6 +1568,7 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
 impl<'a> super::Arch<'a> {
     pub const aarch64: Arch<'static> = Arch("aarch64");
     pub const arm: Arch<'static> = Arch("arm");
+    pub const avr: Arch<'static> = Arch("avr");
     pub const hexagon: Arch<'static> = Arch("hexagon");
     pub const mips: Arch<'static> = Arch("mips");
     pub const mips64: Arch<'static> = Arch("mips64");
@@ -1511,6 +1592,7 @@ impl<'a> super::Vendor<'a> {
     pub const nvidia: Vendor<'static> = Vendor("nvidia");
     pub const pc: Vendor<'static> = Vendor("pc");
     pub const rumprun: Vendor<'static> = Vendor("rumprun");
+    pub const sony: Vendor<'static> = Vendor("sony");
     pub const sun: Vendor<'static> = Vendor("sun");
     pub const unknown: Vendor<'static> = Vendor("unknown");
     pub const uwp: Vendor<'static> = Vendor("uwp");
@@ -1527,14 +1609,17 @@ impl<'a> super::Os<'a> {
     pub const fuchsia: Os<'static> = Os("fuchsia");
     pub const haiku: Os<'static> = Os("haiku");
     pub const hermit: Os<'static> = Os("hermit");
+    pub const illumos: Os<'static> = Os("illumos");
     pub const ios: Os<'static> = Os("ios");
     pub const l4re: Os<'static> = Os("l4re");
     pub const linux: Os<'static> = Os("linux");
     pub const macos: Os<'static> = Os("macos");
     pub const netbsd: Os<'static> = Os("netbsd");
     pub const openbsd: Os<'static> = Os("openbsd");
+    pub const psp: Os<'static> = Os("psp");
     pub const redox: Os<'static> = Os("redox");
     pub const solaris: Os<'static> = Os("solaris");
+    pub const tvos: Os<'static> = Os("tvos");
     pub const uefi: Os<'static> = Os("uefi");
     pub const unknown: Os<'static> = Os("unknown");
     pub const vxworks: Os<'static> = Os("vxworks");
