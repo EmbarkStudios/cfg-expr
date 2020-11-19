@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+### Changed
+- Updated the builtin target list to Rust 1.48.0
+
 ## [0.5.0] - 2020-10-20
 ### Changed
 - Updated the builtin target list to Rust 1.47.0
