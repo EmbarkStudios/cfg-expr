@@ -4,7 +4,7 @@
 [![Crates.io](https://img.shields.io/crates/v/cfg-expr.svg)](https://crates.io/crates/cfg-expr)
 [![Docs](https://docs.rs/cfg-expr/badge.svg)](https://docs.rs/cfg-expr)
 [![Rust Version](https://img.shields.io/badge/Rust%20Version-1.47.0-blue.svg)](https://forge.rust-lang.org/release/platform-support.html)
-[![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
+[![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 [![Embark](https://img.shields.io/badge/embark-open%20source-blueviolet.svg)](https://embark.dev)
 
 A parser and evaluator for Rust `cfg()` expressions. Targets as of [Rust 1.47.0](https://forge.rust-lang.org/release/platform-support.html) are supported.
