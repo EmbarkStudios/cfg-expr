@@ -7,22 +7,22 @@ mod builtins;
 pub use builtins::ALL_BUILTINS;
 
 /// The "architecture" field
-#[derive(Clone, Copy, PartialEq, Debug)]
+#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct Arch<'a>(pub &'a str);
 
 /// The "vendor" field, which in practice is little more than an arbitrary modifier.
-#[derive(Clone, Copy, PartialEq, Debug)]
+#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct Vendor<'a>(pub &'a str);
 
 /// The "operating system" field, which sometimes implies an environment, and
 /// sometimes isn't an actual operating system.
-#[derive(Clone, Copy, PartialEq, Debug)]
+#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct Os<'a>(pub &'a str);
 
 /// The "environment" field, which specifies an ABI environment on top of the
 /// operating system. In many configurations, this field is omitted, and the
 /// environment is implied by the operating system.
-#[derive(Clone, Copy, PartialEq, Debug)]
+#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct Env<'a>(pub &'a str);
 
 macro_rules! target_enum {
@@ -78,7 +78,7 @@ macro_rules! impl_from_str {
 
 target_enum! {
     /// The endian types known to rustc
-    #[derive(Clone, Copy, PartialEq, Debug)]
+    #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
     pub enum Endian {
         big,
         little,
@@ -87,7 +87,7 @@ target_enum! {
 
 target_enum! {
     /// All of the target families known to rustc
-    #[derive(Clone, Copy, PartialEq, Debug)]
+    #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
     pub enum Family {
         /// Everything that isn't windows, and has a family!
         unix,
@@ -97,7 +97,7 @@ target_enum! {
 }
 
 /// Contains information regarding a particular target known to rustc
-#[derive(Debug)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct TargetInfo<'a> {
     /// The target's unique identifier
     pub triple: &'a str,
@@ -156,6 +156,9 @@ pub fn rustc_version() -> &'static str {
 
 #[cfg(test)]
 mod test {
+    use crate::targets::get_builtin_target_by_triple;
+    use std::collections::{BTreeSet, HashSet};
+
     // rustc's target-list is currently sorted lexicographically
     // by the target-triple, so ensure that stays the case
     #[test]
@@ -176,5 +179,18 @@ mod test {
                 .filter(|ti| ti.os == Some(super::Os::ios))
                 .count()
         );
+    }
+
+    // Ensure that TargetInfo can be used as keys for btree and hash-based data structures.
+    #[test]
+    fn set_map_key() {
+        let target_info =
+            get_builtin_target_by_triple("x86_64-unknown-linux-gnu").expect("known target");
+
+        let mut btree_set = BTreeSet::new();
+        btree_set.insert(target_info);
+
+        let mut hash_set = HashSet::new();
+        hash_set.insert(target_info);
     }
 }
