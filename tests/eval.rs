@@ -15,7 +15,27 @@ impl Target {
         Self {
             builtin: get_builtin_target_by_triple(s).unwrap(),
             #[cfg(feature = "targets")]
-            lexicon: s.parse().unwrap(),
+            lexicon: {
+                // Hack to workaround the addition in 1.48.0 of this weird, non-conformant
+                // target triple, until https://github.com/bytecodealliance/target-lexicon/issues/63 is
+                // resolved in a satisfactory manner, not really concerned about
+                // the presence of this triple in most normal cases
+                use target_lexicon as tl;
+                if s == "avr-unknown-gnu-atmega328" {
+                    tl::Triple {
+                        architecture: tl::Architecture::Avr,
+                        vendor: tl::Vendor::Unknown,
+                        operating_system: tl::OperatingSystem::Unknown,
+                        environment: tl::Environment::Unknown,
+                        binary_format: tl::BinaryFormat::Unknown,
+                    }
+                } else {
+                    match s.parse() {
+                        Ok(l) => l,
+                        Err(e) => panic!("failed to parse '{}': {:?}", s, e),
+                    }
+                }
+            },
         }
     }
 }
