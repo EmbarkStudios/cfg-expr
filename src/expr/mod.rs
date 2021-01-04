@@ -62,7 +62,7 @@ impl<'a> TargetMatcher for targ::TargetInfo<'a> {
             // The environment is allowed to be an empty string
             Env(env) => match self.env {
                 Some(e) => env == e,
-                None => env.0 == "",
+                None => env.0.is_empty(),
             },
             Family(fam) => Some(fam) == self.family,
             Os(os) => Some(os) == self.os,
@@ -107,11 +107,11 @@ impl TargetMatcher for target_lexicon::Triple {
                 }
             }
             Endian(end) => match self.architecture.endianness() {
-                Ok(endian) => match (end, endian) {
-                    (crate::targets::Endian::little, Endianness::Little) => true,
-                    (crate::targets::Endian::big, Endianness::Big) => true,
-                    _ => false,
-                },
+                Ok(endian) => matches!(
+                    (end, endian),
+                    (crate::targets::Endian::little, Endianness::Little)
+                        | (crate::targets::Endian::big, Endianness::Big)
+                ),
 
                 Err(_) => false,
             },
@@ -123,17 +123,17 @@ impl TargetMatcher for target_lexicon::Triple {
                     OperatingSystem::Freebsd => match self.architecture {
                         Architecture::Arm(ArmArchitecture::Armv6)
                         | Architecture::Arm(ArmArchitecture::Armv7) => env.0 == "gnueabihf",
-                        _ => env.0 == "",
+                        _ => env.0.is_empty(),
                     },
                     OperatingSystem::Netbsd => match self.architecture {
                         Architecture::Arm(ArmArchitecture::Armv6)
                         | Architecture::Arm(ArmArchitecture::Armv7) => env.0 == "eabihf",
-                        _ => env.0 == "",
+                        _ => env.0.is_empty(),
                     },
                     OperatingSystem::None_
                     | OperatingSystem::Cloudabi
                     | OperatingSystem::Hermit
-                    | OperatingSystem::Ios => env.0 == "",
+                    | OperatingSystem::Ios => env.0.is_empty(),
                     _ => {
                         if env.0.is_empty() {
                             matches!(
@@ -156,6 +156,14 @@ impl TargetMatcher for target_lexicon::Triple {
                                             | Environment::Gnuspe
                                             | Environment::Gnux32
                                             | Environment::Gnueabihf => true,
+                                            // Rust 1.49.0 changed all android targets to have the
+                                            // gnu environment
+                                            Environment::Android | Environment::Androideabi
+                                                if self.operating_system
+                                                    == OperatingSystem::Linux =>
+                                            {
+                                                true
+                                            }
                                             Environment::Kernel => {
                                                 self.operating_system == OperatingSystem::Linux
                                             }
