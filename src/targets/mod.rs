@@ -3,7 +3,7 @@ use crate::error::Reason;
 mod builtins;
 
 /// A list of all of the [builtin](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_target/spec/index.html#modules)
-/// targets known to rustc, as of 1.43.1
+/// targets known to rustc, as of 1.49.0
 pub use builtins::ALL_BUILTINS;
 
 /// The "architecture" field
@@ -148,7 +148,7 @@ pub fn get_builtin_target_by_triple(triple: &str) -> Option<&'static TargetInfo<
 /// versions.
 ///
 /// ```
-/// assert_eq!("1.48.0", cfg_expr::targets::rustc_version());
+/// assert_eq!("1.49.0", cfg_expr::targets::rustc_version());
 /// ```
 pub fn rustc_version() -> &'static str {
     builtins::RUSTC_VERSION

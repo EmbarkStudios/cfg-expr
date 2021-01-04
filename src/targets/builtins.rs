@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.48.0";
+pub(crate) const RUSTC_VERSION: &str = "1.49.0";
 
 pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
     TargetInfo {
@@ -57,7 +57,7 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
         triple: "aarch64-linux-android",
         os: Some(Os::android),
         arch: Arch::aarch64,
-        env: None,
+        env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
@@ -197,7 +197,7 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
         triple: "arm-linux-androideabi",
         os: Some(Os::android),
         arch: Arch::arm,
-        env: None,
+        env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
@@ -327,7 +327,7 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
         triple: "armv7-linux-androideabi",
         os: Some(Os::android),
         arch: Arch::arm,
-        env: None,
+        env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
@@ -547,7 +547,7 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
         triple: "i686-linux-android",
         os: Some(Os::android),
         arch: Arch::x86,
-        env: None,
+        env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
@@ -790,6 +790,16 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
         env: Some(Env::uclibc),
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
+        pointer_width: 32,
+        endian: Endian::little,
+    },
+    TargetInfo {
+        triple: "mipsel-unknown-none",
+        os: None,
+        arch: Arch::mips,
+        env: None,
+        vendor: None,
+        family: None,
         pointer_width: 32,
         endian: Endian::little,
     },
@@ -1177,7 +1187,7 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
         triple: "thumbv7neon-linux-androideabi",
         os: Some(Os::android),
         arch: Arch::arm,
-        env: None,
+        env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
@@ -1327,7 +1337,7 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
         triple: "x86_64-linux-android",
         os: Some(Os::android),
         arch: Arch::x86_64,
-        env: None,
+        env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,

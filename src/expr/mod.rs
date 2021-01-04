@@ -156,6 +156,14 @@ impl TargetMatcher for target_lexicon::Triple {
                                             | Environment::Gnuspe
                                             | Environment::Gnux32
                                             | Environment::Gnueabihf => true,
+                                            // Rust 1.49.0 changed all android targets to have the
+                                            // gnu environment
+                                            Environment::Android | Environment::Androideabi
+                                                if self.operating_system
+                                                    == OperatingSystem::Linux =>
+                                            {
+                                                true
+                                            }
                                             Environment::Kernel => {
                                                 self.operating_system == OperatingSystem::Linux
                                             }
