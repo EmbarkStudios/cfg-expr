@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+## [0.7.0] - 2021-02-12
 ### Changed
 - Updated the builtin target list to Rust 1.50.0. Again, somewhat of a breaking change as many targets were removed or changed.
 
@@ -57,7 +58,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial add of all the things
 
 <!-- next-url -->
-[Unreleased]: https://github.com/EmbarkStudios/cfg-expr/compare/0.6.0...HEAD
+[Unreleased]: https://github.com/EmbarkStudios/cfg-expr/compare/0.7.0...HEAD
+[0.7.0]: https://github.com/EmbarkStudios/cfg-expr/compare/0.6.0...0.7.0
 [0.6.0]: https://github.com/EmbarkStudios/cfg-expr/compare/0.5.1...0.6.0
 [0.5.1]: https://github.com/EmbarkStudios/cfg-expr/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/EmbarkStudios/cfg-expr/compare/0.4.1...0.5.0
