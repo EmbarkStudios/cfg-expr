@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+### Changed
+- Updated the builtin target list to Rust 1.50.0. Again, somewhat of a breaking change as many targets were removed or changed.
+
+### Fixed
+- Update smallvec to fix an [advisory](https://rustsec.org/advisories/RUSTSEC-2021-0003)
+
 ## [0.6.0] - 2021-01-04
 ### Changed
 - Updated the builtin target list to Rust 1.49.0, this is somewhat of a breaking change, as rustc now considers all `android` targets to have the `gnu` environment, where previously, it was unspecified.
