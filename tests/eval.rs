@@ -21,19 +21,25 @@ impl Target {
                 // resolved in a satisfactory manner, not really concerned about
                 // the presence of this triple in most normal cases
                 use target_lexicon as tl;
-                if s == "avr-unknown-gnu-atmega328" {
-                    tl::Triple {
+                match s {
+                    "avr-unknown-gnu-atmega328" => tl::Triple {
                         architecture: tl::Architecture::Avr,
                         vendor: tl::Vendor::Unknown,
                         operating_system: tl::OperatingSystem::Unknown,
                         environment: tl::Environment::Unknown,
                         binary_format: tl::BinaryFormat::Unknown,
-                    }
-                } else {
-                    match s.parse() {
+                    },
+                    "armv5te-unknown-linux-uclibceabi" => tl::Triple {
+                        architecture: tl::Architecture::Arm(tl::ArmArchitecture::Armv5te),
+                        vendor: tl::Vendor::Unknown,
+                        operating_system: tl::OperatingSystem::Linux,
+                        environment: tl::Environment::Uclibc,
+                        binary_format: tl::BinaryFormat::Unknown,
+                    },
+                    triple => match triple.parse() {
                         Ok(l) => l,
-                        Err(e) => panic!("failed to parse '{}': {:?}", s, e),
-                    }
+                        Err(e) => panic!("failed to parse '{}': {:?}", triple, e),
+                    },
                 }
             },
         }
@@ -51,8 +57,8 @@ macro_rules! tg_match {
                     let linfo = tg.matches(&$target.lexicon);
                     assert_eq!(
                         tinfo, linfo,
-                        "{:#?} builtin didn't match lexicon {:#?}",
-                        $target.builtin, $target.lexicon
+                        "{:#?} builtin didn't match lexicon {:#?} for predicate {:#?}",
+                        $target.builtin, $target.lexicon, tg,
                     );
 
                     return linfo;
@@ -75,8 +81,8 @@ macro_rules! tg_match {
                     let linfo = tg.matches(&$target.lexicon);
                     assert_eq!(
                         tinfo, linfo,
-                        "{:#?} builtin didn't match lexicon {:#?}",
-                        $target.builtin, $target.lexicon
+                        "{:#?} builtin didn't match lexicon {:#?} for predicate {:#?}",
+                        $target.builtin, $target.lexicon, tg,
                     );
 
                     return linfo;
