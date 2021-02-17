@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+## [0.7.1] - 2021-02-17
 ### Fixed
 - Fixed support for the `uclibceabi` environment added for one target in rust 1.50.0.
 
@@ -61,7 +62,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial add of all the things
 
 <!-- next-url -->
-[Unreleased]: https://github.com/EmbarkStudios/cfg-expr/compare/0.7.0...HEAD
+[Unreleased]: https://github.com/EmbarkStudios/cfg-expr/compare/0.7.1...HEAD
+[0.7.1]: https://github.com/EmbarkStudios/cfg-expr/compare/0.7.0...0.7.1
 [0.7.0]: https://github.com/EmbarkStudios/cfg-expr/compare/0.6.0...0.7.0
 [0.6.0]: https://github.com/EmbarkStudios/cfg-expr/compare/0.5.1...0.6.0
 [0.5.1]: https://github.com/EmbarkStudios/cfg-expr/compare/0.5.0...0.5.1
