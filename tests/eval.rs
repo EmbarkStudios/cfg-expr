@@ -29,13 +29,6 @@ impl Target {
                         environment: tl::Environment::Unknown,
                         binary_format: tl::BinaryFormat::Unknown,
                     },
-                    "armv5te-unknown-linux-uclibceabi" => tl::Triple {
-                        architecture: tl::Architecture::Arm(tl::ArmArchitecture::Armv5te),
-                        vendor: tl::Vendor::Unknown,
-                        operating_system: tl::OperatingSystem::Linux,
-                        environment: tl::Environment::Uclibc,
-                        binary_format: tl::BinaryFormat::Unknown,
-                    },
                     triple => match triple.parse() {
                         Ok(l) => l,
                         Err(e) => panic!("failed to parse '{}': {:?}", triple, e),
