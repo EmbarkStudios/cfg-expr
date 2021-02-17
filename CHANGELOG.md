@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+### Fixed
+- Fixed support for the `uclibceabi` environment added for one target in rust 1.50.0.
+
 ## [0.7.0] - 2021-02-12
 ### Changed
 - Updated the builtin target list to Rust 1.50.0. Again, somewhat of a breaking change as many targets were removed or changed.
