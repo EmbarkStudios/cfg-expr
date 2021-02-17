@@ -177,6 +177,11 @@ impl TargetMatcher for target_lexicon::Triple {
                                                 | Environment::Musleabihf
                                                 | Environment::Muslabi64
                                         )
+                                    } else if env.0 == "uclibc" {
+                                        matches!(
+                                            self.environment,
+                                            Environment::Uclibc | Environment::Uclibceabi
+                                        )
                                     } else {
                                         self.environment == e
                                     }
