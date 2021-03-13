@@ -161,7 +161,7 @@ impl Expression {
                         }
                         "env" => tp!(Env),
                         "endian" => InnerTarget {
-                            which: Which::Endian(val.parse().map_err(|_| ParseError {
+                            which: Which::Endian(val.parse().map_err(|_err| ParseError {
                                 original: original.to_owned(),
                                 span: vspan,
                                 reason: Reason::InvalidInteger,
@@ -169,7 +169,7 @@ impl Expression {
                             span: None,
                         },
                         "pointer_width" => InnerTarget {
-                            which: Which::PointerWidth(val.parse().map_err(|_| ParseError {
+                            which: Which::PointerWidth(val.parse().map_err(|_err| ParseError {
                                 original: original.to_owned(),
                                 span: vspan,
                                 reason: Reason::InvalidInteger,
@@ -354,11 +354,7 @@ impl Expression {
                         let key = pred_key.take();
                         let val = pred_val.take();
 
-                        let inner_pred = if let Some(key) = key {
-                            Some(parse_predicate(key, val)?)
-                        } else {
-                            None
-                        };
+                        let inner_pred = key.map(|key| parse_predicate(key, val)).transpose()?;
 
                         match (inner_pred, func_stack.last_mut()) {
                             (Some(pred), Some(func)) => {

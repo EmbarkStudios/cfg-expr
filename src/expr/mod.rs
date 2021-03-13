@@ -54,7 +54,7 @@ pub trait TargetMatcher {
 
 impl<'a> TargetMatcher for targ::TargetInfo<'a> {
     fn matches(&self, tp: TargetPredicate<'_>) -> bool {
-        use TargetPredicate::*;
+        use TargetPredicate::{Arch, Endian, Env, Family, Os, PointerWidth, Vendor};
 
         match tp {
             Arch(a) => a == self.arch,
@@ -80,7 +80,7 @@ impl TargetMatcher for target_lexicon::Triple {
     #[allow(clippy::cognitive_complexity)]
     fn matches(&self, tp: TargetPredicate<'_>) -> bool {
         use target_lexicon::*;
-        use TargetPredicate::*;
+        use TargetPredicate::{Arch, Endian, Env, Family, Os, PointerWidth, Vendor};
 
         match tp {
             Arch(arch) => {
@@ -94,12 +94,12 @@ impl TargetMatcher for target_lexicon::Triple {
                 } else {
                     match arch.0.parse::<Architecture>() {
                         Ok(a) => match (self.architecture, a) {
-                            (Architecture::Mips32(_), Architecture::Mips32(_)) => true,
-                            (Architecture::Mips64(_), Architecture::Mips64(_)) => true,
-                            (Architecture::Powerpc64le, Architecture::Powerpc64) => true,
-                            (Architecture::Riscv32(_), Architecture::Riscv32(_)) => true,
-                            (Architecture::Riscv64(_), Architecture::Riscv64(_)) => true,
-                            (Architecture::Sparcv9, Architecture::Sparc64) => true,
+                            (Architecture::Mips32(_), Architecture::Mips32(_))
+                            | (Architecture::Mips64(_), Architecture::Mips64(_))
+                            | (Architecture::Powerpc64le, Architecture::Powerpc64)
+                            | (Architecture::Riscv32(_), Architecture::Riscv32(_))
+                            | (Architecture::Riscv64(_), Architecture::Riscv64(_))
+                            | (Architecture::Sparcv9, Architecture::Sparc64) => true,
                             (a, b) => a == b,
                         },
                         Err(_) => false,
@@ -193,7 +193,11 @@ impl TargetMatcher for target_lexicon::Triple {
                 }
             }
             Family(fam) => {
-                use target_lexicon::OperatingSystem::*;
+                use target_lexicon::OperatingSystem::{
+                    AmdHsa, Bitrig, Cloudabi, Cuda, Darwin, Dragonfly, Emscripten, Freebsd,
+                    Fuchsia, Haiku, Hermit, Illumos, Ios, L4re, Linux, MacOSX, Nebulet, Netbsd,
+                    None_, Openbsd, Redox, Solaris, Tvos, Uefi, Unknown, VxWorks, Wasi, Windows,
+                };
                 Some(fam)
                     == match self.operating_system {
                         Unknown | AmdHsa | Bitrig | Cloudabi | Cuda | Hermit | Nebulet | None_
@@ -348,7 +352,9 @@ pub(crate) enum InnerPredicate {
 impl InnerPredicate {
     fn to_pred<'a>(&self, s: &'a str) -> Predicate<'a> {
         use InnerPredicate as IP;
-        use Predicate::*;
+        use Predicate::{
+            DebugAssertions, Feature, Flag, KeyValue, ProcMacro, Target, TargetFeature, Test,
+        };
 
         match self {
             IP::Target(it) => match &it.which {
@@ -582,8 +588,7 @@ impl Logic for Option<bool> {
     fn and(self, other: Self) -> Self {
         match (self, other) {
             // If either is false, the expression is false.
-            (Some(false), _) => Some(false),
-            (_, Some(false)) => Some(false),
+            (Some(false), _) | (_, Some(false)) => Some(false),
             // If both are true, the expression is true.
             (Some(true), Some(true)) => Some(true),
             // One or both are unknown -- the result is unknown.
@@ -595,8 +600,7 @@ impl Logic for Option<bool> {
     fn or(self, other: Self) -> Self {
         match (self, other) {
             // If either is true, the expression is true.
-            (Some(true), _) => Some(true),
-            (_, Some(true)) => Some(true),
+            (Some(true), _) | (_, Some(true)) => Some(true),
             // If both are false, the expression is false.
             (Some(false), Some(false)) => Some(false),
             // One or both are unknown -- the result is unknown.
@@ -606,9 +610,6 @@ impl Logic for Option<bool> {
 
     #[inline]
     fn not(self) -> Self {
-        match self {
-            Some(v) => Some(!v),
-            None => None,
-        }
+        self.map(|v| !v)
     }
 }
