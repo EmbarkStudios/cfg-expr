@@ -71,7 +71,11 @@ impl fmt::Display for ParseError {
 
 impl fmt::Display for Reason {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        use Reason::*;
+        use Reason::{
+            Empty, InvalidCharacters, InvalidInteger, InvalidNot, MultipleRootPredicates,
+            UnclosedParens, UnclosedQuotes, Unexpected, UnknownBuiltin, UnopenedParens,
+            UnopenedQuotes,
+        };
 
         match self {
             InvalidCharacters => f.write_str("invalid character(s)"),
@@ -104,7 +108,11 @@ impl fmt::Display for Reason {
 
 impl Error for ParseError {
     fn description(&self) -> &str {
-        use Reason::*;
+        use Reason::{
+            Empty, InvalidCharacters, InvalidInteger, InvalidNot, MultipleRootPredicates,
+            UnclosedParens, UnclosedQuotes, Unexpected, UnknownBuiltin, UnopenedParens,
+            UnopenedQuotes,
+        };
 
         match self.reason {
             InvalidCharacters => "invalid character(s)",

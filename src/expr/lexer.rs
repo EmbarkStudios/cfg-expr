@@ -1,7 +1,7 @@
 use crate::error::{ParseError, Reason};
 
 /// A single token in a cfg expression
-/// https://doc.rust-lang.org/reference/conditional-compilation.html
+/// <https://doc.rust-lang.org/reference/conditional-compilation.html>
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Token<'a> {
     /// A single contiguous term
@@ -122,7 +122,7 @@ impl<'a> Iterator for Lexer<'a> {
                 } else if is_ident_start(c) {
                     let substr = match self.inner[1..].find(|c: char| !is_ident_rest(c)) {
                         Some(ind) => &self.inner[..=ind],
-                        None => &self.inner[..],
+                        None => self.inner,
                     };
 
                     match substr {

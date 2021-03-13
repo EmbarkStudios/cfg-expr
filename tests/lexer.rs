@@ -3,13 +3,7 @@ use cfg_expr::expr::lexer::{Lexer, Token};
 macro_rules! test_lex {
     ($text:expr, [$($token:expr),+$(,)?]) => {
         let lexed: Vec<_> = Lexer::new($text).map(|lt| lt.unwrap().token).collect();
-        let expected = {
-            let mut v = Vec::new();
-            $(
-                v.push($token);
-            )+
-            v
-        };
+        let expected = vec![$($token),+];
 
         assert_eq!(lexed, expected);
     }
