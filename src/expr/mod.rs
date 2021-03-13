@@ -78,6 +78,7 @@ impl<'a> TargetMatcher for targ::TargetInfo<'a> {
 #[cfg(feature = "targets")]
 impl TargetMatcher for target_lexicon::Triple {
     #[allow(clippy::cognitive_complexity)]
+    #[allow(clippy::match_same_arms)]
     fn matches(&self, tp: TargetPredicate<'_>) -> bool {
         use target_lexicon::*;
         use TargetPredicate::{Arch, Endian, Env, Family, Os, PointerWidth, Vendor};
