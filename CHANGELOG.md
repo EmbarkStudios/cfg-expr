@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+### Added
+- `Expression` now implements `PartialEq`, primarily for cases where an `Expression` is stored in a type that itself requires `PartialEq`. This is only a simple syntactical equality check.
+
 ## [0.7.1] - 2021-02-17
 ### Fixed
 - Fixed support for the `uclibceabi` environment added for one target in rust 1.50.0.
