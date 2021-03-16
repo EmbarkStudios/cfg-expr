@@ -521,6 +521,28 @@ impl Expression {
     }
 }
 
+/// [`PartialEq`] will do a **syntactical** comparaison, so will just check if both
+/// expressions have been parsed from the same string, **not** if they are semantically
+/// equivalents.
+///
+/// ```
+/// use cfg_expr::Expression;
+///
+/// assert_eq!(
+///     Expression::parse("any()").unwrap(),
+///     Expression::parse("any()").unwrap()
+/// );
+/// assert_ne!(
+///     Expression::parse("any()").unwrap(),
+///     Expression::parse("unix").unwrap()
+/// );
+/// ```
+impl PartialEq for Expression {
+    fn eq(&self, other: &Self) -> bool {
+        self.original.eq(&other.original)
+    }
+}
+
 /// A propositional logic used to evaluate `Expression` instances.
 ///
 /// An `Expression` consists of some predicates and the `any`, `all` and `not` operators. An
