@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+## [0.7.2] - 2021-03-16
 ### Added
 - [PR#23](https://github.com/EmbarkStudios/cfg-expr/pull/23) added a `PartialEq` implementation for `Expression`, primarily for cases where an `Expression` is stored in a type that itself requires `PartialEq`. This is only a simple syntactical equality check. Thanks [@gdesmott](https://github.com/gdesmott)!
 
@@ -65,7 +66,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial add of all the things
 
 <!-- next-url -->
-[Unreleased]: https://github.com/EmbarkStudios/cfg-expr/compare/0.7.1...HEAD
+[Unreleased]: https://github.com/EmbarkStudios/cfg-expr/compare/0.7.2...HEAD
+[0.7.2]: https://github.com/EmbarkStudios/cfg-expr/compare/0.7.1...0.7.2
 [0.7.1]: https://github.com/EmbarkStudios/cfg-expr/compare/0.7.0...0.7.1
 [0.7.0]: https://github.com/EmbarkStudios/cfg-expr/compare/0.6.0...0.7.0
 [0.6.0]: https://github.com/EmbarkStudios/cfg-expr/compare/0.5.1...0.6.0
