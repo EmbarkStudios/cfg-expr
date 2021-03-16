@@ -396,7 +396,7 @@ pub(crate) enum ExprNode {
 }
 
 /// A parsed `cfg()` expression that can evaluated
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Expression {
     pub(crate) expr: SmallVec<[ExprNode; 5]>,
     // We keep the original string around for providing the arbitrary
