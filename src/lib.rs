@@ -1,3 +1,7 @@
+// BEGIN - Embark standard lints v0.3
+// do not change or add/remove here, but one can add exceptions after this section
+// for more info see: <https://github.com/EmbarkStudios/rust-ecosystem/issues/59>
+#![deny(unsafe_code)]
 #![warn(
     clippy::all,
     clippy::await_holding_lock,
@@ -45,6 +49,7 @@
     nonstandard_style,
     rust_2018_idioms
 )]
+// END - Embark standard lints v0.3
 
 //! cfg-expr is a crate that can be used to parse and evaluate Rust cfg() expressions,
 //! both as declarable in Rust code itself, as well in cargo's `[target.'cfg()'.dependencies]` sections.
