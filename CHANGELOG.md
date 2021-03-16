@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 ### Added
-- `Expression` now implements `PartialEq`, primarily for cases where an `Expression` is stored in a type that itself requires `PartialEq`. This is only a simple syntactical equality check.
+- [PR#23](https://github.com/EmbarkStudios/cfg-expr/pull/23) added a `PartialEq` implementation for `Expression`, primarily for cases where an `Expression` is stored in a type that itself requires `PartialEq`. This is only a simple syntactical equality check. Thanks [@gdesmott](https://github.com/gdesmott)!
 
 ## [0.7.1] - 2021-02-17
 ### Fixed
