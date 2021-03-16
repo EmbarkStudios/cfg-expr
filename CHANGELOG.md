@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+## [0.7.3] - 2021-03-16
 ### Added
 - [PR#25](https://github.com/EmbarkStudios/cfg-expr/pull/25) added `Clone` for `Expression`. Thanks [@gdesmott](https://github.com/gdesmott)!
 ## [0.7.2] - 2021-03-16
@@ -68,7 +69,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial add of all the things
 
 <!-- next-url -->
-[Unreleased]: https://github.com/EmbarkStudios/cfg-expr/compare/0.7.2...HEAD
+[Unreleased]: https://github.com/EmbarkStudios/cfg-expr/compare/0.7.3...HEAD
+[0.7.3]: https://github.com/EmbarkStudios/cfg-expr/compare/0.7.2...0.7.3
 [0.7.2]: https://github.com/EmbarkStudios/cfg-expr/compare/0.7.1...0.7.2
 [0.7.1]: https://github.com/EmbarkStudios/cfg-expr/compare/0.7.0...0.7.1
 [0.7.0]: https://github.com/EmbarkStudios/cfg-expr/compare/0.6.0...0.7.0
