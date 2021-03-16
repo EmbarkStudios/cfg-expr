@@ -519,6 +519,21 @@ impl Expression {
 
         result_stack.pop().unwrap()
     }
+
+    /// The original string which has been parsed to produce this ['Expression`].
+    ///
+    /// ```
+    /// use cfg_expr::Expression;
+    ///
+    /// assert_eq!(
+    ///     Expression::parse("any()").unwrap().original(),
+    ///     "any()"
+    /// );
+    /// ```
+    #[inline]
+    pub fn original(&self) -> &str {
+        &self.original
+    }
 }
 
 /// [`PartialEq`] will do a **syntactical** comparaison, so will just check if both
