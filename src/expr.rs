@@ -95,7 +95,8 @@ impl TargetMatcher for target_lexicon::Triple {
                 } else {
                     match arch.0.parse::<Architecture>() {
                         Ok(a) => match (self.architecture, a) {
-                            (Architecture::Mips32(_), Architecture::Mips32(_))
+                            (Architecture::Aarch64(_), Architecture::Aarch64(_))
+                            | (Architecture::Mips32(_), Architecture::Mips32(_))
                             | (Architecture::Mips64(_), Architecture::Mips64(_))
                             | (Architecture::Powerpc64le, Architecture::Powerpc64)
                             | (Architecture::Riscv32(_), Architecture::Riscv32(_))
@@ -136,7 +137,10 @@ impl TargetMatcher for target_lexicon::Triple {
                     OperatingSystem::None_
                     | OperatingSystem::Cloudabi
                     | OperatingSystem::Hermit
-                    | OperatingSystem::Ios => env.0.is_empty(),
+                    | OperatingSystem::Ios => match self.environment {
+                        Environment::LinuxKernel => env.0 == "gnu",
+                        _ => env.0.is_empty(),
+                    },
                     _ => {
                         if env.0.is_empty() {
                             matches!(
@@ -158,6 +162,7 @@ impl TargetMatcher for target_lexicon::Triple {
                                             | Environment::Gnueabi
                                             | Environment::Gnuspe
                                             | Environment::Gnux32
+                                            | Environment::GnuIlp32
                                             | Environment::Gnueabihf => true,
                                             // Rust 1.49.0 changed all android targets to have the
                                             // gnu environment
@@ -235,7 +240,10 @@ impl TargetMatcher for target_lexicon::Triple {
                     }
             }
             Os(os) => match os.0.parse::<OperatingSystem>() {
-                Ok(o) => self.operating_system == o,
+                Ok(o) => match self.environment {
+                    Environment::HermitKernel => os.0 == "hermit",
+                    _ => self.operating_system == o,
+                },
                 Err(_) => {
                     // Handle special case for darwin/macos, where the triple is
                     // "darwin", but rustc identifies the OS as "macos"
@@ -251,16 +259,16 @@ impl TargetMatcher for target_lexicon::Triple {
                 }
             },
             Vendor(ven) => match ven.0.parse::<target_lexicon::Vendor>() {
-                Ok(v) => match self.operating_system {
-                    OperatingSystem::Solaris => v == target_lexicon::Vendor::Sun,
-                    _ => self.vendor == v,
-                },
+                Ok(v) => self.vendor == v,
                 Err(_) => false,
             },
             PointerWidth(pw) => {
                 // The gnux32 environment is a special case, where it has an
                 // x86_64 architecture, but a 32-bit pointer width
-                if self.environment != Environment::Gnux32 {
+                if !matches!(
+                    self.environment,
+                    Environment::Gnux32 | Environment::GnuIlp32
+                ) {
                     pw == match self.pointer_width() {
                         Ok(pw) => pw.bits(),
                         Err(_) => return false,
