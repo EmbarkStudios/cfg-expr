@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+## [0.8.0] - 2021-07-16
 ### Changed
 - [PR#28](https://github.com/EmbarkStudios/cfg-expr/pull/28) updated target-lexicon to 0.12. Thanks [@remilauzier](https://github.com/remilauzier)!
 - [PR#29](https://github.com/EmbarkStudios/cfg-expr/pull/29) updated the built-in target list to 1.53.0.
@@ -77,7 +78,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial add of all the things
 
 <!-- next-url -->
-[Unreleased]: https://github.com/EmbarkStudios/cfg-expr/compare/0.7.4...HEAD
+[Unreleased]: https://github.com/EmbarkStudios/cfg-expr/compare/0.8.0...HEAD
+[0.8.0]: https://github.com/EmbarkStudios/cfg-expr/compare/0.7.4...0.8.0
 [0.7.4]: https://github.com/EmbarkStudios/cfg-expr/compare/0.7.3...0.7.4
 [0.7.3]: https://github.com/EmbarkStudios/cfg-expr/compare/0.7.2...0.7.3
 [0.7.2]: https://github.com/EmbarkStudios/cfg-expr/compare/0.7.1...0.7.2
