@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.50.0";
+pub(crate) const RUSTC_VERSION: &str = "1.53.0";
 
 pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
     TargetInfo {
@@ -35,6 +35,16 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
     },
     TargetInfo {
         triple: "aarch64-apple-ios-macabi",
+        os: Some(Os::ios),
+        arch: Arch::aarch64,
+        env: None,
+        vendor: Some(Vendor::apple),
+        family: Some(Family::unix),
+        pointer_width: 64,
+        endian: Endian::little,
+    },
+    TargetInfo {
+        triple: "aarch64-apple-ios-sim",
         os: Some(Os::ios),
         arch: Arch::aarch64,
         env: None,
@@ -111,6 +121,16 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
+        endian: Endian::little,
+    },
+    TargetInfo {
+        triple: "aarch64-unknown-linux-gnu_ilp32",
+        os: Some(Os::linux),
+        arch: Arch::aarch64,
+        env: Some(Env::gnu),
+        vendor: Some(Vendor::unknown),
+        family: Some(Family::unix),
+        pointer_width: 32,
         endian: Endian::little,
     },
     TargetInfo {
@@ -192,6 +212,26 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
         family: Some(Family::unix),
         pointer_width: 64,
         endian: Endian::little,
+    },
+    TargetInfo {
+        triple: "aarch64_be-unknown-linux-gnu",
+        os: Some(Os::linux),
+        arch: Arch::aarch64,
+        env: Some(Env::gnu),
+        vendor: Some(Vendor::unknown),
+        family: Some(Family::unix),
+        pointer_width: 64,
+        endian: Endian::big,
+    },
+    TargetInfo {
+        triple: "aarch64_be-unknown-linux-gnu_ilp32",
+        os: Some(Os::linux),
+        arch: Arch::aarch64,
+        env: Some(Env::gnu),
+        vendor: Some(Vendor::unknown),
+        family: Some(Family::unix),
+        pointer_width: 32,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: "arm-linux-androideabi",
@@ -894,6 +934,16 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
         endian: Endian::big,
     },
     TargetInfo {
+        triple: "powerpc-unknown-openbsd",
+        os: Some(Os::openbsd),
+        arch: Arch::powerpc,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        family: Some(Family::unix),
+        pointer_width: 32,
+        endian: Endian::big,
+    },
+    TargetInfo {
         triple: "powerpc-wrs-vxworks",
         os: Some(Os::vxworks),
         arch: Arch::powerpc,
@@ -984,6 +1034,16 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
         endian: Endian::little,
     },
     TargetInfo {
+        triple: "riscv32gc-unknown-linux-musl",
+        os: Some(Os::linux),
+        arch: Arch::riscv32,
+        env: Some(Env::musl),
+        vendor: Some(Vendor::unknown),
+        family: Some(Family::unix),
+        pointer_width: 32,
+        endian: Endian::little,
+    },
+    TargetInfo {
         triple: "riscv32i-unknown-none-elf",
         os: None,
         arch: Arch::riscv32,
@@ -1024,6 +1084,16 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
         endian: Endian::little,
     },
     TargetInfo {
+        triple: "riscv64gc-unknown-linux-musl",
+        os: Some(Os::linux),
+        arch: Arch::riscv64,
+        env: Some(Env::musl),
+        vendor: Some(Vendor::unknown),
+        family: Some(Family::unix),
+        pointer_width: 64,
+        endian: Endian::little,
+    },
+    TargetInfo {
         triple: "riscv64gc-unknown-none-elf",
         os: None,
         arch: Arch::riscv64,
@@ -1048,6 +1118,16 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
         os: Some(Os::linux),
         arch: Arch::s390x,
         env: Some(Env::gnu),
+        vendor: Some(Vendor::unknown),
+        family: Some(Family::unix),
+        pointer_width: 64,
+        endian: Endian::big,
+    },
+    TargetInfo {
+        triple: "s390x-unknown-linux-musl",
+        os: Some(Os::linux),
+        arch: Arch::s390x,
+        env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
@@ -1264,6 +1344,16 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
         endian: Endian::little,
     },
     TargetInfo {
+        triple: "wasm64-unknown-unknown",
+        os: Some(Os::unknown),
+        arch: Arch::wasm64,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        family: None,
+        pointer_width: 64,
+        endian: Endian::little,
+    },
+    TargetInfo {
         triple: "x86_64-apple-darwin",
         os: Some(Os::macos),
         arch: Arch::x86_64,
@@ -1334,21 +1424,11 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
         endian: Endian::little,
     },
     TargetInfo {
-        triple: "x86_64-linux-kernel",
-        os: None,
-        arch: Arch::x86_64,
-        env: Some(Env::gnu),
-        vendor: Some(Vendor::unknown),
-        family: None,
-        pointer_width: 64,
-        endian: Endian::little,
-    },
-    TargetInfo {
         triple: "x86_64-pc-solaris",
         os: Some(Os::solaris),
         arch: Arch::x86_64,
         env: None,
-        vendor: Some(Vendor::sun),
+        vendor: Some(Vendor::pc),
         family: Some(Family::unix),
         pointer_width: 64,
         endian: Endian::little,
@@ -1370,16 +1450,6 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
         env: Some(Env::msvc),
         vendor: Some(Vendor::pc),
         family: Some(Family::windows),
-        pointer_width: 64,
-        endian: Endian::little,
-    },
-    TargetInfo {
-        triple: "x86_64-rumprun-netbsd",
-        os: Some(Os::netbsd),
-        arch: Arch::x86_64,
-        env: None,
-        vendor: Some(Vendor::rumprun),
-        family: Some(Family::unix),
         pointer_width: 64,
         endian: Endian::little,
     },
@@ -1425,16 +1495,6 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
     },
     TargetInfo {
         triple: "x86_64-unknown-hermit",
-        os: Some(Os::hermit),
-        arch: Arch::x86_64,
-        env: None,
-        vendor: Some(Vendor::unknown),
-        family: None,
-        pointer_width: 64,
-        endian: Endian::little,
-    },
-    TargetInfo {
-        triple: "x86_64-unknown-hermit-kernel",
         os: Some(Os::hermit),
         arch: Arch::x86_64,
         env: None,
@@ -1500,6 +1560,26 @@ pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
         env: None,
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
+        pointer_width: 64,
+        endian: Endian::little,
+    },
+    TargetInfo {
+        triple: "x86_64-unknown-none-hermitkernel",
+        os: Some(Os::hermit),
+        arch: Arch::x86_64,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        family: None,
+        pointer_width: 64,
+        endian: Endian::little,
+    },
+    TargetInfo {
+        triple: "x86_64-unknown-none-linuxkernel",
+        os: None,
+        arch: Arch::x86_64,
+        env: Some(Env::gnu),
+        vendor: Some(Vendor::unknown),
+        family: None,
         pointer_width: 64,
         endian: Endian::little,
     },
@@ -1582,6 +1662,7 @@ impl<'a> super::Arch<'a> {
     pub const sparc: Arch<'static> = Arch("sparc");
     pub const sparc64: Arch<'static> = Arch("sparc64");
     pub const wasm32: Arch<'static> = Arch("wasm32");
+    pub const wasm64: Arch<'static> = Arch("wasm64");
     pub const x86: Arch<'static> = Arch("x86");
     pub const x86_64: Arch<'static> = Arch("x86_64");
 }
@@ -1591,7 +1672,6 @@ impl<'a> super::Vendor<'a> {
     pub const fortanix: Vendor<'static> = Vendor("fortanix");
     pub const nvidia: Vendor<'static> = Vendor("nvidia");
     pub const pc: Vendor<'static> = Vendor("pc");
-    pub const rumprun: Vendor<'static> = Vendor("rumprun");
     pub const sony: Vendor<'static> = Vendor("sony");
     pub const sun: Vendor<'static> = Vendor("sun");
     pub const unknown: Vendor<'static> = Vendor("unknown");

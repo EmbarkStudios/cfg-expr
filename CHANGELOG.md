@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+### Changed
+- [PR#28](https://github.com/EmbarkStudios/cfg-expr/pull/28) updated target-lexicon to 0.12. Thanks [@remilauzier](https://github.com/remilauzier)!
+- [PR#29](https://github.com/EmbarkStudios/cfg-expr/pull/29) updated the built-in target list to 1.53.0.
+
 ## [0.7.4] - 2021-03-16
 ### Added
 - [PR#26](https://github.com/EmbarkStudios/cfg-expr/pull/26) added `Expression::original` to get the original string the expression was parsed from. Thanks [@gdesmott](https://github.com/gdesmott)!
