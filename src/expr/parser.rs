@@ -208,7 +208,7 @@ impl Expression {
             ($span:expr) => {{
                 let expected: &[&str] = match last_token {
                     None => &["<key>", "all", "any", "not"],
-                    Some(Token::All | Token::Any | Token::Not) => &["("],
+                    Some(Token::All) | Some(Token::Any) | Some(Token::Not) => &["("],
                     Some(Token::CloseParen) => &[")", ","],
                     Some(Token::Comma) => &[")", "<key>"],
                     Some(Token::Equals) => &["\""],
@@ -235,7 +235,7 @@ impl Expression {
             let lt = lt?;
             match &lt.token {
                 Token::Key(k) => match last_token {
-                    None | Some(Token::OpenParen | Token::Comma) => {
+                    None | Some(Token::OpenParen) | Some(Token::Comma) => {
                         pred_key = Some((k, lt.span.clone()));
                     }
                     _ => token_err!(lt.span),
@@ -256,7 +256,7 @@ impl Expression {
                     _ => token_err!(lt.span),
                 },
                 Token::All | Token::Any | Token::Not => match last_token {
-                    None | Some(Token::OpenParen | Token::Comma) => {
+                    None | Some(Token::OpenParen) | Some(Token::Comma) => {
                         let new_fn = match lt.token {
                             // the 0 is a dummy value -- it will be substituted for the real
                             // number of predicates in the `CloseParen` branch below.
@@ -281,7 +281,7 @@ impl Expression {
                     _ => token_err!(lt.span),
                 },
                 Token::OpenParen => match last_token {
-                    Some(Token::All | Token::Any | Token::Not) => {
+                    Some(Token::All) | Some(Token::Any) | Some(Token::Not) => {
                         if let Some(ref mut fs) = func_stack.last_mut() {
                             fs.parens_index = lt.span.start;
                         }
@@ -289,7 +289,8 @@ impl Expression {
                     _ => token_err!(lt.span),
                 },
                 Token::CloseParen => match last_token {
-                    None | Some(Token::All | Token::Any | Token::Not | Token::Equals) => {
+                    None | Some(Token::All) | Some(Token::Any) | Some(Token::Not)
+                    | Some(Token::Equals) => {
                         token_err!(lt.span)
                     }
                     _ => {
@@ -346,9 +347,11 @@ impl Expression {
                 },
                 Token::Comma => match last_token {
                     None
-                    | Some(
-                        Token::OpenParen | Token::All | Token::Any | Token::Not | Token::Equals,
-                    ) => token_err!(lt.span),
+                    | Some(Token::OpenParen)
+                    | Some(Token::All)
+                    | Some(Token::Any)
+                    | Some(Token::Not)
+                    | Some(Token::Equals) => token_err!(lt.span),
                     _ => {
                         let key = pred_key.take();
                         let val = pred_val.take();

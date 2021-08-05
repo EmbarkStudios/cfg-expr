@@ -52,10 +52,10 @@ impl fmt::Display for ParseError {
         // Mismatched parens/quotes have a slightly different output
         // than the other errors
         match &self.reason {
-            r @ (Reason::UnclosedParens | Reason::UnclosedQuotes) => {
+            r @ Reason::UnclosedParens | r @ Reason::UnclosedQuotes => {
                 f.write_fmt(format_args!("- {}", r))
             }
-            r @ (Reason::UnopenedParens | Reason::UnopenedQuotes) => {
+            r @ Reason::UnopenedParens | r @ Reason::UnopenedQuotes => {
                 f.write_fmt(format_args!("^ {}", r))
             }
             other => {
