@@ -263,7 +263,7 @@ fn main() {
     // the target altogether if it doesn't exist, but we don't care about
     // that, we just want to get the metadata for the target, so we
     // cheat and create a script that just echos our current path that
-    // is enought to satisfy rustc so that it spits out the info we want
+    // is enough to satisfy rustc so that it spits out the info we want
     if std::env::args().find(|a| a == "--show-sdk-path").is_some() {
         println!("{}", std::env::current_dir().unwrap().display());
         return;
