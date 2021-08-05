@@ -123,15 +123,13 @@ impl TargetMatcher for target_lexicon::Triple {
                     OperatingSystem::Redox => env.0 == "relibc",
                     OperatingSystem::VxWorks => env.0 == "gnu",
                     OperatingSystem::Freebsd => match self.architecture {
-                        Architecture::Arm(ArmArchitecture::Armv6 | ArmArchitecture::Armv7) => {
-                            env.0 == "gnueabihf"
-                        }
+                        Architecture::Arm(ArmArchitecture::Armv6)
+                        | Architecture::Arm(ArmArchitecture::Armv7) => env.0 == "gnueabihf",
                         _ => env.0.is_empty(),
                     },
                     OperatingSystem::Netbsd => match self.architecture {
-                        Architecture::Arm(ArmArchitecture::Armv6 | ArmArchitecture::Armv7) => {
-                            env.0 == "eabihf"
-                        }
+                        Architecture::Arm(ArmArchitecture::Armv6)
+                        | Architecture::Arm(ArmArchitecture::Armv7) => env.0 == "eabihf",
                         _ => env.0.is_empty(),
                     },
                     OperatingSystem::None_
