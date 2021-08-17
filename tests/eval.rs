@@ -5,7 +5,7 @@ use cfg_expr::{
 };
 
 struct Target {
-    builtin: &'static cfg_expr::targets::TargetInfo<'static>,
+    builtin: &'static cfg_expr::targets::TargetInfo,
     #[cfg(feature = "targets")]
     lexicon: target_lexicon::Triple,
 }
@@ -96,7 +96,7 @@ fn target_family() {
     let impossible = Expression::parse("all(windows, target_family = \"unix\")").unwrap();
 
     for target in all {
-        let target = Target::make(target.triple);
+        let target = Target::make(target.triple.as_str());
         match target.builtin.family {
             Some(_) => {
                 assert!(matches_any_family.eval(|pred| { tg_match!(pred, target) }));
@@ -139,9 +139,10 @@ fn very_specific() {
     .unwrap();
 
     for target in all {
-        let t = Target::make(target.triple);
+        let t = Target::make(target.triple.as_str());
         assert_eq!(
-            target.triple == "i686-pc-windows-msvc" || target.triple == "i586-pc-windows-msvc",
+            target.triple.as_str() == "i686-pc-windows-msvc"
+                || target.triple.as_str() == "i586-pc-windows-msvc",
             specific.eval(|pred| { tg_match!(pred, t, &["fxsr", "sse", "sse2"]) }),
             "expected true for i686-pc-windows-msvc, but got true for {}",
             target.triple,
@@ -159,22 +160,26 @@ fn very_specific() {
             )
         )"#,
             target.arch.0,
-            if let Some(v) = target.vendor {
+            if let Some(v) = &target.vendor {
                 format!(r#"target_vendor = "{}","#, v.0)
             } else {
                 "".to_owned()
             },
-            if let Some(v) = target.os {
+            if let Some(v) = &target.os {
                 format!(r#"target_os = "{}","#, v.0)
             } else {
                 "".to_owned()
             },
-            target.env.map(|e| e.0).unwrap_or_else(|| ""),
+            target
+                .env
+                .as_ref()
+                .map(|e| e.as_str())
+                .unwrap_or_else(|| ""),
         );
 
         let specific = Expression::parse(&expr).unwrap();
 
-        let t = Target::make(target.triple);
+        let t = Target::make(target.triple.as_str());
         assert!(
             specific.eval(|pred| { tg_match!(pred, t) }),
             "failed expression '{}' for {:#?}",
