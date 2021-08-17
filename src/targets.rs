@@ -3,7 +3,8 @@ use std::borrow::Cow;
 
 mod builtins;
 
-/// A list of all of the [builtin](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_target/spec/index.html#modules)
+/// A lis
+/// t of all of the [builtin](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_target/spec/index.html#modules)
 /// targets known to rustc, as of 1.49.0
 pub use builtins::ALL_BUILTINS;
 
@@ -23,6 +24,12 @@ pub struct Vendor(pub Cow<'static, str>);
 /// sometimes isn't an actual operating system.
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct Os(pub Cow<'static, str>);
+
+/// The target family, which describes a set of targets grouped in some logical manner, typically by
+/// operating system. This includes values like `unix` and `windows`.
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[non_exhaustive]
+pub struct Family(pub Cow<'static, str>);
 
 /// The "environment" field, which specifies an ABI environment on top of the
 /// operating system. In many configurations, this field is omitted, and the
@@ -73,6 +80,7 @@ field_impls!(Triple);
 field_impls!(Arch);
 field_impls!(Vendor);
 field_impls!(Os);
+field_impls!(Family);
 field_impls!(Env);
 
 macro_rules! target_enum {
@@ -132,17 +140,6 @@ target_enum! {
     pub enum Endian {
         big,
         little,
-    }
-}
-
-target_enum! {
-    /// All of the target families known to rustc
-    #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
-    pub enum Family {
-        /// Everything that isn't windows, and has a family!
-        unix,
-        /// The lone wolf of target families.
-        windows,
     }
 }
 

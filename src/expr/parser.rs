@@ -73,15 +73,9 @@ impl Expression {
                 "unix" | "windows" => {
                     err_if_val!();
 
-                    let fam = key.parse().map_err(|reason| ParseError {
-                        original: original.to_owned(),
-                        span,
-                        reason,
-                    })?;
-
                     InnerPredicate::Target(InnerTarget {
-                        which: Which::Family(fam),
-                        span: None,
+                        which: Which::Family,
+                        span: Some(span),
                     })
                 }
                 "test" => {
@@ -147,18 +141,7 @@ impl Expression {
                             return Ok(InnerPredicate::TargetFeature(vspan));
                         }
                         "os" => tp!(Os),
-                        "family" => {
-                            let fam = val.parse().map_err(|reason| ParseError {
-                                original: original.to_owned(),
-                                span,
-                                reason,
-                            })?;
-
-                            InnerTarget {
-                                which: Which::Family(fam),
-                                span: None,
-                            }
-                        }
+                        "family" => tp!(Family),
                         "env" => tp!(Env),
                         "endian" => InnerTarget {
                             which: Which::Endian(val.parse().map_err(|_err| ParseError {

@@ -64,7 +64,7 @@ impl TargetMatcher for targ::TargetInfo {
                 Some(e) => env == e,
                 None => env.0.is_empty(),
             },
-            Family(fam) => Some(*fam) == self.family,
+            Family(fam) => Some(fam) == self.family.as_ref(),
             Os(os) => Some(os) == self.os.as_ref(),
             PointerWidth(w) => *w == self.pointer_width,
             Vendor(ven) => match &self.vendor {
@@ -204,38 +204,38 @@ impl TargetMatcher for target_lexicon::Triple {
                     Fuchsia, Haiku, Hermit, Illumos, Ios, L4re, Linux, MacOSX, Nebulet, Netbsd,
                     None_, Openbsd, Redox, Solaris, Tvos, Uefi, Unknown, VxWorks, Wasi, Windows,
                 };
-                Some(*fam)
-                    == match self.operating_system {
-                        Unknown | AmdHsa | Bitrig | Cloudabi | Cuda | Hermit | Nebulet | None_
-                        | Uefi | Wasi => None,
-                        Darwin
-                        | Dragonfly
-                        | Emscripten
-                        | Freebsd
-                        | Fuchsia
-                        | Haiku
-                        | Illumos
-                        | Ios
-                        | L4re
-                        | MacOSX { .. }
-                        | Netbsd
-                        | Openbsd
-                        | Redox
-                        | Solaris
-                        | Tvos
-                        | VxWorks => Some(crate::targets::Family::unix),
-                        Linux => {
-                            // The 'kernel' environment is treated specially as not-unix
-                            if self.environment != Environment::Kernel {
-                                Some(crate::targets::Family::unix)
-                            } else {
-                                None
-                            }
+                let lexicon_fam = match self.operating_system {
+                    Unknown | AmdHsa | Bitrig | Cloudabi | Cuda | Hermit | Nebulet | None_
+                    | Uefi | Wasi => None,
+                    Darwin
+                    | Dragonfly
+                    | Emscripten
+                    | Freebsd
+                    | Fuchsia
+                    | Haiku
+                    | Illumos
+                    | Ios
+                    | L4re
+                    | MacOSX { .. }
+                    | Netbsd
+                    | Openbsd
+                    | Redox
+                    | Solaris
+                    | Tvos
+                    | VxWorks => Some(crate::targets::Family::unix),
+                    Linux => {
+                        // The 'kernel' environment is treated specially as not-unix
+                        if self.environment != Environment::Kernel {
+                            Some(crate::targets::Family::unix)
+                        } else {
+                            None
                         }
-                        Windows => Some(crate::targets::Family::windows),
-                        // I really dislike non-exhaustive :(
-                        _ => None,
                     }
+                    Windows => Some(crate::targets::Family::windows),
+                    // I really dislike non-exhaustive :(
+                    _ => None,
+                };
+                Some(fam) == lexicon_fam.as_ref()
             }
             Os(os) => match os.0.parse::<OperatingSystem>() {
                 Ok(o) => match self.environment {
@@ -309,7 +309,7 @@ pub(crate) enum Which {
     Arch,
     Endian(targ::Endian),
     Env,
-    Family(targ::Family),
+    Family,
     Os,
     PointerWidth(u8),
     Vendor,
@@ -379,8 +379,10 @@ impl InnerPredicate {
                 Which::Env => Target(TargetPredicate::Env(targ::Env::new(
                     s[it.span.clone().unwrap()].to_owned(),
                 ))),
+                Which::Family => Target(TargetPredicate::Family(targ::Family::new(
+                    s[it.span.clone().unwrap()].to_owned(),
+                ))),
                 Which::Endian(end) => Target(TargetPredicate::Endian(*end)),
-                Which::Family(fam) => Target(TargetPredicate::Family(*fam)),
                 Which::PointerWidth(pw) => Target(TargetPredicate::PointerWidth(*pw)),
             },
             IP::Test => Test,

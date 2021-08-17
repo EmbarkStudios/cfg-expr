@@ -1706,6 +1706,11 @@ impl super::Os {
     pub const windows: Os = Os::new_const("windows");
 }
 
+impl super::Family {
+    pub const unix: Family = Family::new_const("unix");
+    pub const windows: Family = Family::new_const("windows");
+}
+
 impl super::Env {
     pub const eabihf: Env = Env::new_const("eabihf");
     pub const gnu: Env = Env::new_const("gnu");
