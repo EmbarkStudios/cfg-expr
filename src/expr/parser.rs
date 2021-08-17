@@ -70,6 +70,9 @@ impl Expression {
                 // These are special cases in the cfg language that are
                 // semantically the same as `target_family = "<family>"`,
                 // so we just make them not special
+                // NOTE: other target families like "wasm" are NOT allowed
+                // as naked predicates; they must be specified through
+                // `target_family`
                 "unix" | "windows" => {
                     err_if_val!();
 

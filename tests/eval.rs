@@ -92,7 +92,9 @@ macro_rules! tg_match {
 
 #[test]
 fn target_family() {
-    let matches_any_family = Expression::parse("any(unix, target_family = \"windows\")").unwrap();
+    let matches_any_family =
+        Expression::parse("any(unix, target_family = \"windows\", target_family = \"wasm\")")
+            .unwrap();
     let impossible = Expression::parse("all(windows, target_family = \"unix\")").unwrap();
 
     for target in all {
@@ -228,6 +230,24 @@ fn complex() {
     // Should *not* match x86_64 windows or android
     assert!(!complex.eval(|pred| tg_match!(pred, windows_msvc)));
     assert!(!complex.eval(|pred| tg_match!(pred, android)));
+}
+
+#[test]
+fn wasm_family() {
+    let wasm = Expression::parse(r#"cfg(target_family = "wasm")"#).unwrap();
+
+    let wasm32_unknown = Target::make("wasm32-unknown-unknown");
+    let wasm32_emscripten = Target::make("wasm32-unknown-emscripten");
+    let wasm32_wasi = Target::make("wasm32-wasi");
+    let wasm64_unknown = Target::make("wasm64-unknown-unknown");
+
+    // wasm32_unknown, wasm32_wasi and wasm64_unknown match.
+    assert!(wasm.eval(|pred| tg_match!(pred, wasm32_unknown)));
+    assert!(wasm.eval(|pred| tg_match!(pred, wasm32_wasi)));
+    assert!(wasm.eval(|pred| tg_match!(pred, wasm64_unknown)));
+
+    // wasm32_emscripten does not match.
+    assert!(!wasm.eval(|pred| tg_match!(pred, wasm32_emscripten)));
 }
 
 #[test]

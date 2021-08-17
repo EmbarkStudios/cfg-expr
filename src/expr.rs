@@ -92,6 +92,9 @@ impl TargetMatcher for target_lexicon::Triple {
                         || self.architecture == Architecture::Asmjs
                 } else if arch == &targ::Arch::arm {
                     matches!(self.architecture, Architecture::Arm(_))
+                } else if arch == &targ::Arch::bpf {
+                    self.architecture == Architecture::Bpfeb
+                        || self.architecture == Architecture::Bpfel
                 } else {
                     match arch.0.parse::<Architecture>() {
                         Ok(a) => match (self.architecture, a) {
@@ -205,8 +208,7 @@ impl TargetMatcher for target_lexicon::Triple {
                     None_, Openbsd, Redox, Solaris, Tvos, Uefi, Unknown, VxWorks, Wasi, Windows,
                 };
                 let lexicon_fam = match self.operating_system {
-                    Unknown | AmdHsa | Bitrig | Cloudabi | Cuda | Hermit | Nebulet | None_
-                    | Uefi | Wasi => None,
+                    AmdHsa | Bitrig | Cloudabi | Cuda | Hermit | Nebulet | None_ | Uefi => None,
                     Darwin
                     | Dragonfly
                     | Emscripten
@@ -223,6 +225,16 @@ impl TargetMatcher for target_lexicon::Triple {
                     | Solaris
                     | Tvos
                     | VxWorks => Some(crate::targets::Family::unix),
+                    Unknown => {
+                        // wasm32 and wasm64 (other than emscripten above) are part of the wasm
+                        // family.
+                        match self.architecture {
+                            Architecture::Wasm32 | Architecture::Wasm64 => {
+                                Some(crate::targets::Family::wasm)
+                            }
+                            _ => None,
+                        }
+                    }
                     Linux => {
                         // The 'kernel' environment is treated specially as not-unix
                         if self.environment != Environment::Kernel {
@@ -231,6 +243,7 @@ impl TargetMatcher for target_lexicon::Triple {
                             None
                         }
                     }
+                    Wasi => Some(crate::targets::Family::wasm),
                     Windows => Some(crate::targets::Family::windows),
                     // I really dislike non-exhaustive :(
                     _ => None,
