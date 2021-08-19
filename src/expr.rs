@@ -530,7 +530,7 @@ impl Expression {
         result_stack.pop().unwrap()
     }
 
-    /// The original string which has been parsed to produce this ['Expression`].
+    /// The original string which has been parsed to produce this [`Expression`].
     ///
     /// ```
     /// use cfg_expr::Expression;
