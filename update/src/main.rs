@@ -77,7 +77,7 @@ fn real_main() -> Result<(), String> {
     out.push_str(
         "
 
-        pub const ALL_BUILTINS: &[TargetInfo<'static>] = &[
+        pub const ALL_BUILTINS: &[TargetInfo] = &[
 ",
     );
 
@@ -191,7 +191,7 @@ fn real_main() -> Result<(), String> {
         writeln!(
             out,
             "    TargetInfo {{
-        triple: \"{triple}\",
+        triple: Triple::new_const(\"{triple}\"),
         os: {os},
         arch: Arch::{arch},
         env: {env},
@@ -243,12 +243,12 @@ fn real_main() -> Result<(), String> {
 }
 
 fn write_impls(out: &mut String, typ: &'static str, builtins: Vec<String>) {
-    writeln!(out, "\nimpl<'a> super::{}<'a> {{", typ).unwrap();
+    writeln!(out, "\nimpl super::{} {{", typ).unwrap();
 
     for thing in builtins {
         writeln!(
             out,
-            "pub const {}: {}<'static> = {}(\"{}\");",
+            "pub const {}: {} = {}::new_const(\"{}\");",
             thing, typ, typ, thing
         )
         .unwrap();

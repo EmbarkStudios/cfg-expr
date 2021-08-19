@@ -28,46 +28,46 @@ pub enum Func {
 use crate::targets as targ;
 
 /// All predicates that pertains to a target, except for `target_feature`
-#[derive(Clone, Copy, PartialEq, Debug)]
-pub enum TargetPredicate<'a> {
+#[derive(Clone, PartialEq, Debug)]
+pub enum TargetPredicate {
     /// [target_arch](https://doc.rust-lang.org/reference/conditional-compilation.html#target_arch)
-    Arch(targ::Arch<'a>),
+    Arch(targ::Arch),
     /// [target_endian](https://doc.rust-lang.org/reference/conditional-compilation.html#target_endian)
     Endian(targ::Endian),
     /// [target_env](https://doc.rust-lang.org/reference/conditional-compilation.html#target_env)
-    Env(targ::Env<'a>),
+    Env(targ::Env),
     /// [target_family](https://doc.rust-lang.org/reference/conditional-compilation.html#target_family)
     /// This also applies to the bare [`unix` and `windows`](https://doc.rust-lang.org/reference/conditional-compilation.html#unix-and-windows)
     /// predicates.
     Family(targ::Family),
     /// [target_os](https://doc.rust-lang.org/reference/conditional-compilation.html#target_os)
-    Os(targ::Os<'a>),
+    Os(targ::Os),
     /// [target_pointer_width](https://doc.rust-lang.org/reference/conditional-compilation.html#target_pointer_width)
     PointerWidth(u8),
     /// [target_vendor](https://doc.rust-lang.org/reference/conditional-compilation.html#target_vendor)
-    Vendor(targ::Vendor<'a>),
+    Vendor(targ::Vendor),
 }
 
 pub trait TargetMatcher {
-    fn matches(&self, tp: TargetPredicate<'_>) -> bool;
+    fn matches(&self, tp: &TargetPredicate) -> bool;
 }
 
-impl<'a> TargetMatcher for targ::TargetInfo<'a> {
-    fn matches(&self, tp: TargetPredicate<'_>) -> bool {
+impl TargetMatcher for targ::TargetInfo {
+    fn matches(&self, tp: &TargetPredicate) -> bool {
         use TargetPredicate::{Arch, Endian, Env, Family, Os, PointerWidth, Vendor};
 
         match tp {
-            Arch(a) => a == self.arch,
-            Endian(end) => end == self.endian,
+            Arch(a) => a == &self.arch,
+            Endian(end) => *end == self.endian,
             // The environment is allowed to be an empty string
-            Env(env) => match self.env {
+            Env(env) => match &self.env {
                 Some(e) => env == e,
                 None => env.0.is_empty(),
             },
-            Family(fam) => Some(fam) == self.family,
-            Os(os) => Some(os) == self.os,
-            PointerWidth(w) => w == self.pointer_width,
-            Vendor(ven) => match self.vendor {
+            Family(fam) => Some(*fam) == self.family,
+            Os(os) => Some(os) == self.os.as_ref(),
+            PointerWidth(w) => *w == self.pointer_width,
+            Vendor(ven) => match &self.vendor {
                 Some(v) => ven == v,
                 None => ven.0 == "unknown",
             },
@@ -79,7 +79,7 @@ impl<'a> TargetMatcher for targ::TargetInfo<'a> {
 impl TargetMatcher for target_lexicon::Triple {
     #[allow(clippy::cognitive_complexity)]
     #[allow(clippy::match_same_arms)]
-    fn matches(&self, tp: TargetPredicate<'_>) -> bool {
+    fn matches(&self, tp: &TargetPredicate) -> bool {
         use target_lexicon::*;
         use TargetPredicate::{Arch, Endian, Env, Family, Os, PointerWidth, Vendor};
 
@@ -204,7 +204,7 @@ impl TargetMatcher for target_lexicon::Triple {
                     Fuchsia, Haiku, Hermit, Illumos, Ios, L4re, Linux, MacOSX, Nebulet, Netbsd,
                     None_, Openbsd, Redox, Solaris, Tvos, Uefi, Unknown, VxWorks, Wasi, Windows,
                 };
-                Some(fam)
+                Some(*fam)
                     == match self.operating_system {
                         Unknown | AmdHsa | Bitrig | Cloudabi | Cuda | Hermit | Nebulet | None_
                         | Uefi | Wasi => None,
@@ -267,19 +267,19 @@ impl TargetMatcher for target_lexicon::Triple {
                     self.environment,
                     Environment::Gnux32 | Environment::GnuIlp32
                 ) {
-                    pw == match self.pointer_width() {
+                    *pw == match self.pointer_width() {
                         Ok(pw) => pw.bits(),
                         Err(_) => return false,
                     }
                 } else {
-                    pw == 32
+                    *pw == 32
                 }
             }
         }
     }
 }
 
-impl<'a> TargetPredicate<'a> {
+impl TargetPredicate {
     /// Returns true of the predicate matches the specified target
     ///
     /// ```
@@ -296,7 +296,7 @@ impl<'a> TargetPredicate<'a> {
     ///     tp::Vendor(Vendor::pc).matches(win)
     /// );
     /// ```
-    pub fn matches<T>(self, target: &T) -> bool
+    pub fn matches<T>(&self, target: &T) -> bool
     where
         T: TargetMatcher,
     {
@@ -325,7 +325,7 @@ pub(crate) struct InnerTarget {
 #[derive(Debug, PartialEq)]
 pub enum Predicate<'a> {
     /// A target predicate, with the `target_` prefix
-    Target(TargetPredicate<'a>),
+    Target(TargetPredicate),
     /// Whether rustc's test harness is [enabled](https://doc.rust-lang.org/reference/conditional-compilation.html#test)
     Test,
     /// [Enabled](https://doc.rust-lang.org/reference/conditional-compilation.html#debug_assertions)
@@ -367,15 +367,17 @@ impl InnerPredicate {
 
         match self {
             IP::Target(it) => match &it.which {
-                Which::Arch => Target(TargetPredicate::Arch(targ::Arch(
-                    &s[it.span.clone().unwrap()],
+                Which::Arch => Target(TargetPredicate::Arch(targ::Arch::new(
+                    s[it.span.clone().unwrap()].to_owned(),
                 ))),
-                Which::Os => Target(TargetPredicate::Os(targ::Os(&s[it.span.clone().unwrap()]))),
-                Which::Vendor => Target(TargetPredicate::Vendor(targ::Vendor(
-                    &s[it.span.clone().unwrap()],
+                Which::Os => Target(TargetPredicate::Os(targ::Os::new(
+                    s[it.span.clone().unwrap()].to_owned(),
                 ))),
-                Which::Env => Target(TargetPredicate::Env(targ::Env(
-                    &s[it.span.clone().unwrap()],
+                Which::Vendor => Target(TargetPredicate::Vendor(targ::Vendor::new(
+                    s[it.span.clone().unwrap()].to_owned(),
+                ))),
+                Which::Env => Target(TargetPredicate::Env(targ::Env::new(
+                    s[it.span.clone().unwrap()].to_owned(),
                 ))),
                 Which::Endian(end) => Target(TargetPredicate::Endian(*end)),
                 Which::Family(fam) => Target(TargetPredicate::Family(*fam)),
