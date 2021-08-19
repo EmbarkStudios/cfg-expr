@@ -6,9 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+### Changed
+- [PR#35](https://github.com/EmbarkStudios/cfg-expr/pull/35) changed `TargetInfo`, `Os`, `Arch`, `Env`, and `Vendor` to use a `Cow<'static, str>` to avoid the need for lifetime parameters for the common case of statically known target information, but still support arbitrary/future variants. Thanks [@sunshowers](https://github.com/sunshowers)!
+
+### Fixed
+- [PR#33](https://github.com/EmbarkStudios/cfg-expr/pull/33) added clippy.toml an `msrv` so that it's consistent which clippy lints are used across environments. Thanks [@remilauzier](https://github.com/remilauzier)!
+
 ## [0.8.1] - 2021-08-05
 ### Changed
-- [PR#31](https://blog.rust-lang.org/2021/05/06/Rust-1.52.0.html) reverted the usage of "or patterns" that were only added in 1.53.0. We now state the MSRV as 1.52.0. Thanks [@cgwalters](https://github.com/cgwalters)!
+- [PR#31](https://github.com/EmbarkStudios/cfg-expr/pull/31) reverted the usage of "or patterns" that were only added in 1.53.0. We now state the MSRV as 1.52.0. Thanks [@cgwalters](https://github.com/cgwalters)!
 
 ## [0.8.0] - 2021-07-16
 ### Changed
@@ -22,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.7.3] - 2021-03-16
 ### Added
 - [PR#25](https://github.com/EmbarkStudios/cfg-expr/pull/25) added `Clone` for `Expression`. Thanks [@gdesmott](https://github.com/gdesmott)!
+
 ## [0.7.2] - 2021-03-16
 ### Added
 - [PR#23](https://github.com/EmbarkStudios/cfg-expr/pull/23) added a `PartialEq` implementation for `Expression`, primarily for cases where an `Expression` is stored in a type that itself requires `PartialEq`. This is only a simple syntactical equality check. Thanks [@gdesmott](https://github.com/gdesmott)!
