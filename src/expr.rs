@@ -69,7 +69,7 @@ impl TargetMatcher for targ::TargetInfo {
             PointerWidth(w) => *w == self.pointer_width,
             Vendor(ven) => match &self.vendor {
                 Some(v) => ven == v,
-                None => ven.0 == "unknown",
+                None => ven == &targ::Vendor::unknown,
             },
         }
     }
@@ -85,12 +85,12 @@ impl TargetMatcher for target_lexicon::Triple {
 
         match tp {
             Arch(arch) => {
-                if arch.0 == "x86" {
+                if arch == &targ::Arch::x86 {
                     matches!(self.architecture, Architecture::X86_32(_))
-                } else if arch.0 == "wasm32" {
+                } else if arch == &targ::Arch::wasm32 {
                     self.architecture == Architecture::Wasm32
                         || self.architecture == Architecture::Asmjs
-                } else if arch.0 == "arm" {
+                } else if arch == &targ::Arch::arm {
                     matches!(self.architecture, Architecture::Arm(_))
                 } else {
                     match arch.0.parse::<Architecture>() {
@@ -120,23 +120,23 @@ impl TargetMatcher for target_lexicon::Triple {
             Env(env) => {
                 // The environment is implied by some operating systems
                 match self.operating_system {
-                    OperatingSystem::Redox => env.0 == "relibc",
-                    OperatingSystem::VxWorks => env.0 == "gnu",
+                    OperatingSystem::Redox => env == &targ::Env::relibc,
+                    OperatingSystem::VxWorks => env == &targ::Env::gnu,
                     OperatingSystem::Freebsd => match self.architecture {
                         Architecture::Arm(ArmArchitecture::Armv6)
-                        | Architecture::Arm(ArmArchitecture::Armv7) => env.0 == "gnueabihf",
+                        | Architecture::Arm(ArmArchitecture::Armv7) => env == &targ::Env::gnueabihf,
                         _ => env.0.is_empty(),
                     },
                     OperatingSystem::Netbsd => match self.architecture {
                         Architecture::Arm(ArmArchitecture::Armv6)
-                        | Architecture::Arm(ArmArchitecture::Armv7) => env.0 == "eabihf",
+                        | Architecture::Arm(ArmArchitecture::Armv7) => env == &targ::Env::eabihf,
                         _ => env.0.is_empty(),
                     },
                     OperatingSystem::None_
                     | OperatingSystem::Cloudabi
                     | OperatingSystem::Hermit
                     | OperatingSystem::Ios => match self.environment {
-                        Environment::LinuxKernel => env.0 == "gnu",
+                        Environment::LinuxKernel => env == &targ::Env::gnu,
                         _ => env.0.is_empty(),
                     },
                     _ => {
@@ -153,7 +153,7 @@ impl TargetMatcher for target_lexicon::Triple {
                             match env.0.parse::<Environment>() {
                                 Ok(e) => {
                                     // Rustc shortens multiple "gnu*" environments to just "gnu"
-                                    if env.0 == "gnu" {
+                                    if env == &targ::Env::gnu {
                                         match self.environment {
                                             Environment::Gnu
                                             | Environment::Gnuabi64
@@ -175,7 +175,7 @@ impl TargetMatcher for target_lexicon::Triple {
                                             }
                                             _ => false,
                                         }
-                                    } else if env.0 == "musl" {
+                                    } else if env == &targ::Env::musl {
                                         matches!(
                                             self.environment,
                                             Environment::Musl
@@ -183,7 +183,7 @@ impl TargetMatcher for target_lexicon::Triple {
                                                 | Environment::Musleabihf
                                                 | Environment::Muslabi64
                                         )
-                                    } else if env.0 == "uclibc" {
+                                    } else if env == &targ::Env::uclibc {
                                         matches!(
                                             self.environment,
                                             Environment::Uclibc | Environment::Uclibceabi
@@ -239,17 +239,17 @@ impl TargetMatcher for target_lexicon::Triple {
             }
             Os(os) => match os.0.parse::<OperatingSystem>() {
                 Ok(o) => match self.environment {
-                    Environment::HermitKernel => os.0 == "hermit",
+                    Environment::HermitKernel => os == &targ::Os::hermit,
                     _ => self.operating_system == o,
                 },
                 Err(_) => {
                     // Handle special case for darwin/macos, where the triple is
                     // "darwin", but rustc identifies the OS as "macos"
-                    if os.0 == "macos" && self.operating_system == OperatingSystem::Darwin {
+                    if os == &targ::Os::macos && self.operating_system == OperatingSystem::Darwin {
                         true
                     } else {
                         // For android, the os is still linux, but the environment is android
-                        os.0 == "android"
+                        os == &targ::Os::android
                             && self.operating_system == OperatingSystem::Linux
                             && (self.environment == Environment::Android
                                 || self.environment == Environment::Androideabi)
