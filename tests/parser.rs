@@ -35,16 +35,6 @@ macro_rules! err {
         };
 
         similar_asserts::assert_eq!(expected, act_err);
-        // if act_err != expected {
-        //     let act_text = format!("{:?}", act_err);
-        //     let exp_text = format!("{:?}", expected);
-        //     assert!(
-        //         false,
-        //         "\n{}\n{}",
-        //         act_err,
-        //         difference::Changeset::new(&exp_text, &act_text, "")
-        //     );
-        // }
     };
 
     ($text:expr => $unexpected:expr; $range:expr) => {
