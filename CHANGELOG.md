@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased] - ReleaseDate
 ### Changed
 - [PR#35](https://github.com/EmbarkStudios/cfg-expr/pull/35) changed `TargetInfo`, `Os`, `Arch`, `Env`, and `Vendor` to use a `Cow<'static, str>` to avoid the need for lifetime parameters for the common case of statically known target information, but still support arbitrary/future variants. Thanks [@sunshowers](https://github.com/sunshowers)!
+- [PR#38](https://github.com/EmbarkStudios/cfg-expr/pull/38) updated the built-in target list to `1.54.0`, which notably includes the addition of the new `wasm` variant to `target_family`. Thanks [@sunshowers](https://github.com/sunshowers)!
 
 ### Fixed
 - [PR#33](https://github.com/EmbarkStudios/cfg-expr/pull/33) added clippy.toml an `msrv` so that it's consistent which clippy lints are used across environments. Thanks [@remilauzier](https://github.com/remilauzier)!
