@@ -89,6 +89,7 @@ fn real_main() -> Result<(), String> {
     let mut vendors: Vec<String> = Vec::new();
     let mut oses: Vec<String> = Vec::new();
     let mut envs: Vec<String> = Vec::new();
+    let mut families: Vec<String> = Vec::new();
 
     for target in targets.lines() {
         let output = Command::new(&rustc)
@@ -187,6 +188,7 @@ fn real_main() -> Result<(), String> {
         insert(vendor, &mut vendors);
         insert(os, &mut oses);
         insert(env, &mut envs);
+        insert(family, &mut families);
 
         writeln!(
             out,
@@ -225,6 +227,7 @@ fn real_main() -> Result<(), String> {
     write_impls(&mut out, "Arch", arches);
     write_impls(&mut out, "Vendor", vendors);
     write_impls(&mut out, "Os", oses);
+    write_impls(&mut out, "Family", families);
     write_impls(&mut out, "Env", envs);
 
     std::fs::write("src/targets/builtins.rs", out)

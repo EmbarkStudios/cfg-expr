@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.53.0";
+pub(crate) const RUSTC_VERSION: &str = "1.54.0";
 
 pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
@@ -521,6 +521,26 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         family: None,
         pointer_width: 16,
+        endian: Endian::little,
+    },
+    TargetInfo {
+        triple: Triple::new_const("bpfeb-unknown-none"),
+        os: None,
+        arch: Arch::bpf,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        family: None,
+        pointer_width: 64,
+        endian: Endian::big,
+    },
+    TargetInfo {
+        triple: Triple::new_const("bpfel-unknown-none"),
+        os: None,
+        arch: Arch::bpf,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        family: None,
+        pointer_width: 64,
         endian: Endian::little,
     },
     TargetInfo {
@@ -1329,7 +1349,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         arch: Arch::wasm32,
         env: None,
         vendor: Some(Vendor::unknown),
-        family: None,
+        family: Some(Family::wasm),
         pointer_width: 32,
         endian: Endian::little,
     },
@@ -1339,7 +1359,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         arch: Arch::wasm32,
         env: None,
         vendor: Some(Vendor::unknown),
-        family: None,
+        family: Some(Family::wasm),
         pointer_width: 32,
         endian: Endian::little,
     },
@@ -1349,7 +1369,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         arch: Arch::wasm64,
         env: None,
         vendor: Some(Vendor::unknown),
-        family: None,
+        family: Some(Family::wasm),
         pointer_width: 64,
         endian: Endian::little,
     },
@@ -1649,6 +1669,7 @@ impl super::Arch {
     pub const aarch64: Arch = Arch::new_const("aarch64");
     pub const arm: Arch = Arch::new_const("arm");
     pub const avr: Arch = Arch::new_const("avr");
+    pub const bpf: Arch = Arch::new_const("bpf");
     pub const hexagon: Arch = Arch::new_const("hexagon");
     pub const mips: Arch = Arch::new_const("mips");
     pub const mips64: Arch = Arch::new_const("mips64");
@@ -1704,6 +1725,12 @@ impl super::Os {
     pub const vxworks: Os = Os::new_const("vxworks");
     pub const wasi: Os = Os::new_const("wasi");
     pub const windows: Os = Os::new_const("windows");
+}
+
+impl super::Family {
+    pub const unix: Family = Family::new_const("unix");
+    pub const wasm: Family = Family::new_const("wasm");
+    pub const windows: Family = Family::new_const("windows");
 }
 
 impl super::Env {

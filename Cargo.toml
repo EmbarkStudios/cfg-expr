@@ -19,7 +19,7 @@ targets = ["target-lexicon"]
 
 [dependencies]
 smallvec = "1.6"
-target-lexicon = { version = "0.12.1", optional = true }
+target-lexicon = { version = "0.12.2", optional = true }
 
 [dev-dependencies]
 difference = "2.0"

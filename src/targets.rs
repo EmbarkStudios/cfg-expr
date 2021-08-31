@@ -4,7 +4,7 @@ use std::borrow::Cow;
 mod builtins;
 
 /// A list of all of the [builtin](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_target/spec/index.html#modules)
-/// targets known to rustc, as of 1.49.0
+/// targets known to rustc, as of 1.54.0
 pub use builtins::ALL_BUILTINS;
 
 /// The unique identifier for a target.
@@ -23,6 +23,11 @@ pub struct Vendor(pub Cow<'static, str>);
 /// sometimes isn't an actual operating system.
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct Os(pub Cow<'static, str>);
+
+/// The target family, which describes a set of targets grouped in some logical manner, typically by
+/// operating system. This includes values like `unix` and `windows`.
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+pub struct Family(pub Cow<'static, str>);
 
 /// The "environment" field, which specifies an ABI environment on top of the
 /// operating system. In many configurations, this field is omitted, and the
@@ -73,6 +78,7 @@ field_impls!(Triple);
 field_impls!(Arch);
 field_impls!(Vendor);
 field_impls!(Os);
+field_impls!(Family);
 field_impls!(Env);
 
 macro_rules! target_enum {
@@ -135,17 +141,6 @@ target_enum! {
     }
 }
 
-target_enum! {
-    /// All of the target families known to rustc
-    #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
-    pub enum Family {
-        /// Everything that isn't windows, and has a family!
-        unix,
-        /// The lone wolf of target families.
-        windows,
-    }
-}
-
 /// Contains information regarding a particular target known to rustc
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct TargetInfo {
@@ -198,7 +193,7 @@ pub fn get_builtin_target_by_triple(triple: &str) -> Option<&'static TargetInfo>
 /// versions.
 ///
 /// ```
-/// assert_eq!("1.53.0", cfg_expr::targets::rustc_version());
+/// assert_eq!("1.54.0", cfg_expr::targets::rustc_version());
 /// ```
 pub fn rustc_version() -> &'static str {
     builtins::RUSTC_VERSION
