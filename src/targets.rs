@@ -3,9 +3,8 @@ use std::borrow::Cow;
 
 mod builtins;
 
-/// A lis
-/// t of all of the [builtin](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_target/spec/index.html#modules)
-/// targets known to rustc, as of 1.49.0
+/// A list of all of the [builtin](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_target/spec/index.html#modules)
+/// targets known to rustc, as of 1.54.0
 pub use builtins::ALL_BUILTINS;
 
 /// The unique identifier for a target.
