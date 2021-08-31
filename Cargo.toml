@@ -22,4 +22,4 @@ smallvec = "1.6"
 target-lexicon = { version = "0.12.2", optional = true }
 
 [dev-dependencies]
-difference = "2.0"
+similar-asserts = "1.1"
