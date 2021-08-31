@@ -27,7 +27,6 @@ pub struct Os(pub Cow<'static, str>);
 /// The target family, which describes a set of targets grouped in some logical manner, typically by
 /// operating system. This includes values like `unix` and `windows`.
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
-#[non_exhaustive]
 pub struct Family(pub Cow<'static, str>);
 
 /// The "environment" field, which specifies an ABI environment on top of the
