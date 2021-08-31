@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [PR#38](https://github.com/EmbarkStudios/cfg-expr/pull/38) updated the built-in target list to `1.54.0`, which notably includes the addition of the new `wasm` variant to `target_family`. Thanks [@sunshowers](https://github.com/sunshowers)!
 
 ### Fixed
-- [PR#33](https://github.com/EmbarkStudios/cfg-expr/pull/33) added clippy.toml an `msrv` so that it's consistent which clippy lints are used across environments. Thanks [@remilauzier](https://github.com/remilauzier)!
+- [PR#33](https://github.com/EmbarkStudios/cfg-expr/pull/33) added clippy.toml with an `msrv` so clippy lints are consistent across environments. Thanks [@remilauzier](https://github.com/remilauzier)!
 
 ## [0.8.1] - 2021-08-05
 ### Changed
