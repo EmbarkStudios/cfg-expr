@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+## [0.9.0] - 2021-08-31
 ### Changed
 - [PR#35](https://github.com/EmbarkStudios/cfg-expr/pull/35) changed `TargetInfo`, `Os`, `Arch`, `Env`, and `Vendor` to use a `Cow<'static, str>` to avoid the need for lifetime parameters for the common case of statically known target information, but still support arbitrary/future variants. Thanks [@sunshowers](https://github.com/sunshowers)!
 - [PR#38](https://github.com/EmbarkStudios/cfg-expr/pull/38) updated the built-in target list to `1.54.0`, which notably includes the addition of the new `wasm` variant to `target_family`. Thanks [@sunshowers](https://github.com/sunshowers)!
@@ -90,7 +91,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial add of all the things
 
 <!-- next-url -->
-[Unreleased]: https://github.com/EmbarkStudios/cfg-expr/compare/0.8.1...HEAD
+[Unreleased]: https://github.com/EmbarkStudios/cfg-expr/compare/0.9.0...HEAD
+[0.9.0]: https://github.com/EmbarkStudios/cfg-expr/compare/0.8.1...0.9.0
 [0.8.1]: https://github.com/EmbarkStudios/cfg-expr/compare/0.8.0...0.8.1
 [0.8.0]: https://github.com/EmbarkStudios/cfg-expr/compare/0.7.4...0.8.0
 [0.7.4]: https://github.com/EmbarkStudios/cfg-expr/compare/0.7.3...0.7.4
