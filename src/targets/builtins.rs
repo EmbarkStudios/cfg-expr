@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.55.0";
+pub(crate) const RUSTC_VERSION: &str = "1.58.0";
 
 pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
@@ -74,10 +74,20 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         endian: Endian::little,
     },
     TargetInfo {
+        triple: Triple::new_const("aarch64-kmc-solid_asp3"),
+        os: Some(Os::solid_asp3),
+        arch: Arch::aarch64,
+        env: None,
+        vendor: Some(Vendor::kmc),
+        family: None,
+        pointer_width: 64,
+        endian: Endian::little,
+    },
+    TargetInfo {
         triple: Triple::new_const("aarch64-linux-android"),
         os: Some(Os::android),
         arch: Arch::aarch64,
-        env: Some(Env::gnu),
+        env: None,
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
@@ -194,6 +204,16 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         endian: Endian::little,
     },
     TargetInfo {
+        triple: Triple::new_const("aarch64-unknown-uefi"),
+        os: Some(Os::uefi),
+        arch: Arch::aarch64,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        family: None,
+        pointer_width: 64,
+        endian: Endian::little,
+    },
+    TargetInfo {
         triple: Triple::new_const("aarch64-uwp-windows-msvc"),
         os: Some(Os::windows),
         arch: Arch::aarch64,
@@ -237,7 +257,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         triple: Triple::new_const("arm-linux-androideabi"),
         os: Some(Os::android),
         arch: Arch::arm,
-        env: Some(Env::gnu),
+        env: None,
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
@@ -364,6 +384,16 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         endian: Endian::little,
     },
     TargetInfo {
+        triple: Triple::new_const("armv6k-nintendo-3ds"),
+        os: Some(Os::horizon),
+        arch: Arch::arm,
+        env: Some(Env::newlib),
+        vendor: Some(Vendor::nintendo),
+        family: Some(Family::unix),
+        pointer_width: 32,
+        endian: Endian::little,
+    },
+    TargetInfo {
         triple: Triple::new_const("armv7-apple-ios"),
         os: Some(Os::ios),
         arch: Arch::arm,
@@ -377,7 +407,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         triple: Triple::new_const("armv7-linux-androideabi"),
         os: Some(Os::android),
         arch: Arch::arm,
-        env: Some(Env::gnu),
+        env: None,
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
@@ -434,6 +464,16 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         endian: Endian::little,
     },
     TargetInfo {
+        triple: Triple::new_const("armv7-unknown-linux-uclibceabihf"),
+        os: Some(Os::linux),
+        arch: Arch::arm,
+        env: Some(Env::uclibc),
+        vendor: Some(Vendor::unknown),
+        family: Some(Family::unix),
+        pointer_width: 32,
+        endian: Endian::little,
+    },
+    TargetInfo {
         triple: Triple::new_const("armv7-unknown-netbsd-eabihf"),
         os: Some(Os::netbsd),
         arch: Arch::arm,
@@ -450,6 +490,26 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         env: Some(Env::gnu),
         vendor: Some(Vendor::wrs),
         family: Some(Family::unix),
+        pointer_width: 32,
+        endian: Endian::little,
+    },
+    TargetInfo {
+        triple: Triple::new_const("armv7a-kmc-solid_asp3-eabi"),
+        os: Some(Os::solid_asp3),
+        arch: Arch::arm,
+        env: None,
+        vendor: Some(Vendor::kmc),
+        family: None,
+        pointer_width: 32,
+        endian: Endian::little,
+    },
+    TargetInfo {
+        triple: Triple::new_const("armv7a-kmc-solid_asp3-eabihf"),
+        os: Some(Os::solid_asp3),
+        arch: Arch::arm,
+        env: None,
+        vendor: Some(Vendor::kmc),
+        family: None,
         pointer_width: 32,
         endian: Endian::little,
     },
@@ -509,7 +569,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         arch: Arch::wasm32,
         env: None,
         vendor: Some(Vendor::unknown),
-        family: Some(Family::unix),
+        family: Some(Family::wasm),
         pointer_width: 32,
         endian: Endian::little,
     },
@@ -607,7 +667,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         triple: Triple::new_const("i686-linux-android"),
         os: Some(Os::android),
         arch: Arch::x86,
-        env: Some(Env::gnu),
+        env: None,
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
@@ -732,6 +792,16 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         family: Some(Family::unix),
         pointer_width: 32,
         endian: Endian::little,
+    },
+    TargetInfo {
+        triple: Triple::new_const("m68k-unknown-linux-gnu"),
+        os: Some(Os::linux),
+        arch: Arch::m68k,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        family: Some(Family::unix),
+        pointer_width: 32,
+        endian: Endian::big,
     },
     TargetInfo {
         triple: Triple::new_const("mips-unknown-linux-gnu"),
@@ -914,6 +984,16 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         endian: Endian::little,
     },
     TargetInfo {
+        triple: Triple::new_const("powerpc-unknown-freebsd"),
+        os: Some(Os::freebsd),
+        arch: Arch::powerpc,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        family: Some(Family::unix),
+        pointer_width: 32,
+        endian: Endian::big,
+    },
+    TargetInfo {
         triple: Triple::new_const("powerpc-unknown-linux-gnu"),
         os: Some(Os::linux),
         arch: Arch::powerpc,
@@ -1090,6 +1170,16 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         env: None,
         vendor: Some(Vendor::unknown),
         family: None,
+        pointer_width: 32,
+        endian: Endian::little,
+    },
+    TargetInfo {
+        triple: Triple::new_const("riscv32imc-esp-espidf"),
+        os: Some(Os::espidf),
+        arch: Arch::riscv32,
+        env: Some(Env::newlib),
+        vendor: Some(Vendor::espressif),
+        family: Some(Family::unix),
         pointer_width: 32,
         endian: Endian::little,
     },
@@ -1287,7 +1377,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         triple: Triple::new_const("thumbv7neon-linux-androideabi"),
         os: Some(Os::android),
         arch: Arch::arm,
-        env: Some(Env::gnu),
+        env: None,
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 32,
@@ -1349,7 +1439,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         arch: Arch::wasm32,
         env: None,
         vendor: Some(Vendor::unknown),
-        family: Some(Family::unix),
+        family: Some(Family::wasm),
         pointer_width: 32,
         endian: Endian::little,
     },
@@ -1447,7 +1537,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         triple: Triple::new_const("x86_64-linux-android"),
         os: Some(Os::android),
         arch: Arch::x86_64,
-        env: Some(Env::gnu),
+        env: None,
         vendor: Some(Vendor::unknown),
         family: Some(Family::unix),
         pointer_width: 64,
@@ -1594,8 +1684,18 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         endian: Endian::little,
     },
     TargetInfo {
+        triple: Triple::new_const("x86_64-unknown-none"),
+        os: None,
+        arch: Arch::x86_64,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        family: None,
+        pointer_width: 64,
+        endian: Endian::little,
+    },
+    TargetInfo {
         triple: Triple::new_const("x86_64-unknown-none-hermitkernel"),
-        os: Some(Os::hermit),
+        os: None,
         arch: Arch::x86_64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1681,6 +1781,7 @@ impl super::Arch {
     pub const avr: Arch = Arch::new_const("avr");
     pub const bpf: Arch = Arch::new_const("bpf");
     pub const hexagon: Arch = Arch::new_const("hexagon");
+    pub const m68k: Arch = Arch::new_const("m68k");
     pub const mips: Arch = Arch::new_const("mips");
     pub const mips64: Arch = Arch::new_const("mips64");
     pub const msp430: Arch = Arch::new_const("msp430");
@@ -1700,7 +1801,10 @@ impl super::Arch {
 
 impl super::Vendor {
     pub const apple: Vendor = Vendor::new_const("apple");
+    pub const espressif: Vendor = Vendor::new_const("espressif");
     pub const fortanix: Vendor = Vendor::new_const("fortanix");
+    pub const kmc: Vendor = Vendor::new_const("kmc");
+    pub const nintendo: Vendor = Vendor::new_const("nintendo");
     pub const nvidia: Vendor = Vendor::new_const("nvidia");
     pub const pc: Vendor = Vendor::new_const("pc");
     pub const sony: Vendor = Vendor::new_const("sony");
@@ -1715,10 +1819,12 @@ impl super::Os {
     pub const cuda: Os = Os::new_const("cuda");
     pub const dragonfly: Os = Os::new_const("dragonfly");
     pub const emscripten: Os = Os::new_const("emscripten");
+    pub const espidf: Os = Os::new_const("espidf");
     pub const freebsd: Os = Os::new_const("freebsd");
     pub const fuchsia: Os = Os::new_const("fuchsia");
     pub const haiku: Os = Os::new_const("haiku");
     pub const hermit: Os = Os::new_const("hermit");
+    pub const horizon: Os = Os::new_const("horizon");
     pub const illumos: Os = Os::new_const("illumos");
     pub const ios: Os = Os::new_const("ios");
     pub const l4re: Os = Os::new_const("l4re");
@@ -1729,6 +1835,7 @@ impl super::Os {
     pub const psp: Os = Os::new_const("psp");
     pub const redox: Os = Os::new_const("redox");
     pub const solaris: Os = Os::new_const("solaris");
+    pub const solid_asp3: Os = Os::new_const("solid_asp3");
     pub const tvos: Os = Os::new_const("tvos");
     pub const uefi: Os = Os::new_const("uefi");
     pub const unknown: Os = Os::new_const("unknown");
@@ -1749,6 +1856,7 @@ impl super::Env {
     pub const gnueabihf: Env = Env::new_const("gnueabihf");
     pub const msvc: Env = Env::new_const("msvc");
     pub const musl: Env = Env::new_const("musl");
+    pub const newlib: Env = Env::new_const("newlib");
     pub const relibc: Env = Env::new_const("relibc");
     pub const sgx: Env = Env::new_const("sgx");
     pub const uclibc: Env = Env::new_const("uclibc");
