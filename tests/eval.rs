@@ -29,6 +29,24 @@ impl Target {
                         environment: tl::Environment::Unknown,
                         binary_format: tl::BinaryFormat::Unknown,
                     },
+                    "m68k-unknown-linux-gnu" => {
+                        // As of Rust 1.57, the m68k-unknown-linux-gnu target sets the environment
+                        // to None rather than gnu, which appears to be a mistake. target_lexicon
+                        // appears to have the correct behavior around this target. This workaround
+                        // will break, and should be removed, if/when
+                        // https://github.com/rust-lang/rust/pull/91537 makes its way to stable
+                        // Rust.
+                        assert_eq!(
+                            get_builtin_target_by_triple(s).unwrap().env.as_ref(),
+                            None,
+                            "if this changes, this workaround is no longer required",
+                        );
+                        let triple = s.parse().expect("failed to parse m68k-unknown-linux-gnu");
+                        tl::Triple {
+                            environment: tl::Environment::Unknown,
+                            ..triple
+                        }
+                    }
                     triple => match triple.parse() {
                         Ok(l) => l,
                         Err(e) => panic!("failed to parse '{}': {:?}", triple, e),

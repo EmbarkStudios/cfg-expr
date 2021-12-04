@@ -19,7 +19,8 @@ targets = ["target-lexicon"]
 
 [dependencies]
 smallvec = "1.6"
-target-lexicon = { version = "0.12.2", optional = true }
+# TODO: replace with target-lexicon release once fixed
+target-lexicon = { git = "https://github.com/sunshowers/target-lexicon", branch = "rust157", optional = true }
 
 [dev-dependencies]
 similar-asserts = "1.1"
