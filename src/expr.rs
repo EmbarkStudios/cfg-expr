@@ -151,6 +151,7 @@ impl TargetMatcher for target_lexicon::Triple {
                                     | Environment::Softfloat
                                     | Environment::Androideabi
                                     | Environment::Eabi
+                                    | Environment::Eabihf
                             )
                         } else {
                             match env.0.parse::<Environment>() {
@@ -189,7 +190,9 @@ impl TargetMatcher for target_lexicon::Triple {
                                     } else if env == &targ::Env::uclibc {
                                         matches!(
                                             self.environment,
-                                            Environment::Uclibc | Environment::Uclibceabi
+                                            Environment::Uclibc
+                                                | Environment::Uclibceabi
+                                                | Environment::Uclibceabihf
                                         )
                                     } else {
                                         self.environment == e
@@ -203,15 +206,16 @@ impl TargetMatcher for target_lexicon::Triple {
             }
             Family(fam) => {
                 use target_lexicon::OperatingSystem::{
-                    AmdHsa, Bitrig, Cloudabi, Cuda, Darwin, Dragonfly, Emscripten, Freebsd,
-                    Fuchsia, Haiku, Hermit, Illumos, Ios, L4re, Linux, MacOSX, Nebulet, Netbsd,
-                    None_, Openbsd, Redox, Solaris, Tvos, Uefi, Unknown, VxWorks, Wasi, Windows,
+                    AmdHsa, Bitrig, Cloudabi, Cuda, Darwin, Dragonfly, Emscripten, Espidf, Freebsd,
+                    Fuchsia, Haiku, Hermit, Horizon, Illumos, Ios, L4re, Linux, MacOSX, Nebulet,
+                    Netbsd, None_, Openbsd, Redox, Solaris, Tvos, Uefi, Unknown, VxWorks, Wasi,
+                    Windows,
                 };
                 let lexicon_fam = match self.operating_system {
                     AmdHsa | Bitrig | Cloudabi | Cuda | Hermit | Nebulet | None_ | Uefi => None,
                     Darwin
                     | Dragonfly
-                    | Emscripten
+                    | Espidf
                     | Freebsd
                     | Fuchsia
                     | Haiku
@@ -219,17 +223,17 @@ impl TargetMatcher for target_lexicon::Triple {
                     | Ios
                     | L4re
                     | MacOSX { .. }
+                    | Horizon
                     | Netbsd
                     | Openbsd
                     | Redox
                     | Solaris
                     | Tvos
                     | VxWorks => Some(crate::targets::Family::unix),
-                    Unknown => {
-                        // wasm32 and wasm64 (other than emscripten above) are part of the wasm
-                        // family.
+                    Emscripten | Unknown => {
+                        // asmjs, wasm32 and wasm64 are part of the wasm family.
                         match self.architecture {
-                            Architecture::Wasm32 | Architecture::Wasm64 => {
+                            Architecture::Asmjs | Architecture::Wasm32 | Architecture::Wasm64 => {
                                 Some(crate::targets::Family::wasm)
                             }
                             _ => None,
