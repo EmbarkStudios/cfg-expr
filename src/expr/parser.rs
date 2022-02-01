@@ -253,7 +253,7 @@ impl Expression {
                         };
 
                         if let Some(fs) = func_stack.last_mut() {
-                            fs.nest_level += 1
+                            fs.nest_level += 1;
                         }
 
                         func_stack.push(FuncAndSpan {

@@ -1,4 +1,7 @@
+<!-- markdownlint-disable blanks-around-headings blanks-around-lists no-duplicate-heading -->
+
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
@@ -6,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+### Changed
+- [PR#42](https://github.com/EmbarkStudios/cfg-expr/pull/42) updated the builtin target list to 1.58.0. Thanks [@sunshowers](https://github.com/sunshowers)!
+
 ## [0.9.0] - 2021-08-31
 ### Changed
 - [PR#35](https://github.com/EmbarkStudios/cfg-expr/pull/35) changed `TargetInfo`, `Os`, `Arch`, `Env`, and `Vendor` to use a `Cow<'static, str>` to avoid the need for lifetime parameters for the common case of statically known target information, but still support arbitrary/future variants. Thanks [@sunshowers](https://github.com/sunshowers)!
