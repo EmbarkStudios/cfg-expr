@@ -64,7 +64,7 @@ impl TargetMatcher for targ::TargetInfo {
                 Some(e) => env == e,
                 None => env.0.is_empty(),
             },
-            Family(fam) => Some(fam) == self.family.as_ref(),
+            Family(fam) => self.families.contains(fam),
             Os(os) => Some(os) == self.os.as_ref(),
             PointerWidth(w) => *w == self.pointer_width,
             Vendor(ven) => match &self.vendor {
@@ -211,8 +211,8 @@ impl TargetMatcher for target_lexicon::Triple {
                     Netbsd, None_, Openbsd, Redox, Solaris, Tvos, Uefi, Unknown, VxWorks, Wasi,
                     Windows,
                 };
-                let lexicon_fam = match self.operating_system {
-                    AmdHsa | Bitrig | Cloudabi | Cuda | Hermit | Nebulet | None_ | Uefi => None,
+                match self.operating_system {
+                    AmdHsa | Bitrig | Cloudabi | Cuda | Hermit | Nebulet | None_ | Uefi => false,
                     Darwin
                     | Dragonfly
                     | Espidf
@@ -229,30 +229,39 @@ impl TargetMatcher for target_lexicon::Triple {
                     | Redox
                     | Solaris
                     | Tvos
-                    | VxWorks => Some(crate::targets::Family::unix),
-                    Emscripten | Unknown => {
+                    | VxWorks => fam == &crate::targets::Family::unix,
+                    Emscripten => {
+                        match self.architecture {
+                            // asmjs, wasm32 and wasm64 are part of both the wasm and unix families
+                            Architecture::Asmjs | Architecture::Wasm32 => {
+                                fam == &crate::targets::Family::wasm
+                                    || fam == &crate::targets::Family::unix
+                            }
+                            _ => false,
+                        }
+                    }
+                    Unknown => {
                         // asmjs, wasm32 and wasm64 are part of the wasm family.
                         match self.architecture {
                             Architecture::Asmjs | Architecture::Wasm32 | Architecture::Wasm64 => {
-                                Some(crate::targets::Family::wasm)
+                                fam == &crate::targets::Family::wasm
                             }
-                            _ => None,
+                            _ => false,
                         }
                     }
                     Linux => {
                         // The 'kernel' environment is treated specially as not-unix
                         if self.environment != Environment::Kernel {
-                            Some(crate::targets::Family::unix)
+                            fam == &crate::targets::Family::unix
                         } else {
-                            None
+                            false
                         }
                     }
-                    Wasi => Some(crate::targets::Family::wasm),
-                    Windows => Some(crate::targets::Family::windows),
+                    Wasi => fam == &crate::targets::Family::wasm,
+                    Windows => fam == &crate::targets::Family::windows,
                     // I really dislike non-exhaustive :(
-                    _ => None,
-                };
-                Some(fam) == lexicon_fam.as_ref()
+                    _ => false,
+                }
             }
             Os(os) => match os.0.parse::<OperatingSystem>() {
                 Ok(o) => match self.environment {

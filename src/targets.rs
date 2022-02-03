@@ -1,5 +1,5 @@
 use crate::error::Reason;
-use std::borrow::Cow;
+use std::{borrow::Cow, ops::Deref};
 
 mod builtins;
 
@@ -24,8 +24,8 @@ pub struct Vendor(pub Cow<'static, str>);
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct Os(pub Cow<'static, str>);
 
-/// The target family, which describes a set of targets grouped in some logical manner, typically by
-/// operating system. This includes values like `unix` and `windows`.
+/// Individual target families, which describe a set of targets grouped in some logical manner,
+/// typically by operating system. This includes values like `unix` and `windows`.
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct Family(pub Cow<'static, str>);
 
@@ -80,6 +80,70 @@ field_impls!(Vendor);
 field_impls!(Os);
 field_impls!(Family);
 field_impls!(Env);
+
+/// A set of families for a target.
+///
+/// Each target can be part of one or more families. This struct represents them.
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+pub struct Families(Cow<'static, [Family]>);
+
+impl Families {
+    /// Constructs a new instance.
+    ///
+    /// This method accepts both owned `String`s and `&'static str`s.
+    ///
+    /// If you have a `&'static [&'static str]`, prefer [`Self::new_const`].
+    #[inline]
+    pub fn new(val: impl IntoIterator<Item = Family>) -> Self {
+        let mut families: Vec<_> = val.into_iter().collect();
+        families.sort_unstable();
+        Self(Cow::Owned(families))
+    }
+
+    /// Constructs a new instance of this field from a static slice of `&'static str`.
+    ///
+    /// `val` must be in sorted order: this constructor cannot check for that due to
+    /// limitations in current versions of Rust.
+    #[inline]
+    pub const fn new_const(val: &'static [Family]) -> Self {
+        // TODO: Check that val is sorted.
+        Self(Cow::Borrowed(val))
+    }
+
+    /// Returns true if this list of families contains a given family.
+    pub fn contains(&self, val: &Family) -> bool {
+        // This relies on the sorted-ness of its contents.
+        self.0.binary_search(val).is_ok()
+    }
+}
+
+impl Deref for Families {
+    type Target = [Family];
+    fn deref(&self) -> &Self::Target {
+        &*self.0
+    }
+}
+
+impl AsRef<[Family]> for Families {
+    #[inline]
+    fn as_ref(&self) -> &[Family] {
+        &*self.0
+    }
+}
+
+impl std::fmt::Display for Families {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{{")?;
+        let len = self.0.len();
+        for (idx, family) in self.0.iter().enumerate() {
+            write!(f, "{}", family)?;
+            if idx + 1 < len {
+                write!(f, ", ")?;
+            }
+        }
+        write!(f, "}}")
+    }
+}
 
 macro_rules! target_enum {
     (
@@ -162,10 +226,10 @@ pub struct TargetInfo {
     /// [target_vendor](https://doc.rust-lang.org/reference/conditional-compilation.html#target_vendor)
     /// predicate.
     pub vendor: Option<Vendor>,
-    /// The target's family, if any. Used by the
+    /// The target's families, if any. Used by the
     /// [target_family](https://doc.rust-lang.org/reference/conditional-compilation.html#target_family)
     /// predicate.
-    pub family: Option<Family>,
+    pub families: Families,
     /// The size of the target's pointer type. Used by the
     /// [target_pointer_width](https://doc.rust-lang.org/reference/conditional-compilation.html#target_pointer_width)
     /// predicate.
