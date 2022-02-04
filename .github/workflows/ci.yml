@@ -31,7 +31,7 @@ jobs:
     name: Test
     strategy:
       matrix:
-        toolchain: [1.52, stable]
+        toolchain: [1.54, stable]
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
