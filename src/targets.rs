@@ -95,9 +95,7 @@ impl Families {
     /// If you have a `&'static [&'static str]`, prefer [`Self::new_const`].
     #[inline]
     pub fn new(val: impl IntoIterator<Item = Family>) -> Self {
-        let mut families: Vec<_> = val.into_iter().collect();
-        families.sort_unstable();
-        Self(Cow::Owned(families))
+        Self(Cow::Owned(val.into_iter().collect()))
     }
 
     /// Constructs a new instance of this field from a static slice of `&'static str`.
@@ -111,9 +109,9 @@ impl Families {
     }
 
     /// Returns true if this list of families contains a given family.
+    #[inline]
     pub fn contains(&self, val: &Family) -> bool {
-        // This relies on the sorted-ness of its contents.
-        self.0.binary_search(val).is_ok()
+        self.0.contains(val)
     }
 }
 
