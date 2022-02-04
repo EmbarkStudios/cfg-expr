@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+## [0.10.0] - 2022-02-04
 ### Changed
 - [PR#44](https://github.com/EmbarkStudios/cfg-expr/pull/44) added support for multiple target families that are available from Rust 1.58.0+. Thanks [@sunshowers](https://github.com/sunshowers)!
 
@@ -101,7 +102,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial add of all the things
 
 <!-- next-url -->
-[Unreleased]: https://github.com/EmbarkStudios/cfg-expr/compare/0.9.1...HEAD
+[Unreleased]: https://github.com/EmbarkStudios/cfg-expr/compare/0.10.0...HEAD
+[0.10.0]: https://github.com/EmbarkStudios/cfg-expr/compare/0.9.1...0.10.0
 [0.9.1]: https://github.com/EmbarkStudios/cfg-expr/compare/0.9.0...0.9.1
 [0.9.0]: https://github.com/EmbarkStudios/cfg-expr/compare/0.8.1...0.9.0
 [0.8.1]: https://github.com/EmbarkStudios/cfg-expr/compare/0.8.0...0.8.1
