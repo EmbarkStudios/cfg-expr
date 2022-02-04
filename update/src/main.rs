@@ -90,6 +90,7 @@ fn real_main() -> Result<(), String> {
     let mut oses: Vec<String> = Vec::new();
     let mut envs: Vec<String> = Vec::new();
     let mut families: Vec<String> = Vec::new();
+    let mut family_groups: Vec<Vec<String>> = Vec::new();
 
     for target in targets.lines() {
         let output = Command::new(&rustc)
@@ -115,7 +116,7 @@ fn real_main() -> Result<(), String> {
         let mut arch = None;
         let mut endian = None;
         let mut env = None;
-        let mut family = None;
+        let mut family_group = Vec::new();
         let mut os = None;
         let mut width = None;
         let mut vendor = None;
@@ -143,7 +144,7 @@ fn real_main() -> Result<(), String> {
                                 env = Some(val)
                             }
                         }
-                        "family" => family = Some(val),
+                        "family" => family_group.push(val),
                         "feature" => {
 
                             // num_feats += 1;
@@ -188,7 +189,28 @@ fn real_main() -> Result<(), String> {
         insert(vendor, &mut vendors);
         insert(os, &mut oses);
         insert(env, &mut envs);
-        insert(family, &mut families);
+
+        // Family groups require special handling.
+        family_group.sort_unstable();
+        for family in &family_group {
+            insert(Some(family), &mut families);
+        }
+
+        if !family_group.is_empty() {
+            // Can't compare Vec<String> to Vec<&str> so have to do this comparison.
+            let family_group: Vec<String> = family_group.iter().map(|&s| s.to_owned()).collect();
+            if let Err(i) = family_groups.binary_search_by(|t| t.cmp(&family_group)) {
+                family_groups.insert(i, family_group);
+            }
+        }
+
+        let families_str = if family_group.is_empty() {
+            "Families::new_const(&[])".to_owned()
+        } else {
+            let mut families_str = "Families::".to_owned();
+            write_family_group_str(&mut families_str, family_group.iter().copied());
+            families_str
+        };
 
         writeln!(
             out,
@@ -198,7 +220,7 @@ fn real_main() -> Result<(), String> {
         arch: Arch::{arch},
         env: {env},
         vendor: {vendor},
-        family: {family},
+        families: {families_str},
         pointer_width: {width},
         endian: Endian::{endian},
     }},",
@@ -213,9 +235,6 @@ fn real_main() -> Result<(), String> {
             vendor = vendor
                 .map(|v| format!("Some(Vendor::{})", v))
                 .unwrap_or_else(|| "None".to_owned()),
-            family = family
-                .map(|f| format!("Some(Family::{})", f))
-                .unwrap_or_else(|| "None".to_owned()),
             width = width.expect("target had no pointer_width"),
             endian = endian.expect("target had no endian"),
         )
@@ -228,6 +247,7 @@ fn real_main() -> Result<(), String> {
     write_impls(&mut out, "Vendor", vendors);
     write_impls(&mut out, "Os", oses);
     write_impls(&mut out, "Family", families);
+    write_families_impls(&mut out, family_groups);
     write_impls(&mut out, "Env", envs);
 
     std::fs::write("src/targets/builtins.rs", out)
@@ -258,6 +278,45 @@ fn write_impls(out: &mut String, typ: &'static str, builtins: Vec<String>) {
     }
 
     writeln!(out, "}}").unwrap();
+}
+
+fn write_families_impls(out: &mut String, family_groups: Vec<Vec<String>>) {
+    writeln!(out).unwrap();
+    for family_group in &family_groups {
+        write!(out, "const __families_").unwrap();
+        write_family_group_str(out, family_group.iter().map(|s| s.as_str()));
+        write!(out, ": &[Family] = ").unwrap();
+        write!(out, "&[").unwrap();
+        for family in family_group {
+            writeln!(out, "Family::{}, ", family).unwrap();
+        }
+        writeln!(out, "];").unwrap();
+    }
+
+    writeln!(out, "\nimpl super::Families {{").unwrap();
+
+    for family_group in family_groups {
+        write!(out, "pub const ").unwrap();
+        write_family_group_str(out, family_group.iter().map(|s| s.as_str()));
+        write!(out, ": Families = Families::new_const(__families_").unwrap();
+        write_family_group_str(out, family_group.iter().map(|s| s.as_str()));
+        writeln!(out, ");").unwrap();
+    }
+
+    writeln!(out, "}}").unwrap();
+}
+
+fn write_family_group_str<'a>(
+    out: &mut String,
+    family_group: impl IntoIterator<Item = &'a str> + ExactSizeIterator,
+) {
+    let len = family_group.len();
+    for (idx, family) in family_group.into_iter().enumerate() {
+        out.push_str(family);
+        if idx < len - 1 {
+            out.push_str("_");
+        }
+    }
 }
 
 fn main() {

@@ -117,16 +117,12 @@ fn target_family() {
 
     for target in all {
         let target = Target::make(target.triple.as_str());
-        match target.builtin.family {
-            Some(_) => {
-                assert!(matches_any_family.eval(|pred| { tg_match!(pred, target) }));
-                assert!(!impossible.eval(|pred| { tg_match!(pred, target) }));
-            }
-            None => {
-                assert!(!matches_any_family.eval(|pred| { tg_match!(pred, target) }));
-                assert!(!impossible.eval(|pred| { tg_match!(pred, target) }));
-            }
+        if target.builtin.families.is_empty() {
+            assert!(!matches_any_family.eval(|pred| { tg_match!(pred, target) }));
+        } else {
+            assert!(matches_any_family.eval(|pred| { tg_match!(pred, target) }));
         }
+        assert!(!impossible.eval(|pred| { tg_match!(pred, target) }));
     }
 }
 
