@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+## [0.10.1] - 2022-02-07
 ### Fixed
 - [PR#46](https://github.com/EmbarkStudios/cfg-expr/pull/46) fixed comparison of dynamic target families.
 
@@ -105,7 +106,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial add of all the things
 
 <!-- next-url -->
-[Unreleased]: https://github.com/EmbarkStudios/cfg-expr/compare/0.10.0...HEAD
+[Unreleased]: https://github.com/EmbarkStudios/cfg-expr/compare/0.10.1...HEAD
+[0.10.1]: https://github.com/EmbarkStudios/cfg-expr/compare/0.10.0...0.10.1
 [0.10.0]: https://github.com/EmbarkStudios/cfg-expr/compare/0.9.1...0.10.0
 [0.9.1]: https://github.com/EmbarkStudios/cfg-expr/compare/0.9.0...0.9.1
 [0.9.0]: https://github.com/EmbarkStudios/cfg-expr/compare/0.8.1...0.9.0
