@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+### Fixed
+- [PR#46](https://github.com/EmbarkStudios/cfg-expr/pull/46) fixed comparison of dynamic target families.
+
 ## [0.10.0] - 2022-02-04
 ### Changed
 - [PR#44](https://github.com/EmbarkStudios/cfg-expr/pull/44) added support for multiple target families that are available from Rust 1.58.0+. Thanks [@sunshowers](https://github.com/sunshowers)!
