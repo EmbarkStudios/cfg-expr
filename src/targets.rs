@@ -302,4 +302,12 @@ mod test {
         let mut hash_set = HashSet::new();
         hash_set.insert(target_info);
     }
+
+    #[test]
+    fn family_comp() {
+        let a = super::Families::new([super::Family::unix, super::Family::wasm]);
+        let b = super::Families::new([super::Family::wasm, super::Family::unix]);
+
+        assert_eq!(a, b);
+    }
 }
