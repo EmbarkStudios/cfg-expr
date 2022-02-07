@@ -95,7 +95,9 @@ impl Families {
     /// If you have a `&'static [&'static str]`, prefer [`Self::new_const`].
     #[inline]
     pub fn new(val: impl IntoIterator<Item = Family>) -> Self {
-        Self(Cow::Owned(val.into_iter().collect()))
+        let mut fams: Vec<_> = val.into_iter().collect();
+        fams.sort_unstable();
+        Self(Cow::Owned(fams))
     }
 
     /// Constructs a new instance of this field from a static slice of `&'static str`.
@@ -299,5 +301,13 @@ mod test {
 
         let mut hash_set = HashSet::new();
         hash_set.insert(target_info);
+    }
+
+    #[test]
+    fn family_comp() {
+        let a = super::Families::new([super::Family::unix, super::Family::wasm]);
+        let b = super::Families::new([super::Family::wasm, super::Family::unix]);
+
+        assert_eq!(a, b);
     }
 }
