@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.58.0";
+pub(crate) const RUSTC_VERSION: &str = "1.59.0";
 
 pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
@@ -797,7 +797,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         triple: Triple::new_const("m68k-unknown-linux-gnu"),
         os: Some(Os::linux),
         arch: Arch::m68k,
-        env: None,
+        env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
         families: Families::unix,
         pointer_width: 32,
@@ -1191,6 +1191,16 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         vendor: Some(Vendor::unknown),
         families: Families::new_const(&[]),
         pointer_width: 32,
+        endian: Endian::little,
+    },
+    TargetInfo {
+        triple: Triple::new_const("riscv64gc-unknown-freebsd"),
+        os: Some(Os::freebsd),
+        arch: Arch::riscv64,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 64,
         endian: Endian::little,
     },
     TargetInfo {
