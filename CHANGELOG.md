@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+### Changed
+- [PR#48](https://github.com/EmbarkStudios/cfg-expr/pull/48) updated the builtin target list to 1.59.0.
+
 ## [0.10.1] - 2022-02-07
 ### Fixed
 - [PR#46](https://github.com/EmbarkStudios/cfg-expr/pull/46) fixed comparison of dynamic target families.
