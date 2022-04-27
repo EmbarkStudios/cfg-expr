@@ -36,6 +36,8 @@ pub enum Reason {
     InvalidInteger,
     /// The root cfg() may only contain a single predicate
     MultipleRootPredicates,
+    /// A `target_has_atomic` predicate didn't correctly parse.
+    InvalidHasAtomic,
     /// An element was not part of the builtin information in rustc
     UnknownBuiltin,
 }
@@ -72,9 +74,9 @@ impl fmt::Display for ParseError {
 impl fmt::Display for Reason {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         use Reason::{
-            Empty, InvalidCharacters, InvalidInteger, InvalidNot, MultipleRootPredicates,
-            UnclosedParens, UnclosedQuotes, Unexpected, UnknownBuiltin, UnopenedParens,
-            UnopenedQuotes,
+            Empty, InvalidCharacters, InvalidHasAtomic, InvalidInteger, InvalidNot,
+            MultipleRootPredicates, UnclosedParens, UnclosedQuotes, Unexpected, UnknownBuiltin,
+            UnopenedParens, UnopenedQuotes,
         };
 
         match self {
@@ -101,6 +103,7 @@ impl fmt::Display for Reason {
             InvalidNot(np) => f.write_fmt(format_args!("not() takes 1 predicate, found {}", np)),
             InvalidInteger => f.write_str("invalid integer"),
             MultipleRootPredicates => f.write_str("multiple root predicates"),
+            InvalidHasAtomic => f.write_str("expected integer or \"ptr\""),
             UnknownBuiltin => f.write_str("unknown built-in"),
         }
     }
@@ -109,9 +112,9 @@ impl fmt::Display for Reason {
 impl Error for ParseError {
     fn description(&self) -> &str {
         use Reason::{
-            Empty, InvalidCharacters, InvalidInteger, InvalidNot, MultipleRootPredicates,
-            UnclosedParens, UnclosedQuotes, Unexpected, UnknownBuiltin, UnopenedParens,
-            UnopenedQuotes,
+            Empty, InvalidCharacters, InvalidHasAtomic, InvalidInteger, InvalidNot,
+            MultipleRootPredicates, UnclosedParens, UnclosedQuotes, Unexpected, UnknownBuiltin,
+            UnopenedParens, UnopenedQuotes,
         };
 
         match self.reason {
@@ -125,7 +128,22 @@ impl Error for ParseError {
             InvalidNot(_) => "not() takes 1 predicate",
             InvalidInteger => "invalid integer",
             MultipleRootPredicates => "multiple root predicates",
+            InvalidHasAtomic => "expected integer or \"ptr\"",
             UnknownBuiltin => "unknown built-in",
         }
     }
 }
+
+/// Error parsing a `target_has_atomic` predicate.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct HasAtomicParseError {
+    pub(crate) input: String,
+}
+
+impl fmt::Display for HasAtomicParseError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "expected integer or \"ptr\", found {}", self.input)
+    }
+}
+
+impl Error for HasAtomicParseError {}

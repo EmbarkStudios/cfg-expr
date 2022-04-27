@@ -91,6 +91,9 @@ fn real_main() -> Result<(), String> {
     let mut envs: Vec<String> = Vec::new();
     let mut families: Vec<String> = Vec::new();
     let mut family_groups: Vec<Vec<String>> = Vec::new();
+    let mut has_atomics: Vec<HasAtomicElement> = Vec::new();
+    let mut has_atomic_groups: Vec<Vec<HasAtomicElement>> = Vec::new();
+    let mut panics: Vec<String> = Vec::new();
 
     for target in targets.lines() {
         let output = Command::new(&rustc)
@@ -120,6 +123,8 @@ fn real_main() -> Result<(), String> {
         let mut os = None;
         let mut width = None;
         let mut vendor = None;
+        let mut panic = None;
+        let mut has_atomic_group = Vec::new();
 
         for line in kv.lines() {
             let eq_ind = line.find('=');
@@ -128,24 +133,27 @@ fn real_main() -> Result<(), String> {
                     continue;
                 }
                 Some(i) => {
-                    let key = &line[7..i];
+                    let key = &line[..i];
                     let val = &line[i + 2..line.len() - 1];
 
                     match key {
-                        "arch" => {
+                        "panic" => {
+                            panic = Some(val);
+                        }
+                        "target_arch" => {
                             arch = Some(val);
                             // if arches.get(val).is_none() {
                             //     arches.insert(val, target);
                             // }
                         }
-                        "endian" => endian = Some(val),
-                        "env" => {
+                        "target_endian" => endian = Some(val),
+                        "target_env" => {
                             if !val.is_empty() {
                                 env = Some(val)
                             }
                         }
-                        "family" => family_group.push(val),
-                        "feature" => {
+                        "target_family" => family_group.push(val.to_owned()),
+                        "target_feature" => {
 
                             // num_feats += 1;
                             // write!(
@@ -160,18 +168,21 @@ fn real_main() -> Result<(), String> {
                             // )
                             // .unwrap();
                         }
-                        "os" => {
+                        "target_has_atomic" => {
+                            has_atomic_group.push(HasAtomicElement::new(val));
+                        }
+                        "target_os" => {
                             if val != "none" {
                                 os = Some(val)
                             }
                         }
-                        "pointer_width" => width = Some(val),
-                        "vendor" => {
+                        "target_pointer_width" => width = Some(val),
+                        "target_vendor" => {
                             if !val.is_empty() {
                                 vendor = Some(val)
                             }
                         }
-                        _ => panic!("unknown target option {}", line),
+                        _ => panic!("unknown key: {}", line),
                     }
                 }
             }
@@ -185,32 +196,55 @@ fn real_main() -> Result<(), String> {
             }
         }
 
+        fn insert_group<T: GroupElement>(
+            mut group: Vec<T>,
+            things: &mut Vec<T>,
+            thing_groups: &mut Vec<Vec<T>>,
+            group_type: &'static str,
+            pub_const_prefix: &'static str,
+        ) -> String {
+            group.sort_unstable();
+            for thing in &group {
+                if let Err(i) = things.binary_search_by(|t| t.cmp(thing)) {
+                    things.insert(i, thing.clone());
+                }
+            }
+
+            if group.is_empty() {
+                format!("{group_type}::new_const(&[])")
+            } else {
+                let mut group_str = format!("{group_type}::");
+                write_group_str(&mut group_str, group.iter(), pub_const_prefix);
+
+                // Can't compare Vec<String> to Vec<&str> so have to do this comparison.
+                if let Err(i) = thing_groups.binary_search_by(|t| t.cmp(&group)) {
+                    thing_groups.insert(i, group);
+                }
+
+                group_str
+            }
+        }
+
         insert(arch, &mut arches);
         insert(vendor, &mut vendors);
         insert(os, &mut oses);
         insert(env, &mut envs);
+        insert(panic, &mut panics);
 
-        // Family groups require special handling.
-        family_group.sort_unstable();
-        for family in &family_group {
-            insert(Some(family), &mut families);
-        }
-
-        if !family_group.is_empty() {
-            // Can't compare Vec<String> to Vec<&str> so have to do this comparison.
-            let family_group: Vec<String> = family_group.iter().map(|&s| s.to_owned()).collect();
-            if let Err(i) = family_groups.binary_search_by(|t| t.cmp(&family_group)) {
-                family_groups.insert(i, family_group);
-            }
-        }
-
-        let families_str = if family_group.is_empty() {
-            "Families::new_const(&[])".to_owned()
-        } else {
-            let mut families_str = "Families::".to_owned();
-            write_family_group_str(&mut families_str, family_group.iter().copied());
-            families_str
-        };
+        let families_str = insert_group(
+            family_group,
+            &mut families,
+            &mut family_groups,
+            "Families",
+            "",
+        );
+        let has_atomics_str = insert_group(
+            has_atomic_group,
+            &mut has_atomics,
+            &mut has_atomic_groups,
+            "HasAtomics",
+            "atomic_",
+        );
 
         writeln!(
             out,
@@ -223,6 +257,8 @@ fn real_main() -> Result<(), String> {
         families: {families_str},
         pointer_width: {width},
         endian: Endian::{endian},
+        has_atomics: {has_atomics_str},
+        panic: Panic::{panic},
     }},",
             triple = target,
             os = os
@@ -237,6 +273,7 @@ fn real_main() -> Result<(), String> {
                 .unwrap_or_else(|| "None".to_owned()),
             width = width.expect("target had no pointer_width"),
             endian = endian.expect("target had no endian"),
+            panic = panic.expect("target had no panic"),
         )
         .unwrap();
     }
@@ -247,8 +284,25 @@ fn real_main() -> Result<(), String> {
     write_impls(&mut out, "Vendor", vendors);
     write_impls(&mut out, "Os", oses);
     write_impls(&mut out, "Family", families);
-    write_families_impls(&mut out, family_groups);
+    write_group_impls(
+        &mut out,
+        "Families",
+        "__families_",
+        "",
+        "Family",
+        family_groups,
+    );
     write_impls(&mut out, "Env", envs);
+    // Do not write impls for HasAtomic since it's an enum.
+    write_group_impls(
+        &mut out,
+        "HasAtomics",
+        "__has_atomics_",
+        "atomic_",
+        "HasAtomic",
+        has_atomic_groups,
+    );
+    write_impls(&mut out, "Panic", panics);
 
     std::fs::write("src/targets/builtins.rs", out)
         .map_err(|e| format!("failed to write target_list.rs: {}", e))?;
@@ -280,39 +334,101 @@ fn write_impls(out: &mut String, typ: &'static str, builtins: Vec<String>) {
     writeln!(out, "}}").unwrap();
 }
 
-fn write_families_impls(out: &mut String, family_groups: Vec<Vec<String>>) {
+trait GroupElement: Clone + Eq + Ord {
+    /// The name of the value (e.g. "unix" in Family::unix)
+    fn value_expr(&self) -> String;
+
+    /// The name of this element in an identifier.
+    fn id_str(&self) -> String;
+}
+
+impl GroupElement for String {
+    fn value_expr(&self) -> String {
+        self.clone()
+    }
+
+    fn id_str(&self) -> String {
+        self.clone()
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
+enum HasAtomicElement {
+    IntegerSize(u16),
+    Pointer,
+}
+
+impl HasAtomicElement {
+    fn new(input: &str) -> Self {
+        if let Ok(val) = input.parse::<u16>() {
+            HasAtomicElement::IntegerSize(val)
+        } else if input == "ptr" {
+            HasAtomicElement::Pointer
+        } else {
+            panic!("unrecognized input for target_has_atomic: {}", input)
+        }
+    }
+}
+
+impl GroupElement for HasAtomicElement {
+    fn value_expr(&self) -> String {
+        match self {
+            Self::IntegerSize(size) => format!("IntegerSize({})", size),
+            Self::Pointer => "Pointer".to_owned(),
+        }
+    }
+
+    fn id_str(&self) -> String {
+        match self {
+            Self::IntegerSize(size) => format!("{}", size),
+            Self::Pointer => "ptr".to_owned(),
+        }
+    }
+}
+
+fn write_group_impls<T: GroupElement>(
+    out: &mut String,
+    group_type: &'static str,
+    private_const_prefix: &'static str,
+    pub_const_prefix: &'static str,
+    element_type: &'static str,
+    groups: Vec<Vec<T>>,
+) {
     writeln!(out).unwrap();
-    for family_group in &family_groups {
-        write!(out, "const __families_").unwrap();
-        write_family_group_str(out, family_group.iter().map(|s| s.as_str()));
-        write!(out, ": &[Family] = ").unwrap();
+    for group in &groups {
+        write!(out, "const ").unwrap();
+        write_group_str(out, group.iter(), private_const_prefix);
+        write!(out, ": &[{element_type}] = ").unwrap();
         write!(out, "&[").unwrap();
-        for family in family_group {
-            writeln!(out, "Family::{}, ", family).unwrap();
+        for thing in group {
+            let value_expr = thing.value_expr();
+            writeln!(out, "{element_type}::{value_expr}, ").unwrap();
         }
         writeln!(out, "];").unwrap();
     }
 
-    writeln!(out, "\nimpl super::Families {{").unwrap();
+    writeln!(out, "\nimpl super::{group_type} {{").unwrap();
 
-    for family_group in family_groups {
+    for group in groups {
         write!(out, "pub const ").unwrap();
-        write_family_group_str(out, family_group.iter().map(|s| s.as_str()));
-        write!(out, ": Families = Families::new_const(__families_").unwrap();
-        write_family_group_str(out, family_group.iter().map(|s| s.as_str()));
+        write_group_str(out, group.iter(), pub_const_prefix);
+        write!(out, ": {group_type} = {group_type}::new_const(").unwrap();
+        write_group_str(out, group.iter(), private_const_prefix);
         writeln!(out, ");").unwrap();
     }
 
     writeln!(out, "}}").unwrap();
 }
 
-fn write_family_group_str<'a>(
+fn write_group_str<'a, T: 'a + GroupElement>(
     out: &mut String,
-    family_group: impl IntoIterator<Item = &'a str> + ExactSizeIterator,
+    group: impl Iterator<Item = &'a T> + ExactSizeIterator,
+    prefix: &'static str,
 ) {
-    let len = family_group.len();
-    for (idx, family) in family_group.into_iter().enumerate() {
-        out.push_str(family);
+    out.push_str(prefix);
+    let len = group.len();
+    for (idx, thing) in group.into_iter().enumerate() {
+        out.push_str(&thing.id_str());
         if idx < len - 1 {
             out.push_str("_");
         }
