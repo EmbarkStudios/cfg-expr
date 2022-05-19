@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased] - ReleaseDate
 ## [0.10.3] - 2022-05-19
 ### Added
-- [PR#49](https://github.com/EmbarkStudios/cfg-expr/pull/49) added support for the `has_target_atomic = "<ptr | integer>` and `panic = "<strategy>"` predicates. Thanks [@sunshowers](https://github.com/sunshowers)!
+- [PR#49](https://github.com/EmbarkStudios/cfg-expr/pull/49) added support for the `has_target_atomic = "<ptr | integer>"` and `panic = "<strategy>"` predicates. Thanks [@sunshowers](https://github.com/sunshowers)!
 
 ## [0.10.2] - 2022-02-25
 ### Changed
