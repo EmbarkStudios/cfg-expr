@@ -46,6 +46,8 @@ macro_rules! tg_match {
                 let tinfo = tg.matches($target.builtin);
 
                 #[cfg(feature = "targets")]
+                if !matches!(tg, TargetPredicate::HasAtomic(_))
+                    && !matches!(tg, TargetPredicate::Panic(_))
                 {
                     let linfo = tg.matches(&$target.lexicon);
                     assert_eq!(
@@ -57,7 +59,6 @@ macro_rules! tg_match {
                     return linfo;
                 }
 
-                #[cfg(not(feature = "targets"))]
                 tinfo
             }
             _ => panic!("not a target predicate"),
@@ -70,6 +71,8 @@ macro_rules! tg_match {
                 let tinfo = tg.matches($target.builtin);
 
                 #[cfg(feature = "targets")]
+                if !matches!(tg, TargetPredicate::HasAtomic(_))
+                    && !matches!(tg, TargetPredicate::Panic(_))
                 {
                     let linfo = tg.matches(&$target.lexicon);
                     assert_eq!(
@@ -81,7 +84,6 @@ macro_rules! tg_match {
                     return linfo;
                 }
 
-                #[cfg(not(feature = "targets"))]
                 tinfo
             }
             Predicate::TargetFeature(feat) => $feats.iter().find(|f| *f == feat).is_some(),

@@ -327,6 +327,9 @@ impl TargetMatcher for target_lexicon::Triple {
 impl TargetPredicate {
     /// Returns true of the predicate matches the specified target
     ///
+    /// Note that when matching against a [`target_lexicon::Triple`], the
+    /// `has_target_atomic` and `panic` predicates will _always_ return `false`.
+    ///
     /// ```
     /// use cfg_expr::{targets::*, expr::TargetPredicate as tp};
     /// let win = get_builtin_target_by_triple("x86_64-pc-windows-msvc").unwrap();
