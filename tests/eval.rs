@@ -132,6 +132,14 @@ fn very_specific() {
             target_pointer_width = "32",
             target_endian = "little",
             not(target_vendor = "uwp"),
+            target_has_atomic = "8",
+            target_has_atomic = "16",
+            target_has_atomic = "32",
+            target_has_atomic = "64",
+            not(target_has_atomic = "128"),
+            target_has_atomic = "ptr",
+            panic = "unwind",
+            not(panic = "abort"),
         )"#,
     )
     .unwrap();
