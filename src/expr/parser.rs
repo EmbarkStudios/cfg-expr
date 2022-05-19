@@ -109,6 +109,19 @@ impl Expression {
                         }
                     }
                 }
+                "panic" => match val {
+                    Some((_, vspan)) => InnerPredicate::Target(InnerTarget {
+                        which: Which::Panic,
+                        span: Some(vspan),
+                    }),
+                    None => {
+                        return Err(ParseError {
+                            original: original.to_owned(),
+                            span,
+                            reason: Reason::Unexpected(&["= \"<panic_strategy>\""]),
+                        });
+                    }
+                },
                 target_key if key.starts_with("target_") => {
                     let (val, vspan) = match val {
                         None => {
@@ -154,6 +167,14 @@ impl Expression {
                             })?),
                             span: None,
                         },
+                        "has_atomic" => InnerTarget {
+                            which: Which::HasAtomic(val.parse().map_err(|_err| ParseError {
+                                original: original.to_owned(),
+                                span: vspan,
+                                reason: Reason::InvalidHasAtomic,
+                            })?),
+                            span: None,
+                        },
                         "pointer_width" => InnerTarget {
                             which: Which::PointerWidth(val.parse().map_err(|_err| ParseError {
                                 original: original.to_owned(),
@@ -174,6 +195,7 @@ impl Expression {
                                     "target_family",
                                     "target_env",
                                     "target_endian",
+                                    "target_has_atomic",
                                     "target_pointer_width",
                                     "target_vendor",
                                 ]),

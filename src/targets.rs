@@ -1,4 +1,4 @@
-use crate::error::Reason;
+use crate::error::{HasAtomicParseError, Reason};
 use std::{borrow::Cow, ops::Deref};
 
 mod builtins;
@@ -34,6 +34,10 @@ pub struct Family(pub Cow<'static, str>);
 /// environment is implied by the operating system.
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct Env(pub Cow<'static, str>);
+
+/// The panic strategy used on this target by default.
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+pub struct Panic(pub Cow<'static, str>);
 
 macro_rules! field_impls {
     ($kind:ident) => {
@@ -80,6 +84,44 @@ field_impls!(Vendor);
 field_impls!(Os);
 field_impls!(Family);
 field_impls!(Env);
+field_impls!(Panic);
+
+/// Integer size and pointers for which there's support for atomic functions.
+#[derive(Copy, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[non_exhaustive]
+pub enum HasAtomic {
+    /// The platform supports atomics for the given integer size in bits (e.g. `AtomicU8` if
+    /// `HasAtomic::IntegerSize(8)`).
+    IntegerSize(u16),
+
+    /// The platform supports atomics for pointers (`AtomicPtr`).
+    Pointer,
+}
+
+impl std::str::FromStr for HasAtomic {
+    type Err = HasAtomicParseError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        if let Ok(size) = s.parse::<u16>() {
+            Ok(Self::IntegerSize(size))
+        } else if s == "ptr" {
+            Ok(HasAtomic::Pointer)
+        } else {
+            Err(HasAtomicParseError {
+                input: s.to_owned(),
+            })
+        }
+    }
+}
+
+impl std::fmt::Display for HasAtomic {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::IntegerSize(size) => write!(f, "{}", size),
+            Self::Pointer => write!(f, "ptr"),
+        }
+    }
+}
 
 /// A set of families for a target.
 ///
@@ -137,6 +179,66 @@ impl std::fmt::Display for Families {
         let len = self.0.len();
         for (idx, family) in self.0.iter().enumerate() {
             write!(f, "{}", family)?;
+            if idx + 1 < len {
+                write!(f, ", ")?;
+            }
+        }
+        write!(f, "}}")
+    }
+}
+
+/// A set of [`HasAtomic`] instances a target.
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+pub struct HasAtomics(Cow<'static, [HasAtomic]>);
+
+impl HasAtomics {
+    /// Constructs a new instance.
+    ///
+    /// If you have a `&'static [HasAtomic]`, prefer [`Self::new_const`].
+    #[inline]
+    pub fn new(val: impl IntoIterator<Item = HasAtomic>) -> Self {
+        let mut has_atomics: Vec<_> = val.into_iter().collect();
+        has_atomics.sort_unstable();
+        Self(Cow::Owned(has_atomics))
+    }
+
+    /// Constructs a new instance of this struct from a static slice of [`HasAtomic`].
+    ///
+    /// `val` must be in sorted order: this constructor cannot check for that due to
+    /// limitations in current versions of Rust.
+    #[inline]
+    pub const fn new_const(val: &'static [HasAtomic]) -> Self {
+        // TODO: Check that val is sorted.
+        Self(Cow::Borrowed(val))
+    }
+
+    /// Returns true if this list of families contains a given family.
+    #[inline]
+    pub fn contains(&self, val: HasAtomic) -> bool {
+        self.0.contains(&val)
+    }
+}
+
+impl Deref for HasAtomics {
+    type Target = [HasAtomic];
+    fn deref(&self) -> &Self::Target {
+        &*self.0
+    }
+}
+
+impl AsRef<[HasAtomic]> for HasAtomics {
+    #[inline]
+    fn as_ref(&self) -> &[HasAtomic] {
+        &*self.0
+    }
+}
+
+impl std::fmt::Display for HasAtomics {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{{")?;
+        let len = self.0.len();
+        for (idx, has_atomic) in self.0.iter().enumerate() {
+            write!(f, "{}", has_atomic)?;
             if idx + 1 < len {
                 write!(f, ", ")?;
             }
@@ -238,6 +340,11 @@ pub struct TargetInfo {
     /// [target_endian](https://doc.rust-lang.org/reference/conditional-compilation.html#target_endian)
     /// predicate.
     pub endian: Endian,
+    /// The target's support for atomics. Used by the has_target_atomics predicate.
+    pub has_atomics: HasAtomics,
+    /// The panic strategy used on this target by default. Used by the
+    /// [panic](https://doc.rust-lang.org/beta/reference/conditional-compilation.html#panic) predicate.
+    pub panic: Panic,
 }
 
 /// Attempts to find the `TargetInfo` for the specified target triple
@@ -257,7 +364,7 @@ pub fn get_builtin_target_by_triple(triple: &str) -> Option<&'static TargetInfo>
 /// versions.
 ///
 /// ```
-/// assert_eq!("1.59.0", cfg_expr::targets::rustc_version());
+/// assert_eq!("1.60.0", cfg_expr::targets::rustc_version());
 /// ```
 pub fn rustc_version() -> &'static str {
     builtins::RUSTC_VERSION

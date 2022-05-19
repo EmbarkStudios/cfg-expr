@@ -40,8 +40,12 @@ pub enum TargetPredicate {
     /// This also applies to the bare [`unix` and `windows`](https://doc.rust-lang.org/reference/conditional-compilation.html#unix-and-windows)
     /// predicates.
     Family(targ::Family),
+    /// [target_has_atomic](https://doc.rust-lang.org/reference/conditional-compilation.html#target_has_atomic).
+    HasAtomic(targ::HasAtomic),
     /// [target_os](https://doc.rust-lang.org/reference/conditional-compilation.html#target_os)
     Os(targ::Os),
+    /// [panic](https://doc.rust-lang.org/reference/conditional-compilation.html#panic)
+    Panic(targ::Panic),
     /// [target_pointer_width](https://doc.rust-lang.org/reference/conditional-compilation.html#target_pointer_width)
     PointerWidth(u8),
     /// [target_vendor](https://doc.rust-lang.org/reference/conditional-compilation.html#target_vendor)
@@ -54,7 +58,9 @@ pub trait TargetMatcher {
 
 impl TargetMatcher for targ::TargetInfo {
     fn matches(&self, tp: &TargetPredicate) -> bool {
-        use TargetPredicate::{Arch, Endian, Env, Family, Os, PointerWidth, Vendor};
+        use TargetPredicate::{
+            Arch, Endian, Env, Family, HasAtomic, Os, Panic, PointerWidth, Vendor,
+        };
 
         match tp {
             Arch(a) => a == &self.arch,
@@ -65,12 +71,14 @@ impl TargetMatcher for targ::TargetInfo {
                 None => env.0.is_empty(),
             },
             Family(fam) => self.families.contains(fam),
+            HasAtomic(has_atomic) => self.has_atomics.contains(*has_atomic),
             Os(os) => Some(os) == self.os.as_ref(),
             PointerWidth(w) => *w == self.pointer_width,
             Vendor(ven) => match &self.vendor {
                 Some(v) => ven == v,
                 None => ven == &targ::Vendor::unknown,
             },
+            Panic(panic) => &self.panic == panic,
         }
     }
 }
@@ -81,7 +89,9 @@ impl TargetMatcher for target_lexicon::Triple {
     #[allow(clippy::match_same_arms)]
     fn matches(&self, tp: &TargetPredicate) -> bool {
         use target_lexicon::*;
-        use TargetPredicate::{Arch, Endian, Env, Family, Os, PointerWidth, Vendor};
+        use TargetPredicate::{
+            Arch, Endian, Env, Family, HasAtomic, Os, Panic, PointerWidth, Vendor,
+        };
 
         match tp {
             Arch(arch) => {
@@ -263,6 +273,11 @@ impl TargetMatcher for target_lexicon::Triple {
                     _ => false,
                 }
             }
+            HasAtomic(_) => {
+                // atomic support depends on both the architecture and the OS. Assume false for
+                // this.
+                false
+            }
             Os(os) => match os.0.parse::<OperatingSystem>() {
                 Ok(o) => match self.environment {
                     Environment::HermitKernel => os == &targ::Os::hermit,
@@ -282,6 +297,10 @@ impl TargetMatcher for target_lexicon::Triple {
                     }
                 }
             },
+            Panic(_) => {
+                // panic support depends on the OS. Assume false for this.
+                false
+            }
             Vendor(ven) => match ven.0.parse::<target_lexicon::Vendor>() {
                 Ok(v) => self.vendor == v,
                 Err(_) => false,
@@ -307,6 +326,9 @@ impl TargetMatcher for target_lexicon::Triple {
 
 impl TargetPredicate {
     /// Returns true of the predicate matches the specified target
+    ///
+    /// Note that when matching against a [`target_lexicon::Triple`], the
+    /// `has_target_atomic` and `panic` predicates will _always_ return `false`.
     ///
     /// ```
     /// use cfg_expr::{targets::*, expr::TargetPredicate as tp};
@@ -337,6 +359,8 @@ pub(crate) enum Which {
     Env,
     Family,
     Os,
+    HasAtomic(targ::HasAtomic),
+    Panic,
     PointerWidth(u8),
     Vendor,
 }
@@ -409,6 +433,10 @@ impl InnerPredicate {
                     s[it.span.clone().unwrap()].to_owned(),
                 ))),
                 Which::Endian(end) => Target(TargetPredicate::Endian(*end)),
+                Which::HasAtomic(has_atomic) => Target(TargetPredicate::HasAtomic(*has_atomic)),
+                Which::Panic => Target(TargetPredicate::Panic(targ::Panic::new(
+                    s[it.span.clone().unwrap()].to_owned(),
+                ))),
                 Which::PointerWidth(pw) => Target(TargetPredicate::PointerWidth(*pw)),
             },
             IP::Test => Test,

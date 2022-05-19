@@ -101,6 +101,12 @@ fn handles_single_predicate() {
         "key=\"\"" => [P::KeyValue{ key: "key", val: "" }],
         " key=\"7\"       " => [P::KeyValue{ key: "key", val: "7" }],
         "key = \"7 q\" " => [P::KeyValue{ key: "key", val: "7 q" }],
+        "target_has_atomic = \"ptr\"" => [P::Target(TP::HasAtomic(HasAtomic::Pointer))],
+        "target_has_atomic = \"4\"" => [P::Target(TP::HasAtomic(HasAtomic::IntegerSize(4)))],
+        "target_has_atomic = \"64\"" => [P::Target(TP::HasAtomic(HasAtomic::IntegerSize(64)))],
+        "target_has_atomic = \"128\" " => [P::Target(TP::HasAtomic(HasAtomic::IntegerSize(128)))],
+        "panic = \"unwind\"" => [P::Target(TP::Panic(Panic("unwind".into())))],
+        "panic = \"abort\"" => [P::Target(TP::Panic(Panic("abort".into())))],
     ]);
 }
 

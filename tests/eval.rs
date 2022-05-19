@@ -1,7 +1,7 @@
 use cfg_expr::{
-    expr::Predicate,
+    expr::{Predicate, TargetMatcher},
     targets::{get_builtin_target_by_triple, ALL_BUILTINS as all},
-    Expression,
+    Expression, TargetPredicate,
 };
 
 struct Target {
@@ -46,6 +46,8 @@ macro_rules! tg_match {
                 let tinfo = tg.matches($target.builtin);
 
                 #[cfg(feature = "targets")]
+                if !matches!(tg, TargetPredicate::HasAtomic(_))
+                    && !matches!(tg, TargetPredicate::Panic(_))
                 {
                     let linfo = tg.matches(&$target.lexicon);
                     assert_eq!(
@@ -57,7 +59,6 @@ macro_rules! tg_match {
                     return linfo;
                 }
 
-                #[cfg(not(feature = "targets"))]
                 tinfo
             }
             _ => panic!("not a target predicate"),
@@ -70,6 +71,8 @@ macro_rules! tg_match {
                 let tinfo = tg.matches($target.builtin);
 
                 #[cfg(feature = "targets")]
+                if !matches!(tg, TargetPredicate::HasAtomic(_))
+                    && !matches!(tg, TargetPredicate::Panic(_))
                 {
                     let linfo = tg.matches(&$target.lexicon);
                     assert_eq!(
@@ -81,7 +84,6 @@ macro_rules! tg_match {
                     return linfo;
                 }
 
-                #[cfg(not(feature = "targets"))]
                 tinfo
             }
             Predicate::TargetFeature(feat) => $feats.iter().find(|f| *f == feat).is_some(),
@@ -132,6 +134,14 @@ fn very_specific() {
             target_pointer_width = "32",
             target_endian = "little",
             not(target_vendor = "uwp"),
+            target_has_atomic = "8",
+            target_has_atomic = "16",
+            target_has_atomic = "32",
+            target_has_atomic = "64",
+            not(target_has_atomic = "128"),
+            target_has_atomic = "ptr",
+            panic = "unwind",
+            not(panic = "abort"),
         )"#,
     )
     .unwrap();
@@ -179,7 +189,16 @@ fn very_specific() {
 
         let t = Target::make(target.triple.as_str());
         assert!(
-            specific.eval(|pred| { tg_match!(pred, t) }),
+            specific.eval(|pred| {
+                if target.triple.as_str() == "mips64-openwrt-linux-musl" {
+                    if let Predicate::Target(TargetPredicate::Vendor(vendor)) = pred {
+                        // This is a special predicate that doesn't follow the usual rules for
+                        // target-lexicon.
+                        return t.builtin.matches(&TargetPredicate::Vendor(vendor.clone()));
+                    }
+                }
+                tg_match!(pred, t)
+            }),
             "failed expression '{}' for {:#?}",
             expr,
             t.builtin,
