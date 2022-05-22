@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.60.0";
+pub(crate) const RUSTC_VERSION: &str = "1.61.0";
 
 pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
@@ -195,18 +195,6 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     },
     TargetInfo {
         triple: Triple::new_const("aarch64-unknown-none"),
-        os: None,
-        arch: Arch::aarch64,
-        env: None,
-        vendor: Some(Vendor::unknown),
-        families: Families::new_const(&[]),
-        pointer_width: 64,
-        endian: Endian::little,
-        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
-        panic: Panic::abort,
-    },
-    TargetInfo {
-        triple: Triple::new_const("aarch64-unknown-none-hermitkernel"),
         os: None,
         arch: Arch::aarch64,
         env: None,
@@ -1430,6 +1418,18 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::abort,
     },
     TargetInfo {
+        triple: Triple::new_const("riscv32im-unknown-none-elf"),
+        os: None,
+        arch: Arch::riscv32,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::new_const(&[]),
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::new_const(&[]),
+        panic: Panic::abort,
+    },
+    TargetInfo {
         triple: Triple::new_const("riscv32imac-unknown-none-elf"),
         os: None,
         arch: Arch::riscv32,
@@ -1450,7 +1450,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         families: Families::unix,
         pointer_width: 32,
         endian: Endian::little,
-        has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
         panic: Panic::abort,
     },
     TargetInfo {
@@ -2067,18 +2067,6 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     },
     TargetInfo {
         triple: Triple::new_const("x86_64-unknown-none"),
-        os: None,
-        arch: Arch::x86_64,
-        env: None,
-        vendor: Some(Vendor::unknown),
-        families: Families::new_const(&[]),
-        pointer_width: 64,
-        endian: Endian::little,
-        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
-        panic: Panic::abort,
-    },
-    TargetInfo {
-        triple: Triple::new_const("x86_64-unknown-none-hermitkernel"),
         os: None,
         arch: Arch::x86_64,
         env: None,
