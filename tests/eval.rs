@@ -7,7 +7,7 @@ use cfg_expr::{
 struct Target {
     builtin: &'static cfg_expr::targets::TargetInfo,
     #[cfg(feature = "targets")]
-    lexicon: target_lexicon::Triple,
+    lexicon: Option<target_lexicon::Triple>,
 }
 
 impl Target {
@@ -22,16 +22,22 @@ impl Target {
                 // the presence of this triple in most normal cases
                 use target_lexicon as tl;
                 match s {
-                    "avr-unknown-gnu-atmega328" => tl::Triple {
+                    "avr-unknown-gnu-atmega328" => Some(tl::Triple {
                         architecture: tl::Architecture::Avr,
                         vendor: tl::Vendor::Unknown,
                         operating_system: tl::OperatingSystem::Unknown,
                         environment: tl::Environment::Unknown,
                         binary_format: tl::BinaryFormat::Unknown,
-                    },
+                    }),
                     triple => match triple.parse() {
-                        Ok(l) => l,
-                        Err(e) => panic!("failed to parse '{}': {:?}", triple, e),
+                        Ok(l) => Some(l),
+                        Err(e) => {
+                            // There are enough new weird architectures added in each version of
+                            // Rust that it is difficult to keep target-lexicon aware of all of
+                            // them. So try parsing this triple, but don't fail if it doesn't work.
+                            eprintln!("failed to parse '{}': {:?}", triple, e);
+                            None
+                        }
                     },
                 }
             },
@@ -49,14 +55,16 @@ macro_rules! tg_match {
                 if !matches!(tg, TargetPredicate::HasAtomic(_))
                     && !matches!(tg, TargetPredicate::Panic(_))
                 {
-                    let linfo = tg.matches(&$target.lexicon);
-                    assert_eq!(
-                        tinfo, linfo,
-                        "{:#?} builtin didn't match lexicon {:#?} for predicate {:#?}",
-                        $target.builtin, $target.lexicon, tg,
-                    );
+                    if let Some(l) = &$target.lexicon {
+                        let linfo = tg.matches(l);
+                        assert_eq!(
+                            tinfo, linfo,
+                            "{:#?} builtin didn't match lexicon {:#?} for predicate {:#?}",
+                            $target.builtin, $target.lexicon, tg,
+                        );
 
-                    return linfo;
+                        return linfo;
+                    }
                 }
 
                 tinfo
@@ -74,14 +82,16 @@ macro_rules! tg_match {
                 if !matches!(tg, TargetPredicate::HasAtomic(_))
                     && !matches!(tg, TargetPredicate::Panic(_))
                 {
-                    let linfo = tg.matches(&$target.lexicon);
-                    assert_eq!(
-                        tinfo, linfo,
-                        "{:#?} builtin didn't match lexicon {:#?} for predicate {:#?}",
-                        $target.builtin, $target.lexicon, tg,
-                    );
+                    if let Some(l) = &$target.lexicon {
+                        let linfo = tg.matches(l);
+                        assert_eq!(
+                            tinfo, linfo,
+                            "{:#?} builtin didn't match lexicon {:#?} for predicate {:#?}",
+                            $target.builtin, $target.lexicon, tg,
+                        );
 
-                    return linfo;
+                        return linfo;
+                    }
                 }
 
                 tinfo
