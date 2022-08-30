@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.61.0";
+pub(crate) const RUSTC_VERSION: &str = "1.63.0";
 
 pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
@@ -74,6 +74,18 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::unwind,
     },
     TargetInfo {
+        triple: Triple::new_const("aarch64-apple-watchos-sim"),
+        os: Some(Os::watchos),
+        arch: Arch::aarch64,
+        env: None,
+        vendor: Some(Vendor::apple),
+        families: Families::unix,
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
         triple: Triple::new_const("aarch64-fuchsia"),
         os: Some(Os::fuchsia),
         arch: Arch::aarch64,
@@ -107,6 +119,18 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         pointer_width: 64,
         endian: Endian::little,
         has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("aarch64-pc-windows-gnullvm"),
+        os: Some(Os::windows),
+        arch: Arch::aarch64,
+        env: Some(Env::gnu),
+        vendor: Some(Vendor::pc),
+        families: Families::windows,
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
         panic: Panic::unwind,
     },
     TargetInfo {
@@ -355,6 +379,18 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         arch: Arch::arm,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("arm64_32-apple-watchos"),
+        os: Some(Os::watchos),
+        arch: Arch::aarch64,
+        env: None,
+        vendor: Some(Vendor::apple),
         families: Families::unix,
         pointer_width: 32,
         endian: Endian::little,
@@ -648,6 +684,18 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         endian: Endian::little,
         has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
         panic: Panic::abort,
+    },
+    TargetInfo {
+        triple: Triple::new_const("armv7k-apple-watchos"),
+        os: Some(Os::watchos),
+        arch: Arch::arm,
+        env: None,
+        vendor: Some(Vendor::apple),
+        families: Families::unix,
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::unwind,
     },
     TargetInfo {
         triple: Triple::new_const("armv7r-none-eabi"),
@@ -1442,6 +1490,18 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::abort,
     },
     TargetInfo {
+        triple: Triple::new_const("riscv32imac-unknown-xous-elf"),
+        os: Some(Os::xous),
+        arch: Arch::riscv32,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::new_const(&[]),
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
         triple: Triple::new_const("riscv32imc-esp-espidf"),
         os: Some(Os::espidf),
         arch: Arch::riscv32,
@@ -1862,6 +1922,18 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::unwind,
     },
     TargetInfo {
+        triple: Triple::new_const("x86_64-apple-watchos-sim"),
+        os: Some(Os::watchos),
+        arch: Arch::x86_64,
+        env: None,
+        vendor: Some(Vendor::apple),
+        families: Families::unix,
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
         triple: Triple::new_const("x86_64-fortanix-unknown-sgx"),
         os: Some(Os::unknown),
         arch: Arch::x86_64,
@@ -1911,6 +1983,18 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     },
     TargetInfo {
         triple: Triple::new_const("x86_64-pc-windows-gnu"),
+        os: Some(Os::windows),
+        arch: Arch::x86_64,
+        env: Some(Env::gnu),
+        vendor: Some(Vendor::pc),
+        families: Families::windows,
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("x86_64-pc-windows-gnullvm"),
         os: Some(Os::windows),
         arch: Arch::x86_64,
         env: Some(Env::gnu),
@@ -2229,7 +2313,9 @@ impl super::Os {
     pub const unknown: Os = Os::new_const("unknown");
     pub const vxworks: Os = Os::new_const("vxworks");
     pub const wasi: Os = Os::new_const("wasi");
+    pub const watchos: Os = Os::new_const("watchos");
     pub const windows: Os = Os::new_const("windows");
+    pub const xous: Os = Os::new_const("xous");
 }
 
 impl super::Family {
