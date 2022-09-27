@@ -188,11 +188,7 @@ fn very_specific() {
             } else {
                 "".to_owned()
             },
-            target
-                .env
-                .as_ref()
-                .map(|e| e.as_str())
-                .unwrap_or_else(|| ""),
+            target.env.as_ref().map_or("", |e| e.as_str()),
         );
 
         let specific = Expression::parse(&expr).unwrap();

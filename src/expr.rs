@@ -28,7 +28,7 @@ pub enum Func {
 use crate::targets as targ;
 
 /// All predicates that pertains to a target, except for `target_feature`
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Eq, Debug)]
 pub enum TargetPredicate {
     /// [target_arch](https://doc.rust-lang.org/reference/conditional-compilation.html#target_arch)
     Arch(targ::Arch),
@@ -136,13 +136,15 @@ impl TargetMatcher for target_lexicon::Triple {
                     OperatingSystem::Redox => env == &targ::Env::relibc,
                     OperatingSystem::VxWorks => env == &targ::Env::gnu,
                     OperatingSystem::Freebsd => match self.architecture {
-                        Architecture::Arm(ArmArchitecture::Armv6)
-                        | Architecture::Arm(ArmArchitecture::Armv7) => env == &targ::Env::gnueabihf,
+                        Architecture::Arm(ArmArchitecture::Armv6 | ArmArchitecture::Armv7) => {
+                            env == &targ::Env::gnueabihf
+                        }
                         _ => env.0.is_empty(),
                     },
                     OperatingSystem::Netbsd => match self.architecture {
-                        Architecture::Arm(ArmArchitecture::Armv6)
-                        | Architecture::Arm(ArmArchitecture::Armv7) => env == &targ::Env::eabihf,
+                        Architecture::Arm(ArmArchitecture::Armv6 | ArmArchitecture::Armv7) => {
+                            env == &targ::Env::eabihf
+                        }
                         _ => env.0.is_empty(),
                     },
                     OperatingSystem::None_
@@ -372,7 +374,7 @@ pub(crate) struct InnerTarget {
 }
 
 /// A single predicate in a `cfg()` expression
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Predicate<'a> {
     /// A target predicate, with the `target_` prefix
     Target(TargetPredicate),

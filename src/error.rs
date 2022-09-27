@@ -1,7 +1,7 @@
 use std::{error::Error, fmt};
 
 /// An error related to parsing of a cfg expression
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct ParseError {
     /// The string that was parsed
     pub original: String,
@@ -13,7 +13,7 @@ pub struct ParseError {
 }
 
 /// The particular reason for a `ParseError`
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Reason {
     /// not() takes exactly 1 predicate, unlike all() and any()
     InvalidNot(usize),
@@ -54,18 +54,18 @@ impl fmt::Display for ParseError {
         // Mismatched parens/quotes have a slightly different output
         // than the other errors
         match &self.reason {
-            r @ Reason::UnclosedParens | r @ Reason::UnclosedQuotes => {
-                f.write_fmt(format_args!("- {}", r))
+            r @ (Reason::UnclosedParens | Reason::UnclosedQuotes) => {
+                f.write_fmt(format_args!("- {r}"))
             }
-            r @ Reason::UnopenedParens | r @ Reason::UnopenedQuotes => {
-                f.write_fmt(format_args!("^ {}", r))
+            r @ (Reason::UnopenedParens | Reason::UnopenedQuotes) => {
+                f.write_fmt(format_args!("^ {r}"))
             }
             other => {
                 for _ in self.span.start..self.span.end {
                     f.write_str("^")?;
                 }
 
-                f.write_fmt(format_args!(" {}", other))
+                f.write_fmt(format_args!(" {other}"))
             }
         }
     }
@@ -91,7 +91,7 @@ impl fmt::Display for Reason {
                     f.write_str("expected one of ")?;
 
                     for (i, exp) in expected.iter().enumerate() {
-                        f.write_fmt(format_args!("{}`{}`", if i > 0 { ", " } else { "" }, exp))?;
+                        f.write_fmt(format_args!("{}`{exp}`", if i > 0 { ", " } else { "" }))?;
                     }
                     f.write_str(" here")
                 } else if !expected.is_empty() {
@@ -100,7 +100,7 @@ impl fmt::Display for Reason {
                     f.write_str("the term was not expected here")
                 }
             }
-            InvalidNot(np) => f.write_fmt(format_args!("not() takes 1 predicate, found {}", np)),
+            InvalidNot(np) => f.write_fmt(format_args!("not() takes 1 predicate, found {np}")),
             InvalidInteger => f.write_str("invalid integer"),
             MultipleRootPredicates => f.write_str("multiple root predicates"),
             InvalidHasAtomic => f.write_str("expected integer or \"ptr\""),
