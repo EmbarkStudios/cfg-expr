@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+### Changed
+- [PR#51](https://github.com/EmbarkStudios/cfg-expr/pull/51) updated the builtin target list to 1.64.0. Thanks [@sunshowers](https://github.com/sunshowers)!
+- [PR#51](https://github.com/EmbarkStudios/cfg-expr/pull/51) bumped the MSRV to 1.58.0.
+
 ## [0.10.3] - 2022-05-19
 ### Added
 - [PR#49](https://github.com/EmbarkStudios/cfg-expr/pull/49) added support for the `has_target_atomic = "<ptr | integer>"` and `panic = "<strategy>"` predicates. Thanks [@sunshowers](https://github.com/sunshowers)!

@@ -216,7 +216,7 @@ impl Expression {
             ($span:expr) => {{
                 let expected: &[&str] = match last_token {
                     None => &["<key>", "all", "any", "not"],
-                    Some(Token::All) | Some(Token::Any) | Some(Token::Not) => &["("],
+                    Some(Token::All | Token::Any | Token::Not) => &["("],
                     Some(Token::CloseParen) => &[")", ","],
                     Some(Token::Comma) => &[")", "<key>"],
                     Some(Token::Equals) => &["\""],
@@ -242,29 +242,32 @@ impl Expression {
         'outer: for lt in lexer {
             let lt = lt?;
             match &lt.token {
-                Token::Key(k) => match last_token {
-                    None | Some(Token::OpenParen) | Some(Token::Comma) => {
+                Token::Key(k) => {
+                    if matches!(last_token, None | Some(Token::OpenParen | Token::Comma)) {
                         pred_key = Some((k, lt.span.clone()));
+                    } else {
+                        token_err!(lt.span)
                     }
-                    _ => token_err!(lt.span),
-                },
-                Token::Value(v) => match last_token {
-                    Some(Token::Equals) => {
+                }
+                Token::Value(v) => {
+                    if matches!(last_token, Some(Token::Equals)) {
                         // We only record the span for keys and values
                         // so that the expression doesn't need a lifetime
                         // but in the value case we need to strip off
                         // the quotes so that the proper raw string is
                         // provided to callers when evaluating the expression
                         pred_val = Some((v, lt.span.start + 1..lt.span.end - 1));
+                    } else {
+                        token_err!(lt.span)
                     }
-                    _ => token_err!(lt.span),
-                },
-                Token::Equals => match last_token {
-                    Some(Token::Key(_)) => {}
-                    _ => token_err!(lt.span),
-                },
-                Token::All | Token::Any | Token::Not => match last_token {
-                    None | Some(Token::OpenParen) | Some(Token::Comma) => {
+                }
+                Token::Equals => {
+                    if !matches!(last_token, Some(Token::Key(_))) {
+                        token_err!(lt.span)
+                    }
+                }
+                Token::All | Token::Any | Token::Not => {
+                    if matches!(last_token, None | Some(Token::OpenParen | Token::Comma)) {
                         let new_fn = match lt.token {
                             // the 0 is a dummy value -- it will be substituted for the real
                             // number of predicates in the `CloseParen` branch below.
@@ -285,23 +288,26 @@ impl Expression {
                             predicates: SmallVec::new(),
                             nest_level: 0,
                         });
+                    } else {
+                        token_err!(lt.span)
                     }
-                    _ => token_err!(lt.span),
-                },
-                Token::OpenParen => match last_token {
-                    Some(Token::All) | Some(Token::Any) | Some(Token::Not) => {
+                }
+                Token::OpenParen => {
+                    if matches!(last_token, Some(Token::All | Token::Any | Token::Not)) {
                         if let Some(ref mut fs) = func_stack.last_mut() {
                             fs.parens_index = lt.span.start;
                         }
-                    }
-                    _ => token_err!(lt.span),
-                },
-                Token::CloseParen => match last_token {
-                    None | Some(Token::All) | Some(Token::Any) | Some(Token::Not)
-                    | Some(Token::Equals) => {
+                    } else {
                         token_err!(lt.span)
                     }
-                    _ => {
+                }
+                Token::CloseParen => {
+                    if matches!(
+                        last_token,
+                        None | Some(Token::All | Token::Any | Token::Not | Token::Equals)
+                    ) {
+                        token_err!(lt.span)
+                    } else {
                         if let Some(top) = func_stack.pop() {
                             let key = pred_key.take();
                             let val = pred_val.take();
@@ -352,15 +358,16 @@ impl Expression {
                             reason: Reason::UnopenedParens,
                         });
                     }
-                },
-                Token::Comma => match last_token {
-                    None
-                    | Some(Token::OpenParen)
-                    | Some(Token::All)
-                    | Some(Token::Any)
-                    | Some(Token::Not)
-                    | Some(Token::Equals) => token_err!(lt.span),
-                    _ => {
+                }
+                Token::Comma => {
+                    if matches!(
+                        last_token,
+                        None | Some(
+                            Token::OpenParen | Token::All | Token::Any | Token::Not | Token::Equals
+                        )
+                    ) {
+                        token_err!(lt.span)
+                    } else {
                         let key = pred_key.take();
                         let val = pred_val.take();
 
@@ -378,7 +385,7 @@ impl Expression {
                             _ => {}
                         }
                     }
-                },
+                }
             }
 
             last_token = Some(lt.token);
@@ -393,49 +400,46 @@ impl Expression {
         }
 
         // If we still have functions on the stack, it means we have an unclosed parens
-        match func_stack.pop() {
-            Some(top) => {
-                if top.parens_index != 0 {
-                    Err(ParseError {
-                        original: original.to_owned(),
-                        span: top.parens_index..original.len(),
-                        reason: Reason::UnclosedParens,
-                    })
-                } else {
-                    Err(ParseError {
-                        original: original.to_owned(),
-                        span: top.span,
-                        reason: Reason::Unexpected(&["("]),
-                    })
-                }
+        if let Some(top) = func_stack.pop() {
+            if top.parens_index != 0 {
+                Err(ParseError {
+                    original: original.to_owned(),
+                    span: top.parens_index..original.len(),
+                    reason: Reason::UnclosedParens,
+                })
+            } else {
+                Err(ParseError {
+                    original: original.to_owned(),
+                    span: top.span,
+                    reason: Reason::Unexpected(&["("]),
+                })
             }
-            None => {
-                let key = pred_key.take();
-                let val = pred_val.take();
+        } else {
+            let key = pred_key.take();
+            let val = pred_val.take();
 
-                if let Some(key) = key {
-                    root_predicate_count += 1;
-                    expr_queue.push(ExprNode::Predicate(parse_predicate(key, val)?));
-                }
+            if let Some(key) = key {
+                root_predicate_count += 1;
+                expr_queue.push(ExprNode::Predicate(parse_predicate(key, val)?));
+            }
 
-                if expr_queue.is_empty() {
-                    Err(ParseError {
-                        original: original.to_owned(),
-                        span: 0..original.len(),
-                        reason: Reason::Empty,
-                    })
-                } else if root_predicate_count > 1 {
-                    Err(ParseError {
-                        original: original.to_owned(),
-                        span: 0..original.len(),
-                        reason: Reason::MultipleRootPredicates,
-                    })
-                } else {
-                    Ok(Expression {
-                        original: original.to_owned(),
-                        expr: expr_queue,
-                    })
-                }
+            if expr_queue.is_empty() {
+                Err(ParseError {
+                    original: original.to_owned(),
+                    span: 0..original.len(),
+                    reason: Reason::Empty,
+                })
+            } else if root_predicate_count > 1 {
+                Err(ParseError {
+                    original: original.to_owned(),
+                    span: 0..original.len(),
+                    reason: Reason::MultipleRootPredicates,
+                })
+            } else {
+                Ok(Expression {
+                    original: original.to_owned(),
+                    expr: expr_queue,
+                })
             }
         }
     }
