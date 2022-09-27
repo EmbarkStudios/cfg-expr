@@ -2,7 +2,7 @@
 
 # `⚙️ cfg-expr`
 
-**A parser and evaluator for Rust `cfg()` expressions. Targets as of [Rust 1.58.0](https://forge.rust-lang.org/release/platform-support.html) are supported.**
+**A parser and evaluator for Rust `cfg()` expressions. Targets as of [Rust 1.64.0](https://forge.rust-lang.org/release/platform-support.html) are supported.**
 
 [![Build Status](https://github.com/EmbarkStudios/cfg-expr/workflows/CI/badge.svg)](https://github.com/EmbarkStudios/cfg-expr/actions?workflow=CI)
 [![Crates.io](https://img.shields.io/crates/v/cfg-expr.svg)](https://crates.io/crates/cfg-expr)
