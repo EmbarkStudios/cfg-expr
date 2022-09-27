@@ -12,22 +12,19 @@ name: CI
 jobs:
   lint:
     name: Lint
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
-          override: true
+          components: "clippy, rustfmt"
 
       # make sure all code has been formatted with rustfmt
-      - run: rustup component add rustfmt
       - name: check rustfmt
         run: cargo fmt -- --check --color always
 
       # run clippy to verify we have no warnings
       - run: cargo fetch
-      - run: rustup component add clippy
       - name: cargo clippy
         run: cargo clippy --all-targets --all-features -- -D warnings
 
@@ -35,14 +32,11 @@ jobs:
     name: Test
     strategy:
       matrix:
-        toolchain: [1.54, stable]
-    runs-on: ubuntu-20.04
+        toolchain: [1.58.0, stable]
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ matrix.toolchain }}
-          override: true
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@${{ matrix.toolchain }}
       - run: cargo fetch
       - name: cargo test build
         run: cargo build --tests --release
@@ -55,20 +49,17 @@ jobs:
 
   deny-check:
     name: cargo-deny
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: EmbarkStudios/cargo-deny-action@v1
 
   publish-check:
     name: Publish Check
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
       - run: cargo fetch
       - name: cargo publish check
         run: cargo publish --dry-run
