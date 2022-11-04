@@ -11,6 +11,10 @@ pub use builtins::ALL_BUILTINS;
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct Triple(pub Cow<'static, str>);
 
+/// The "abi" field
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+pub struct Abi(pub Cow<'static, str>);
+
 /// The "architecture" field
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct Arch(pub Cow<'static, str>);
@@ -79,6 +83,7 @@ macro_rules! field_impls {
 }
 
 field_impls!(Triple);
+field_impls!(Abi);
 field_impls!(Arch);
 field_impls!(Vendor);
 field_impls!(Os);
@@ -316,6 +321,9 @@ pub struct TargetInfo {
     /// [target_os](https://doc.rust-lang.org/reference/conditional-compilation.html#target_os)
     /// predicate.
     pub os: Option<Os>,
+    /// The target's ABI, if any. Used by the
+    /// [target_abi](https://github.com/rust-lang/rust/issues/80970) predicate.
+    pub abi: Option<Abi>,
     /// The target's CPU architecture. Used by the
     /// [target_arch](https://doc.rust-lang.org/reference/conditional-compilation.html#target_arch)
     /// predicate.

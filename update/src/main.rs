@@ -85,6 +85,7 @@ fn real_main() -> Result<(), String> {
     // triple even if the only part that matters is the architecture
     //let mut arches = HashMap::new();
 
+    let mut abis: Vec<String> = Vec::new();
     let mut arches: Vec<String> = Vec::new();
     let mut vendors: Vec<String> = Vec::new();
     let mut oses: Vec<String> = Vec::new();
@@ -116,6 +117,7 @@ fn real_main() -> Result<(), String> {
         let kv = String::from_utf8(output.stdout).unwrap();
 
         //let mut num_feats = 0;
+        let mut abi = None;
         let mut arch = None;
         let mut endian = None;
         let mut env = None;
@@ -139,6 +141,11 @@ fn real_main() -> Result<(), String> {
                     match key {
                         "panic" => {
                             panic = Some(val);
+                        }
+                        "target_abi" => {
+                            if !val.is_empty() {
+                                abi = Some(val)
+                            }
                         }
                         "target_arch" => {
                             arch = Some(val);
@@ -225,6 +232,7 @@ fn real_main() -> Result<(), String> {
             }
         }
 
+        insert(abi, &mut abis);
         insert(arch, &mut arches);
         insert(vendor, &mut vendors);
         insert(os, &mut oses);
@@ -251,6 +259,7 @@ fn real_main() -> Result<(), String> {
             "    TargetInfo {{
         triple: Triple::new_const(\"{triple}\"),
         os: {os},
+        abi: {abi},
         arch: Arch::{arch},
         env: {env},
         vendor: {vendor},
@@ -263,6 +272,9 @@ fn real_main() -> Result<(), String> {
             triple = target,
             os = os
                 .map(|os| format!("Some(Os::{})", os))
+                .unwrap_or_else(|| "None".to_owned()),
+            abi = abi
+                .map(|a| format!("Some(Abi::{})", a))
                 .unwrap_or_else(|| "None".to_owned()),
             arch = arch.expect("target had no arch"),
             env = env
@@ -280,6 +292,7 @@ fn real_main() -> Result<(), String> {
 
     writeln!(out, "];").unwrap();
 
+    write_impls(&mut out, "Abi", abis);
     write_impls(&mut out, "Arch", arches);
     write_impls(&mut out, "Vendor", vendors);
     write_impls(&mut out, "Os", oses);
