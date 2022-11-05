@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.64.0";
+pub(crate) const RUSTC_VERSION: &str = "1.65.0";
 
 pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
@@ -142,7 +142,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         families: Families::windows,
         pointer_width: 64,
         endian: Endian::little,
-        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
         panic: Panic::unwind,
     },
     TargetInfo {
@@ -154,7 +154,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         families: Families::windows,
         pointer_width: 64,
         endian: Endian::little,
-        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
         panic: Panic::unwind,
     },
     TargetInfo {
@@ -286,7 +286,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         families: Families::new_const(&[]),
         pointer_width: 64,
         endian: Endian::little,
-        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
         panic: Panic::abort,
     },
     TargetInfo {
@@ -298,7 +298,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         families: Families::windows,
         pointer_width: 64,
         endian: Endian::little,
-        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
         panic: Panic::unwind,
     },
     TargetInfo {
@@ -406,6 +406,18 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         families: Families::unix,
         pointer_width: 32,
         endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("armeb-unknown-linux-gnueabi"),
+        os: Some(Os::linux),
+        arch: Arch::arm,
+        env: Some(Env::gnu),
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 32,
+        endian: Endian::big,
         has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
         panic: Panic::unwind,
     },
@@ -431,6 +443,18 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         pointer_width: 32,
         endian: Endian::big,
         has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
+        triple: Triple::new_const("armv4t-none-eabi"),
+        os: None,
+        arch: Arch::arm,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::new_const(&[]),
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::new_const(&[]),
         panic: Panic::abort,
     },
     TargetInfo {
@@ -1394,6 +1418,18 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::unwind,
     },
     TargetInfo {
+        triple: Triple::new_const("powerpc64-unknown-openbsd"),
+        os: Some(Os::openbsd),
+        arch: Arch::powerpc64,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 64,
+        endian: Endian::big,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
         triple: Triple::new_const("powerpc64-wrs-vxworks"),
         os: Some(Os::vxworks),
         arch: Arch::powerpc64,
@@ -1584,6 +1620,18 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         endian: Endian::little,
         has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
         panic: Panic::abort,
+    },
+    TargetInfo {
+        triple: Triple::new_const("riscv64gc-unknown-openbsd"),
+        os: Some(Os::openbsd),
+        arch: Arch::riscv64,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::unwind,
     },
     TargetInfo {
         triple: Triple::new_const("riscv64imac-unknown-none-elf"),

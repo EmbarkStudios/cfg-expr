@@ -164,6 +164,7 @@ impl TargetMatcher for target_lexicon::Triple {
                                     | Environment::Androideabi
                                     | Environment::Eabi
                                     | Environment::Eabihf
+                                    | Environment::Sim
                             )
                         } else {
                             match env.0.parse::<Environment>() {
@@ -177,7 +178,8 @@ impl TargetMatcher for target_lexicon::Triple {
                                             | Environment::Gnuspe
                                             | Environment::Gnux32
                                             | Environment::GnuIlp32
-                                            | Environment::Gnueabihf => true,
+                                            | Environment::Gnueabihf
+                                            | Environment::GnuLlvm => true,
                                             // Rust 1.49.0 changed all android targets to have the
                                             // gnu environment
                                             Environment::Android | Environment::Androideabi
@@ -221,7 +223,7 @@ impl TargetMatcher for target_lexicon::Triple {
                     AmdHsa, Bitrig, Cloudabi, Cuda, Darwin, Dragonfly, Emscripten, Espidf, Freebsd,
                     Fuchsia, Haiku, Hermit, Horizon, Illumos, Ios, L4re, Linux, MacOSX, Nebulet,
                     Netbsd, None_, Openbsd, Redox, Solaris, Tvos, Uefi, Unknown, VxWorks, Wasi,
-                    Windows,
+                    Watchos, Windows,
                 };
                 match self.operating_system {
                     AmdHsa | Bitrig | Cloudabi | Cuda | Hermit | Nebulet | None_ | Uefi => false,
@@ -241,7 +243,8 @@ impl TargetMatcher for target_lexicon::Triple {
                     | Redox
                     | Solaris
                     | Tvos
-                    | VxWorks => fam == &crate::targets::Family::unix,
+                    | VxWorks
+                    | Watchos => fam == &crate::targets::Family::unix,
                     Emscripten => {
                         match self.architecture {
                             // asmjs, wasm32 and wasm64 are part of both the wasm and unix families
