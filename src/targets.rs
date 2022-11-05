@@ -162,14 +162,14 @@ impl Families {
 impl Deref for Families {
     type Target = [Family];
     fn deref(&self) -> &Self::Target {
-        &*self.0
+        &self.0
     }
 }
 
 impl AsRef<[Family]> for Families {
     #[inline]
     fn as_ref(&self) -> &[Family] {
-        &*self.0
+        &self.0
     }
 }
 
@@ -222,14 +222,14 @@ impl HasAtomics {
 impl Deref for HasAtomics {
     type Target = [HasAtomic];
     fn deref(&self) -> &Self::Target {
-        &*self.0
+        &self.0
     }
 }
 
 impl AsRef<[HasAtomic]> for HasAtomics {
     #[inline]
     fn as_ref(&self) -> &[HasAtomic] {
-        &*self.0
+        &self.0
     }
 }
 
