@@ -162,14 +162,14 @@ impl Families {
 impl Deref for Families {
     type Target = [Family];
     fn deref(&self) -> &Self::Target {
-        &*self.0
+        &self.0
     }
 }
 
 impl AsRef<[Family]> for Families {
     #[inline]
     fn as_ref(&self) -> &[Family] {
-        &*self.0
+        &self.0
     }
 }
 
@@ -222,14 +222,14 @@ impl HasAtomics {
 impl Deref for HasAtomics {
     type Target = [HasAtomic];
     fn deref(&self) -> &Self::Target {
-        &*self.0
+        &self.0
     }
 }
 
 impl AsRef<[HasAtomic]> for HasAtomics {
     #[inline]
     fn as_ref(&self) -> &[HasAtomic] {
-        &*self.0
+        &self.0
     }
 }
 
@@ -364,7 +364,7 @@ pub fn get_builtin_target_by_triple(triple: &str) -> Option<&'static TargetInfo>
 /// versions.
 ///
 /// ```
-/// assert_eq!("1.64.0", cfg_expr::targets::rustc_version());
+/// assert_eq!("1.65.0", cfg_expr::targets::rustc_version());
 /// ```
 pub fn rustc_version() -> &'static str {
     builtins::RUSTC_VERSION

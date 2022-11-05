@@ -29,7 +29,7 @@ impl Target {
                         environment: tl::Environment::Unknown,
                         binary_format: tl::BinaryFormat::Unknown,
                     }),
-                    triple => match triple.parse() {
+                    triple => match triple.parse::<tl::Triple>() {
                         Ok(l) => Some(l),
                         Err(e) => {
                             // There are enough new weird architectures added in each version of
