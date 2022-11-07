@@ -144,6 +144,7 @@ impl Expression {
                     }
 
                     let tp = match &target_key[7..] {
+                        "abi" => tp!(Abi),
                         "arch" => tp!(Arch),
                         "feature" => {
                             if val.is_empty() {

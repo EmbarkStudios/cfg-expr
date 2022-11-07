@@ -254,6 +254,60 @@ fn complex() {
 }
 
 #[test]
+fn unstable_target_abi() {
+    let linux_gnu = Target::make("x86_64-unknown-linux-gnu");
+    let linux_musl = Target::make("x86_64-unknown-linux-musl");
+    let windows_msvc = Target::make("x86_64-pc-windows-msvc");
+    let mac = Target::make("x86_64-apple-darwin");
+    let android = Target::make("aarch64-linux-android");
+
+    let target_with_abi_that_matches = cfg_expr::targets::TargetInfo {
+        triple: cfg_expr::targets::Triple::new_const("aarch64-apple-darwin"),
+        os: None,
+        abi: Some(cfg_expr::targets::Abi::new_const("eabihf")),
+        arch: cfg_expr::targets::Arch::aarch64,
+        env: None,
+        vendor: None,
+        families: cfg_expr::targets::Families::unix,
+        pointer_width: 64,
+        endian: cfg_expr::targets::Endian::little,
+        has_atomics: cfg_expr::targets::HasAtomics::atomic_8_16_32_64_128_ptr,
+        panic: cfg_expr::targets::Panic::unwind,
+    };
+
+    let target_with_abi_that_doesnt_match = cfg_expr::targets::TargetInfo {
+        abi: Some(cfg_expr::targets::Abi::new_const("ilp32")),
+        ..target_with_abi_that_matches.clone()
+    };
+
+    let abi_pred =
+        Expression::parse(r#"cfg(any(target_arch = "wasm32", target_abi = "eabihf"))"#).unwrap();
+
+    // Should match a specified target_abi that's the same
+    assert!(abi_pred.eval(|pred| {
+        match pred {
+            Predicate::Target(tp) => tp.matches(&target_with_abi_that_matches),
+            _ => false,
+        }
+    }));
+
+    // Should *not* match a specified target_abi that isn't the same
+    assert!(!abi_pred.eval(|pred| {
+        match pred {
+            Predicate::Target(tp) => tp.matches(&target_with_abi_that_doesnt_match),
+            _ => false,
+        }
+    }));
+
+    // Should *not* match any builtins at this point because target_abi isn't stable
+    assert!(!abi_pred.eval(|pred| tg_match!(pred, linux_gnu)));
+    assert!(!abi_pred.eval(|pred| tg_match!(pred, linux_musl)));
+    assert!(!abi_pred.eval(|pred| tg_match!(pred, mac)));
+    assert!(!abi_pred.eval(|pred| tg_match!(pred, windows_msvc)));
+    assert!(!abi_pred.eval(|pred| tg_match!(pred, android)));
+}
+
+#[test]
 fn wasm_family() {
     let wasm = Expression::parse(r#"cfg(target_family = "wasm")"#).unwrap();
 

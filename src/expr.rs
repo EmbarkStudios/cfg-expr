@@ -30,6 +30,8 @@ use crate::targets as targ;
 /// All predicates that pertains to a target, except for `target_feature`
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub enum TargetPredicate {
+    /// [target_abi](https://github.com/rust-lang/rust/issues/80970)
+    Abi(targ::Abi),
     /// [target_arch](https://doc.rust-lang.org/reference/conditional-compilation.html#target_arch)
     Arch(targ::Arch),
     /// [target_endian](https://doc.rust-lang.org/reference/conditional-compilation.html#target_endian)
@@ -59,10 +61,15 @@ pub trait TargetMatcher {
 impl TargetMatcher for targ::TargetInfo {
     fn matches(&self, tp: &TargetPredicate) -> bool {
         use TargetPredicate::{
-            Arch, Endian, Env, Family, HasAtomic, Os, Panic, PointerWidth, Vendor,
+            Abi, Arch, Endian, Env, Family, HasAtomic, Os, Panic, PointerWidth, Vendor,
         };
 
         match tp {
+            // The ABI is allowed to be an empty string
+            Abi(abi) => match &self.abi {
+                Some(a) => abi == a,
+                None => abi.0.is_empty(),
+            },
             Arch(a) => a == &self.arch,
             Endian(end) => *end == self.endian,
             // The environment is allowed to be an empty string
@@ -90,10 +97,14 @@ impl TargetMatcher for target_lexicon::Triple {
     fn matches(&self, tp: &TargetPredicate) -> bool {
         use target_lexicon::*;
         use TargetPredicate::{
-            Arch, Endian, Env, Family, HasAtomic, Os, Panic, PointerWidth, Vendor,
+            Abi, Arch, Endian, Env, Family, HasAtomic, Os, Panic, PointerWidth, Vendor,
         };
 
         match tp {
+            Abi(_) => {
+                // `target_abi` is unstable. Assume false for this.
+                false
+            }
             Arch(arch) => {
                 if arch == &targ::Arch::x86 {
                     matches!(self.architecture, Architecture::X86_32(_))
@@ -359,6 +370,7 @@ impl TargetPredicate {
 
 #[derive(Clone, Debug)]
 pub(crate) enum Which {
+    Abi,
     Arch,
     Endian(targ::Endian),
     Env,
@@ -422,6 +434,9 @@ impl InnerPredicate {
 
         match self {
             IP::Target(it) => match &it.which {
+                Which::Abi => Target(TargetPredicate::Abi(targ::Abi::new(
+                    s[it.span.clone().unwrap()].to_owned(),
+                ))),
                 Which::Arch => Target(TargetPredicate::Arch(targ::Arch::new(
                     s[it.span.clone().unwrap()].to_owned(),
                 ))),

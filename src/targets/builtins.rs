@@ -16,6 +16,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-apple-darwin"),
         os: Some(Os::macos),
+        abi: None,
         arch: Arch::aarch64,
         env: None,
         vendor: Some(Vendor::apple),
@@ -28,6 +29,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-apple-ios"),
         os: Some(Os::ios),
+        abi: None,
         arch: Arch::aarch64,
         env: None,
         vendor: Some(Vendor::apple),
@@ -40,6 +42,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-apple-ios-macabi"),
         os: Some(Os::ios),
+        abi: None,
         arch: Arch::aarch64,
         env: None,
         vendor: Some(Vendor::apple),
@@ -52,6 +55,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-apple-ios-sim"),
         os: Some(Os::ios),
+        abi: None,
         arch: Arch::aarch64,
         env: None,
         vendor: Some(Vendor::apple),
@@ -64,6 +68,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-apple-tvos"),
         os: Some(Os::tvos),
+        abi: None,
         arch: Arch::aarch64,
         env: None,
         vendor: Some(Vendor::apple),
@@ -76,6 +81,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-apple-watchos-sim"),
         os: Some(Os::watchos),
+        abi: None,
         arch: Arch::aarch64,
         env: None,
         vendor: Some(Vendor::apple),
@@ -88,6 +94,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-fuchsia"),
         os: Some(Os::fuchsia),
+        abi: None,
         arch: Arch::aarch64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -100,6 +107,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-kmc-solid_asp3"),
         os: Some(Os::solid_asp3),
+        abi: None,
         arch: Arch::aarch64,
         env: None,
         vendor: Some(Vendor::kmc),
@@ -112,6 +120,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-linux-android"),
         os: Some(Os::android),
+        abi: None,
         arch: Arch::aarch64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -124,6 +133,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-nintendo-switch-freestanding"),
         os: Some(Os::horizon),
+        abi: None,
         arch: Arch::aarch64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -136,6 +146,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-pc-windows-gnullvm"),
         os: Some(Os::windows),
+        abi: None,
         arch: Arch::aarch64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::pc),
@@ -148,6 +159,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-pc-windows-msvc"),
         os: Some(Os::windows),
+        abi: None,
         arch: Arch::aarch64,
         env: Some(Env::msvc),
         vendor: Some(Vendor::pc),
@@ -160,6 +172,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-unknown-freebsd"),
         os: Some(Os::freebsd),
+        abi: None,
         arch: Arch::aarch64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -172,6 +185,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-unknown-hermit"),
         os: Some(Os::hermit),
+        abi: None,
         arch: Arch::aarch64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -184,6 +198,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-unknown-linux-gnu"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::aarch64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -196,6 +211,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-unknown-linux-gnu_ilp32"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::aarch64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -208,6 +224,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-unknown-linux-musl"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::aarch64,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -220,6 +237,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-unknown-netbsd"),
         os: Some(Os::netbsd),
+        abi: None,
         arch: Arch::aarch64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -232,6 +250,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-unknown-none"),
         os: None,
+        abi: None,
         arch: Arch::aarch64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -244,6 +263,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-unknown-none-softfloat"),
         os: None,
+        abi: None,
         arch: Arch::aarch64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -256,6 +276,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-unknown-openbsd"),
         os: Some(Os::openbsd),
+        abi: None,
         arch: Arch::aarch64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -268,6 +289,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-unknown-redox"),
         os: Some(Os::redox),
+        abi: None,
         arch: Arch::aarch64,
         env: Some(Env::relibc),
         vendor: Some(Vendor::unknown),
@@ -280,6 +302,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-unknown-uefi"),
         os: Some(Os::uefi),
+        abi: None,
         arch: Arch::aarch64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -292,6 +315,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-uwp-windows-msvc"),
         os: Some(Os::windows),
+        abi: None,
         arch: Arch::aarch64,
         env: Some(Env::msvc),
         vendor: Some(Vendor::uwp),
@@ -304,6 +328,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-wrs-vxworks"),
         os: Some(Os::vxworks),
+        abi: None,
         arch: Arch::aarch64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::wrs),
@@ -316,6 +341,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64_be-unknown-linux-gnu"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::aarch64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -328,6 +354,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64_be-unknown-linux-gnu_ilp32"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::aarch64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -340,6 +367,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("arm-linux-androideabi"),
         os: Some(Os::android),
+        abi: None,
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -352,6 +380,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("arm-unknown-linux-gnueabi"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -364,6 +393,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("arm-unknown-linux-gnueabihf"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -376,6 +406,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("arm-unknown-linux-musleabi"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -388,6 +419,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("arm-unknown-linux-musleabihf"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -400,6 +432,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("arm64_32-apple-watchos"),
         os: Some(Os::watchos),
+        abi: None,
         arch: Arch::aarch64,
         env: None,
         vendor: Some(Vendor::apple),
@@ -412,6 +445,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armeb-unknown-linux-gnueabi"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -424,6 +458,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armebv7r-none-eabi"),
         os: None,
+        abi: None,
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -436,6 +471,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armebv7r-none-eabihf"),
         os: None,
+        abi: None,
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -448,6 +484,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv4t-none-eabi"),
         os: None,
+        abi: None,
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -460,6 +497,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv4t-unknown-linux-gnueabi"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -472,6 +510,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv5te-unknown-linux-gnueabi"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -484,6 +523,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv5te-unknown-linux-musleabi"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -496,6 +536,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv5te-unknown-linux-uclibceabi"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::uclibc),
         vendor: Some(Vendor::unknown),
@@ -508,6 +549,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv6-unknown-freebsd"),
         os: Some(Os::freebsd),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::gnueabihf),
         vendor: Some(Vendor::unknown),
@@ -520,6 +562,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv6-unknown-netbsd-eabihf"),
         os: Some(Os::netbsd),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::eabihf),
         vendor: Some(Vendor::unknown),
@@ -532,6 +575,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv6k-nintendo-3ds"),
         os: Some(Os::horizon),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::newlib),
         vendor: Some(Vendor::nintendo),
@@ -544,6 +588,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7-apple-ios"),
         os: Some(Os::ios),
+        abi: None,
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::apple),
@@ -556,6 +601,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7-linux-androideabi"),
         os: Some(Os::android),
+        abi: None,
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -568,6 +614,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7-unknown-freebsd"),
         os: Some(Os::freebsd),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::gnueabihf),
         vendor: Some(Vendor::unknown),
@@ -580,6 +627,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7-unknown-linux-gnueabi"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -592,6 +640,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7-unknown-linux-gnueabihf"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -604,6 +653,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7-unknown-linux-musleabi"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -616,6 +666,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7-unknown-linux-musleabihf"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -628,6 +679,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7-unknown-linux-uclibceabi"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::uclibc),
         vendor: Some(Vendor::unknown),
@@ -640,6 +692,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7-unknown-linux-uclibceabihf"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::uclibc),
         vendor: Some(Vendor::unknown),
@@ -652,6 +705,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7-unknown-netbsd-eabihf"),
         os: Some(Os::netbsd),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::eabihf),
         vendor: Some(Vendor::unknown),
@@ -664,6 +718,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7-wrs-vxworks-eabihf"),
         os: Some(Os::vxworks),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::gnu),
         vendor: Some(Vendor::wrs),
@@ -676,6 +731,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7a-kmc-solid_asp3-eabi"),
         os: Some(Os::solid_asp3),
+        abi: None,
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::kmc),
@@ -688,6 +744,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7a-kmc-solid_asp3-eabihf"),
         os: Some(Os::solid_asp3),
+        abi: None,
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::kmc),
@@ -700,6 +757,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7a-none-eabi"),
         os: None,
+        abi: None,
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -712,6 +770,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7a-none-eabihf"),
         os: None,
+        abi: None,
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -724,6 +783,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7k-apple-watchos"),
         os: Some(Os::watchos),
+        abi: None,
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::apple),
@@ -736,6 +796,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7r-none-eabi"),
         os: None,
+        abi: None,
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -748,6 +809,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7r-none-eabihf"),
         os: None,
+        abi: None,
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -760,6 +822,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7s-apple-ios"),
         os: Some(Os::ios),
+        abi: None,
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::apple),
@@ -772,6 +835,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("asmjs-unknown-emscripten"),
         os: Some(Os::emscripten),
+        abi: None,
         arch: Arch::wasm32,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -784,6 +848,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("avr-unknown-gnu-atmega328"),
         os: None,
+        abi: None,
         arch: Arch::avr,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -796,6 +861,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("bpfeb-unknown-none"),
         os: None,
+        abi: None,
         arch: Arch::bpf,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -808,6 +874,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("bpfel-unknown-none"),
         os: None,
+        abi: None,
         arch: Arch::bpf,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -820,6 +887,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("hexagon-unknown-linux-musl"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::hexagon,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -832,6 +900,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("i386-apple-ios"),
         os: Some(Os::ios),
+        abi: None,
         arch: Arch::x86,
         env: None,
         vendor: Some(Vendor::apple),
@@ -844,6 +913,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("i586-pc-windows-msvc"),
         os: Some(Os::windows),
+        abi: None,
         arch: Arch::x86,
         env: Some(Env::msvc),
         vendor: Some(Vendor::pc),
@@ -856,6 +926,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("i586-unknown-linux-gnu"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::x86,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -868,6 +939,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("i586-unknown-linux-musl"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::x86,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -880,6 +952,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("i686-apple-darwin"),
         os: Some(Os::macos),
+        abi: None,
         arch: Arch::x86,
         env: None,
         vendor: Some(Vendor::apple),
@@ -892,6 +965,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("i686-linux-android"),
         os: Some(Os::android),
+        abi: None,
         arch: Arch::x86,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -904,6 +978,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("i686-pc-windows-gnu"),
         os: Some(Os::windows),
+        abi: None,
         arch: Arch::x86,
         env: Some(Env::gnu),
         vendor: Some(Vendor::pc),
@@ -916,6 +991,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("i686-pc-windows-msvc"),
         os: Some(Os::windows),
+        abi: None,
         arch: Arch::x86,
         env: Some(Env::msvc),
         vendor: Some(Vendor::pc),
@@ -928,6 +1004,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("i686-unknown-freebsd"),
         os: Some(Os::freebsd),
+        abi: None,
         arch: Arch::x86,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -940,6 +1017,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("i686-unknown-haiku"),
         os: Some(Os::haiku),
+        abi: None,
         arch: Arch::x86,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -952,6 +1030,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("i686-unknown-linux-gnu"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::x86,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -964,6 +1043,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("i686-unknown-linux-musl"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::x86,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -976,6 +1056,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("i686-unknown-netbsd"),
         os: Some(Os::netbsd),
+        abi: None,
         arch: Arch::x86,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -988,6 +1069,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("i686-unknown-openbsd"),
         os: Some(Os::openbsd),
+        abi: None,
         arch: Arch::x86,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1000,6 +1082,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("i686-unknown-uefi"),
         os: Some(Os::uefi),
+        abi: None,
         arch: Arch::x86,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1012,6 +1095,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("i686-uwp-windows-gnu"),
         os: Some(Os::windows),
+        abi: None,
         arch: Arch::x86,
         env: Some(Env::gnu),
         vendor: Some(Vendor::uwp),
@@ -1024,6 +1108,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("i686-uwp-windows-msvc"),
         os: Some(Os::windows),
+        abi: None,
         arch: Arch::x86,
         env: Some(Env::msvc),
         vendor: Some(Vendor::uwp),
@@ -1036,6 +1121,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("i686-wrs-vxworks"),
         os: Some(Os::vxworks),
+        abi: None,
         arch: Arch::x86,
         env: Some(Env::gnu),
         vendor: Some(Vendor::wrs),
@@ -1048,6 +1134,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("m68k-unknown-linux-gnu"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::m68k,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1060,6 +1147,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("mips-unknown-linux-gnu"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::mips,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1072,6 +1160,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("mips-unknown-linux-musl"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::mips,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -1084,6 +1173,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("mips-unknown-linux-uclibc"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::mips,
         env: Some(Env::uclibc),
         vendor: Some(Vendor::unknown),
@@ -1096,6 +1186,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("mips64-openwrt-linux-musl"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::mips64,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -1108,6 +1199,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("mips64-unknown-linux-gnuabi64"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::mips64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1120,6 +1212,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("mips64-unknown-linux-muslabi64"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::mips64,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -1132,6 +1225,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("mips64el-unknown-linux-gnuabi64"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::mips64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1144,6 +1238,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("mips64el-unknown-linux-muslabi64"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::mips64,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -1156,6 +1251,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("mipsel-sony-psp"),
         os: Some(Os::psp),
+        abi: None,
         arch: Arch::mips,
         env: None,
         vendor: Some(Vendor::sony),
@@ -1168,6 +1264,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("mipsel-unknown-linux-gnu"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::mips,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1180,6 +1277,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("mipsel-unknown-linux-musl"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::mips,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -1192,6 +1290,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("mipsel-unknown-linux-uclibc"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::mips,
         env: Some(Env::uclibc),
         vendor: Some(Vendor::unknown),
@@ -1204,6 +1303,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("mipsel-unknown-none"),
         os: None,
+        abi: None,
         arch: Arch::mips,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1216,6 +1316,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("mipsisa32r6-unknown-linux-gnu"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::mips,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1228,6 +1329,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("mipsisa32r6el-unknown-linux-gnu"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::mips,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1240,6 +1342,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("mipsisa64r6-unknown-linux-gnuabi64"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::mips64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1252,6 +1355,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("mipsisa64r6el-unknown-linux-gnuabi64"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::mips64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1264,6 +1368,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("msp430-none-elf"),
         os: None,
+        abi: None,
         arch: Arch::msp430,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1276,6 +1381,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("nvptx64-nvidia-cuda"),
         os: Some(Os::cuda),
+        abi: None,
         arch: Arch::nvptx64,
         env: None,
         vendor: Some(Vendor::nvidia),
@@ -1288,6 +1394,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("powerpc-unknown-freebsd"),
         os: Some(Os::freebsd),
+        abi: None,
         arch: Arch::powerpc,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1300,6 +1407,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("powerpc-unknown-linux-gnu"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::powerpc,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1312,6 +1420,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("powerpc-unknown-linux-gnuspe"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::powerpc,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1324,6 +1433,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("powerpc-unknown-linux-musl"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::powerpc,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -1336,6 +1446,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("powerpc-unknown-netbsd"),
         os: Some(Os::netbsd),
+        abi: None,
         arch: Arch::powerpc,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1348,6 +1459,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("powerpc-unknown-openbsd"),
         os: Some(Os::openbsd),
+        abi: None,
         arch: Arch::powerpc,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1360,6 +1472,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("powerpc-wrs-vxworks"),
         os: Some(Os::vxworks),
+        abi: None,
         arch: Arch::powerpc,
         env: Some(Env::gnu),
         vendor: Some(Vendor::wrs),
@@ -1372,6 +1485,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("powerpc-wrs-vxworks-spe"),
         os: Some(Os::vxworks),
+        abi: None,
         arch: Arch::powerpc,
         env: Some(Env::gnu),
         vendor: Some(Vendor::wrs),
@@ -1384,6 +1498,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("powerpc64-unknown-freebsd"),
         os: Some(Os::freebsd),
+        abi: None,
         arch: Arch::powerpc64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1396,6 +1511,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("powerpc64-unknown-linux-gnu"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::powerpc64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1408,6 +1524,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("powerpc64-unknown-linux-musl"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::powerpc64,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -1420,6 +1537,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("powerpc64-unknown-openbsd"),
         os: Some(Os::openbsd),
+        abi: None,
         arch: Arch::powerpc64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1432,6 +1550,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("powerpc64-wrs-vxworks"),
         os: Some(Os::vxworks),
+        abi: None,
         arch: Arch::powerpc64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::wrs),
@@ -1444,6 +1563,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("powerpc64le-unknown-freebsd"),
         os: Some(Os::freebsd),
+        abi: None,
         arch: Arch::powerpc64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1456,6 +1576,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("powerpc64le-unknown-linux-gnu"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::powerpc64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1468,6 +1589,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("powerpc64le-unknown-linux-musl"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::powerpc64,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -1480,6 +1602,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("riscv32gc-unknown-linux-gnu"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::riscv32,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1492,6 +1615,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("riscv32gc-unknown-linux-musl"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::riscv32,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -1504,6 +1628,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("riscv32i-unknown-none-elf"),
         os: None,
+        abi: None,
         arch: Arch::riscv32,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1516,6 +1641,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("riscv32im-unknown-none-elf"),
         os: None,
+        abi: None,
         arch: Arch::riscv32,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1528,6 +1654,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("riscv32imac-unknown-none-elf"),
         os: None,
+        abi: None,
         arch: Arch::riscv32,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1540,6 +1667,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("riscv32imac-unknown-xous-elf"),
         os: Some(Os::xous),
+        abi: None,
         arch: Arch::riscv32,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1552,6 +1680,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("riscv32imc-esp-espidf"),
         os: Some(Os::espidf),
+        abi: None,
         arch: Arch::riscv32,
         env: Some(Env::newlib),
         vendor: Some(Vendor::espressif),
@@ -1564,6 +1693,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("riscv32imc-unknown-none-elf"),
         os: None,
+        abi: None,
         arch: Arch::riscv32,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1576,6 +1706,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("riscv64gc-unknown-freebsd"),
         os: Some(Os::freebsd),
+        abi: None,
         arch: Arch::riscv64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1588,6 +1719,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("riscv64gc-unknown-linux-gnu"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::riscv64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1600,6 +1732,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("riscv64gc-unknown-linux-musl"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::riscv64,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -1612,6 +1745,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("riscv64gc-unknown-none-elf"),
         os: None,
+        abi: None,
         arch: Arch::riscv64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1624,6 +1758,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("riscv64gc-unknown-openbsd"),
         os: Some(Os::openbsd),
+        abi: None,
         arch: Arch::riscv64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1636,6 +1771,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("riscv64imac-unknown-none-elf"),
         os: None,
+        abi: None,
         arch: Arch::riscv64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1648,6 +1784,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("s390x-unknown-linux-gnu"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::s390x,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1660,6 +1797,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("s390x-unknown-linux-musl"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::s390x,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -1672,6 +1810,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("sparc-unknown-linux-gnu"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::sparc,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1684,6 +1823,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("sparc64-unknown-linux-gnu"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::sparc64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1696,6 +1836,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("sparc64-unknown-netbsd"),
         os: Some(Os::netbsd),
+        abi: None,
         arch: Arch::sparc64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1708,6 +1849,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("sparc64-unknown-openbsd"),
         os: Some(Os::openbsd),
+        abi: None,
         arch: Arch::sparc64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1720,6 +1862,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("sparcv9-sun-solaris"),
         os: Some(Os::solaris),
+        abi: None,
         arch: Arch::sparc64,
         env: None,
         vendor: Some(Vendor::sun),
@@ -1732,6 +1875,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv4t-none-eabi"),
         os: None,
+        abi: None,
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1744,6 +1888,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv6m-none-eabi"),
         os: None,
+        abi: None,
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1756,6 +1901,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv7a-pc-windows-msvc"),
         os: Some(Os::windows),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::msvc),
         vendor: Some(Vendor::pc),
@@ -1768,6 +1914,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv7a-uwp-windows-msvc"),
         os: Some(Os::windows),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::msvc),
         vendor: Some(Vendor::uwp),
@@ -1780,6 +1927,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv7em-none-eabi"),
         os: None,
+        abi: None,
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1792,6 +1940,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv7em-none-eabihf"),
         os: None,
+        abi: None,
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1804,6 +1953,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv7m-none-eabi"),
         os: None,
+        abi: None,
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1816,6 +1966,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv7neon-linux-androideabi"),
         os: Some(Os::android),
+        abi: None,
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1828,6 +1979,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv7neon-unknown-linux-gnueabihf"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1840,6 +1992,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv7neon-unknown-linux-musleabihf"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -1852,6 +2005,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv8m.base-none-eabi"),
         os: None,
+        abi: None,
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1864,6 +2018,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv8m.main-none-eabi"),
         os: None,
+        abi: None,
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1876,6 +2031,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv8m.main-none-eabihf"),
         os: None,
+        abi: None,
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1888,6 +2044,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("wasm32-unknown-emscripten"),
         os: Some(Os::emscripten),
+        abi: None,
         arch: Arch::wasm32,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1900,6 +2057,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("wasm32-unknown-unknown"),
         os: Some(Os::unknown),
+        abi: None,
         arch: Arch::wasm32,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1912,6 +2070,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("wasm32-wasi"),
         os: Some(Os::wasi),
+        abi: None,
         arch: Arch::wasm32,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1924,6 +2083,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("wasm64-unknown-unknown"),
         os: Some(Os::unknown),
+        abi: None,
         arch: Arch::wasm64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1936,6 +2096,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-apple-darwin"),
         os: Some(Os::macos),
+        abi: None,
         arch: Arch::x86_64,
         env: None,
         vendor: Some(Vendor::apple),
@@ -1948,6 +2109,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-apple-ios"),
         os: Some(Os::ios),
+        abi: None,
         arch: Arch::x86_64,
         env: None,
         vendor: Some(Vendor::apple),
@@ -1960,6 +2122,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-apple-ios-macabi"),
         os: Some(Os::ios),
+        abi: None,
         arch: Arch::x86_64,
         env: None,
         vendor: Some(Vendor::apple),
@@ -1972,6 +2135,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-apple-tvos"),
         os: Some(Os::tvos),
+        abi: None,
         arch: Arch::x86_64,
         env: None,
         vendor: Some(Vendor::apple),
@@ -1984,6 +2148,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-apple-watchos-sim"),
         os: Some(Os::watchos),
+        abi: None,
         arch: Arch::x86_64,
         env: None,
         vendor: Some(Vendor::apple),
@@ -1996,6 +2161,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-fortanix-unknown-sgx"),
         os: Some(Os::unknown),
+        abi: None,
         arch: Arch::x86_64,
         env: Some(Env::sgx),
         vendor: Some(Vendor::fortanix),
@@ -2008,6 +2174,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-fuchsia"),
         os: Some(Os::fuchsia),
+        abi: None,
         arch: Arch::x86_64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -2020,6 +2187,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-linux-android"),
         os: Some(Os::android),
+        abi: None,
         arch: Arch::x86_64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -2032,6 +2200,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-pc-solaris"),
         os: Some(Os::solaris),
+        abi: None,
         arch: Arch::x86_64,
         env: None,
         vendor: Some(Vendor::pc),
@@ -2044,6 +2213,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-pc-windows-gnu"),
         os: Some(Os::windows),
+        abi: None,
         arch: Arch::x86_64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::pc),
@@ -2056,6 +2226,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-pc-windows-gnullvm"),
         os: Some(Os::windows),
+        abi: None,
         arch: Arch::x86_64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::pc),
@@ -2068,6 +2239,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-pc-windows-msvc"),
         os: Some(Os::windows),
+        abi: None,
         arch: Arch::x86_64,
         env: Some(Env::msvc),
         vendor: Some(Vendor::pc),
@@ -2080,6 +2252,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-sun-solaris"),
         os: Some(Os::solaris),
+        abi: None,
         arch: Arch::x86_64,
         env: None,
         vendor: Some(Vendor::sun),
@@ -2092,6 +2265,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-unknown-dragonfly"),
         os: Some(Os::dragonfly),
+        abi: None,
         arch: Arch::x86_64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -2104,6 +2278,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-unknown-freebsd"),
         os: Some(Os::freebsd),
+        abi: None,
         arch: Arch::x86_64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -2116,6 +2291,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-unknown-haiku"),
         os: Some(Os::haiku),
+        abi: None,
         arch: Arch::x86_64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -2128,6 +2304,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-unknown-hermit"),
         os: Some(Os::hermit),
+        abi: None,
         arch: Arch::x86_64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -2140,6 +2317,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-unknown-illumos"),
         os: Some(Os::illumos),
+        abi: None,
         arch: Arch::x86_64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -2152,6 +2330,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-unknown-l4re-uclibc"),
         os: Some(Os::l4re),
+        abi: None,
         arch: Arch::x86_64,
         env: Some(Env::uclibc),
         vendor: Some(Vendor::unknown),
@@ -2164,6 +2343,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-unknown-linux-gnu"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::x86_64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -2176,6 +2356,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-unknown-linux-gnux32"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::x86_64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -2188,6 +2369,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-unknown-linux-musl"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::x86_64,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -2200,6 +2382,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-unknown-netbsd"),
         os: Some(Os::netbsd),
+        abi: None,
         arch: Arch::x86_64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -2212,6 +2395,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-unknown-none"),
         os: None,
+        abi: None,
         arch: Arch::x86_64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -2224,6 +2408,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-unknown-none-linuxkernel"),
         os: None,
+        abi: None,
         arch: Arch::x86_64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -2236,6 +2421,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-unknown-openbsd"),
         os: Some(Os::openbsd),
+        abi: None,
         arch: Arch::x86_64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -2248,6 +2434,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-unknown-redox"),
         os: Some(Os::redox),
+        abi: None,
         arch: Arch::x86_64,
         env: Some(Env::relibc),
         vendor: Some(Vendor::unknown),
@@ -2260,6 +2447,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-unknown-uefi"),
         os: Some(Os::uefi),
+        abi: None,
         arch: Arch::x86_64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -2272,6 +2460,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-uwp-windows-gnu"),
         os: Some(Os::windows),
+        abi: None,
         arch: Arch::x86_64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::uwp),
@@ -2284,6 +2473,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-uwp-windows-msvc"),
         os: Some(Os::windows),
+        abi: None,
         arch: Arch::x86_64,
         env: Some(Env::msvc),
         vendor: Some(Vendor::uwp),
@@ -2296,6 +2486,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-wrs-vxworks"),
         os: Some(Os::vxworks),
+        abi: None,
         arch: Arch::x86_64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::wrs),
@@ -2306,6 +2497,8 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::unwind,
     },
 ];
+
+impl super::Abi {}
 
 impl super::Arch {
     pub const aarch64: Arch = Arch::new_const("aarch64");
