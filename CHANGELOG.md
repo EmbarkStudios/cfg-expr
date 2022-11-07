@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+## Changed
+- [PR#51](https://github.com/EmbarkStudios/cfg-expr/pull/51) updated the builtin target list to 1.65.0. Thanks [@sunshowers](https://github.com/sunshowers)!
+
+## Added
+- [PR#52](https://github.com/EmbarkStudios/cfg-expr/pull/52) added support for `abi`, which is currently nightly only, but should have no affect on stable. Thanks [@carols10cents](https://github.com/carols10cents)!
+
 ## [0.11.0] - 2022-09-27
 ### Changed
 - [PR#51](https://github.com/EmbarkStudios/cfg-expr/pull/51) updated the builtin target list to 1.64.0. Thanks [@sunshowers](https://github.com/sunshowers)!
