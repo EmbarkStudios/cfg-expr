@@ -445,6 +445,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armeb-unknown-linux-gnueabi"),
         os: Some(Os::linux),
+        abi: None,
         arch: Arch::arm,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -483,6 +484,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv4t-none-eabi"),
         os: None,
+        abi: None,
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1535,6 +1537,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("powerpc64-unknown-openbsd"),
         os: Some(Os::openbsd),
+        abi: None,
         arch: Arch::powerpc64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1755,6 +1758,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("riscv64gc-unknown-openbsd"),
         os: Some(Os::openbsd),
+        abi: None,
         arch: Arch::riscv64,
         env: None,
         vendor: Some(Vendor::unknown),
