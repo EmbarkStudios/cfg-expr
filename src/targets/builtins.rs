@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.65.0";
+pub(crate) const RUSTC_VERSION: &str = "1.66.0";
 
 pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
@@ -506,6 +506,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         endian: Endian::little,
         has_atomics: HasAtomics::atomic_8_16_32_ptr,
         panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("armv5te-none-eabi"),
+        os: None,
+        abi: None,
+        arch: Arch::arm,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::new_const(&[]),
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::new_const(&[]),
+        panic: Panic::abort,
     },
     TargetInfo {
         triple: Triple::new_const("armv5te-unknown-linux-gnueabi"),
@@ -1874,6 +1887,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     },
     TargetInfo {
         triple: Triple::new_const("thumbv4t-none-eabi"),
+        os: None,
+        abi: None,
+        arch: Arch::arm,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::new_const(&[]),
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::new_const(&[]),
+        panic: Panic::abort,
+    },
+    TargetInfo {
+        triple: Triple::new_const("thumbv5te-none-eabi"),
         os: None,
         abi: None,
         arch: Arch::arm,
