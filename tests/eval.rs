@@ -35,7 +35,7 @@ impl Target {
                             // There are enough new weird architectures added in each version of
                             // Rust that it is difficult to keep target-lexicon aware of all of
                             // them. So try parsing this triple, but don't fail if it doesn't work.
-                            eprintln!("failed to parse '{}': {:?}", triple, e);
+                            eprintln!("failed to parse '{triple}': {e:?}");
                             None
                         }
                     },
@@ -59,8 +59,8 @@ macro_rules! tg_match {
                         let linfo = tg.matches(l);
                         assert_eq!(
                             tinfo, linfo,
-                            "{:#?} builtin didn't match lexicon {:#?} for predicate {:#?}",
-                            $target.builtin, $target.lexicon, tg,
+                            "{:#?} builtin didn't match lexicon {:#?} for predicate {tg:#?}",
+                            $target.builtin, $target.lexicon,
                         );
 
                         return linfo;
@@ -86,8 +86,8 @@ macro_rules! tg_match {
                         let linfo = tg.matches(l);
                         assert_eq!(
                             tinfo, linfo,
-                            "{:#?} builtin didn't match lexicon {:#?} for predicate {:#?}",
-                            $target.builtin, $target.lexicon, tg,
+                            "{:#?} builtin didn't match lexicon {:#?} for predicate {tg:#?}",
+                            $target.builtin, $target.lexicon,
                         );
 
                         return linfo;

@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.66.0";
+pub(crate) const RUSTC_VERSION: &str = "1.67.0";
 
 pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
@@ -272,6 +272,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         endian: Endian::little,
         has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
         panic: Panic::abort,
+    },
+    TargetInfo {
+        triple: Triple::new_const("aarch64-unknown-nto-qnx710"),
+        os: Some(Os::nto),
+        abi: None,
+        arch: Arch::aarch64,
+        env: Some(Env::nto71),
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
+        panic: Panic::unwind,
     },
     TargetInfo {
         triple: Triple::new_const("aarch64-unknown-openbsd"),
@@ -1275,6 +1288,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::unwind,
     },
     TargetInfo {
+        triple: Triple::new_const("mipsel-sony-psx"),
+        os: None,
+        abi: None,
+        arch: Arch::mips,
+        env: Some(Env::psx),
+        vendor: Some(Vendor::sony),
+        families: Families::new_const(&[]),
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::new_const(&[]),
+        panic: Panic::abort,
+    },
+    TargetInfo {
         triple: Triple::new_const("mipsel-unknown-linux-gnu"),
         os: Some(Os::linux),
         abi: None,
@@ -1506,6 +1532,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         pointer_width: 32,
         endian: Endian::big,
         has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("powerpc64-ibm-aix"),
+        os: Some(Os::aix),
+        abi: None,
+        arch: Arch::powerpc64,
+        env: None,
+        vendor: Some(Vendor::ibm),
+        families: Families::unix,
+        pointer_width: 64,
+        endian: Endian::big,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
         panic: Panic::unwind,
     },
     TargetInfo {
@@ -2224,6 +2263,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::unwind,
     },
     TargetInfo {
+        triple: Triple::new_const("x86_64-pc-nto-qnx710"),
+        os: Some(Os::nto),
+        abi: None,
+        arch: Arch::x86_64,
+        env: Some(Env::nto71),
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
         triple: Triple::new_const("x86_64-pc-solaris"),
         os: Some(Os::solaris),
         abi: None,
@@ -2432,19 +2484,6 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::abort,
     },
     TargetInfo {
-        triple: Triple::new_const("x86_64-unknown-none-linuxkernel"),
-        os: None,
-        abi: None,
-        arch: Arch::x86_64,
-        env: Some(Env::gnu),
-        vendor: Some(Vendor::unknown),
-        families: Families::new_const(&[]),
-        pointer_width: 64,
-        endian: Endian::little,
-        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
-        panic: Panic::abort,
-    },
-    TargetInfo {
         triple: Triple::new_const("x86_64-unknown-openbsd"),
         os: Some(Os::openbsd),
         abi: None,
@@ -2554,6 +2593,7 @@ impl super::Vendor {
     pub const apple: Vendor = Vendor::new_const("apple");
     pub const espressif: Vendor = Vendor::new_const("espressif");
     pub const fortanix: Vendor = Vendor::new_const("fortanix");
+    pub const ibm: Vendor = Vendor::new_const("ibm");
     pub const kmc: Vendor = Vendor::new_const("kmc");
     pub const nintendo: Vendor = Vendor::new_const("nintendo");
     pub const nvidia: Vendor = Vendor::new_const("nvidia");
@@ -2566,6 +2606,7 @@ impl super::Vendor {
 }
 
 impl super::Os {
+    pub const aix: Os = Os::new_const("aix");
     pub const android: Os = Os::new_const("android");
     pub const cuda: Os = Os::new_const("cuda");
     pub const dragonfly: Os = Os::new_const("dragonfly");
@@ -2582,6 +2623,7 @@ impl super::Os {
     pub const linux: Os = Os::new_const("linux");
     pub const macos: Os = Os::new_const("macos");
     pub const netbsd: Os = Os::new_const("netbsd");
+    pub const nto: Os = Os::new_const("nto");
     pub const openbsd: Os = Os::new_const("openbsd");
     pub const psp: Os = Os::new_const("psp");
     pub const redox: Os = Os::new_const("redox");
@@ -2622,6 +2664,8 @@ impl super::Env {
     pub const msvc: Env = Env::new_const("msvc");
     pub const musl: Env = Env::new_const("musl");
     pub const newlib: Env = Env::new_const("newlib");
+    pub const nto71: Env = Env::new_const("nto71");
+    pub const psx: Env = Env::new_const("psx");
     pub const relibc: Env = Env::new_const("relibc");
     pub const sgx: Env = Env::new_const("sgx");
     pub const uclibc: Env = Env::new_const("uclibc");

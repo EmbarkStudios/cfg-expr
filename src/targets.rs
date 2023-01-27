@@ -122,7 +122,7 @@ impl std::str::FromStr for HasAtomic {
 impl std::fmt::Display for HasAtomic {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::IntegerSize(size) => write!(f, "{}", size),
+            Self::IntegerSize(size) => write!(f, "{size}"),
             Self::Pointer => write!(f, "ptr"),
         }
     }
@@ -183,7 +183,7 @@ impl std::fmt::Display for Families {
         write!(f, "{{")?;
         let len = self.0.len();
         for (idx, family) in self.0.iter().enumerate() {
-            write!(f, "{}", family)?;
+            write!(f, "{family}")?;
             if idx + 1 < len {
                 write!(f, ", ")?;
             }
@@ -243,7 +243,7 @@ impl std::fmt::Display for HasAtomics {
         write!(f, "{{")?;
         let len = self.0.len();
         for (idx, has_atomic) in self.0.iter().enumerate() {
-            write!(f, "{}", has_atomic)?;
+            write!(f, "{has_atomic}")?;
             if idx + 1 < len {
                 write!(f, ", ")?;
             }
@@ -372,7 +372,7 @@ pub fn get_builtin_target_by_triple(triple: &str) -> Option<&'static TargetInfo>
 /// versions.
 ///
 /// ```
-/// assert_eq!("1.66.0", cfg_expr::targets::rustc_version());
+/// assert_eq!("1.67.0", cfg_expr::targets::rustc_version());
 /// ```
 pub fn rustc_version() -> &'static str {
     builtins::RUSTC_VERSION
