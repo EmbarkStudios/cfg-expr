@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.67.0";
+pub(crate) const RUSTC_VERSION: &str = "1.68.2";
 
 pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
@@ -172,6 +172,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-unknown-freebsd"),
         os: Some(Os::freebsd),
+        abi: None,
+        arch: Arch::aarch64,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("aarch64-unknown-fuchsia"),
+        os: Some(Os::fuchsia),
         abi: None,
         arch: Arch::aarch64,
         env: None,
@@ -638,6 +651,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::unwind,
     },
     TargetInfo {
+        triple: Triple::new_const("armv7-sony-vita-newlibeabihf"),
+        os: Some(Os::vita),
+        abi: None,
+        arch: Arch::arm,
+        env: Some(Env::newlib),
+        vendor: Some(Vendor::sony),
+        families: Families::unix,
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
         triple: Triple::new_const("armv7-unknown-freebsd"),
         os: Some(Os::freebsd),
         abi: None,
@@ -894,7 +920,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         families: Families::new_const(&[]),
         pointer_width: 64,
         endian: Endian::big,
-        has_atomics: HasAtomics::new_const(&[]),
+        has_atomics: HasAtomics::atomic_64_ptr,
         panic: Panic::abort,
     },
     TargetInfo {
@@ -907,7 +933,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         families: Families::new_const(&[]),
         pointer_width: 64,
         endian: Endian::little,
-        has_atomics: HasAtomics::new_const(&[]),
+        has_atomics: HasAtomics::atomic_64_ptr,
         panic: Panic::abort,
     },
     TargetInfo {
@@ -2367,6 +2393,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::unwind,
     },
     TargetInfo {
+        triple: Triple::new_const("x86_64-unknown-fuchsia"),
+        os: Some(Os::fuchsia),
+        abi: None,
+        arch: Arch::x86_64,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
         triple: Triple::new_const("x86_64-unknown-haiku"),
         os: Some(Os::haiku),
         abi: None,
@@ -2632,6 +2671,7 @@ impl super::Os {
     pub const tvos: Os = Os::new_const("tvos");
     pub const uefi: Os = Os::new_const("uefi");
     pub const unknown: Os = Os::new_const("unknown");
+    pub const vita: Os = Os::new_const("vita");
     pub const vxworks: Os = Os::new_const("vxworks");
     pub const wasi: Os = Os::new_const("wasi");
     pub const watchos: Os = Os::new_const("watchos");
@@ -2692,6 +2732,7 @@ const __has_atomics_8_16_32_ptr: &[HasAtomic] = &[
     HasAtomic::IntegerSize(32),
     HasAtomic::Pointer,
 ];
+const __has_atomics_64_ptr: &[HasAtomic] = &[HasAtomic::IntegerSize(64), HasAtomic::Pointer];
 
 impl super::HasAtomics {
     pub const atomic_8_16_32_64_128_ptr: HasAtomics =
@@ -2699,6 +2740,7 @@ impl super::HasAtomics {
     pub const atomic_8_16_32_64_ptr: HasAtomics =
         HasAtomics::new_const(__has_atomics_8_16_32_64_ptr);
     pub const atomic_8_16_32_ptr: HasAtomics = HasAtomics::new_const(__has_atomics_8_16_32_ptr);
+    pub const atomic_64_ptr: HasAtomics = HasAtomics::new_const(__has_atomics_64_ptr);
 }
 
 impl super::Panic {
