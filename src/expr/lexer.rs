@@ -95,12 +95,12 @@ impl<'a> Iterator for Lexer<'a> {
 
         #[inline]
         fn is_ident_start(ch: char) -> bool {
-            ch == '_' || (('a'..='z').contains(&ch) || ('A'..='Z').contains(&ch))
+            ch == '_' || ch.is_ascii_lowercase() || ch.is_ascii_uppercase()
         }
 
         #[inline]
         fn is_ident_rest(ch: char) -> bool {
-            is_ident_start(ch) || ('0'..='9').contains(&ch)
+            is_ident_start(ch) || ch.is_ascii_digit()
         }
 
         match self.inner.chars().next() {
