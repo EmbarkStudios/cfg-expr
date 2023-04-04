@@ -231,14 +231,15 @@ impl TargetMatcher for target_lexicon::Triple {
             }
             Family(fam) => {
                 use target_lexicon::OperatingSystem::{
-                    AmdHsa, Bitrig, Cloudabi, Cuda, Darwin, Dragonfly, Emscripten, Espidf, Freebsd,
-                    Fuchsia, Haiku, Hermit, Horizon, Illumos, Ios, L4re, Linux, MacOSX, Nebulet,
-                    Netbsd, None_, Openbsd, Redox, Solaris, Tvos, Uefi, Unknown, VxWorks, Wasi,
-                    Watchos, Windows,
+                    Aix, AmdHsa, Bitrig, Cloudabi, Cuda, Darwin, Dragonfly, Emscripten, Espidf,
+                    Freebsd, Fuchsia, Haiku, Hermit, Horizon, Illumos, Ios, L4re, Linux, MacOSX,
+                    Nebulet, Netbsd, None_, Openbsd, Redox, Solaris, Tvos, Uefi, Unknown, VxWorks,
+                    Wasi, Watchos, Windows,
                 };
                 match self.operating_system {
                     AmdHsa | Bitrig | Cloudabi | Cuda | Hermit | Nebulet | None_ | Uefi => false,
-                    Darwin
+                    Aix
+                    | Darwin
                     | Dragonfly
                     | Espidf
                     | Freebsd
