@@ -2,13 +2,13 @@
 
 # `⚙️ cfg-expr`
 
-**A parser and evaluator for Rust `cfg()` expressions. Targets as of [Rust 1.66.0](https://forge.rust-lang.org/release/platform-support.html) are supported.**
+**A parser and evaluator for Rust `cfg()` expressions. Builtin targets as of [Rust 1.69.0](https://forge.rust-lang.org/release/platform-support.html) are supported.**
 
 [![Build Status](https://github.com/EmbarkStudios/cfg-expr/workflows/CI/badge.svg)](https://github.com/EmbarkStudios/cfg-expr/actions?workflow=CI)
 [![Crates.io](https://img.shields.io/crates/v/cfg-expr.svg)](https://crates.io/crates/cfg-expr)
 [![Docs](https://docs.rs/cfg-expr/badge.svg)](https://docs.rs/cfg-expr)
 [![Minimum Stable Rust Version](https://img.shields.io/badge/Rust%20MSRV-1.58.0-blue?color=fc8d62&logo=rust)](https://blog.rust-lang.org/2022/01/13/Rust-1.58.0.html)
-[![Rust Targets](https://img.shields.io/badge/Rust%20Targets-1.64.0-blue.svg)](https://forge.rust-lang.org/release/platform-support.html)
+[![Rust Targets](https://img.shields.io/badge/Rust%20Targets-1.69.0-blue.svg)](https://forge.rust-lang.org/release/platform-support.html)
 [![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 [![Embark](https://img.shields.io/badge/embark-open%20source-blueviolet.svg)](https://embark.dev)
 </div>
