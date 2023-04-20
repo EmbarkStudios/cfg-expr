@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.68.2";
+pub(crate) const RUSTC_VERSION: &str = "1.69.0";
 
 pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
@@ -920,7 +920,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         families: Families::new_const(&[]),
         pointer_width: 64,
         endian: Endian::big,
-        has_atomics: HasAtomics::atomic_64_ptr,
+        has_atomics: HasAtomics::new_const(&[]),
         panic: Panic::abort,
     },
     TargetInfo {
@@ -933,7 +933,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         families: Families::new_const(&[]),
         pointer_width: 64,
         endian: Endian::little,
-        has_atomics: HasAtomics::atomic_64_ptr,
+        has_atomics: HasAtomics::new_const(&[]),
         panic: Panic::abort,
     },
     TargetInfo {
@@ -2732,7 +2732,6 @@ const __has_atomics_8_16_32_ptr: &[HasAtomic] = &[
     HasAtomic::IntegerSize(32),
     HasAtomic::Pointer,
 ];
-const __has_atomics_64_ptr: &[HasAtomic] = &[HasAtomic::IntegerSize(64), HasAtomic::Pointer];
 
 impl super::HasAtomics {
     pub const atomic_8_16_32_64_128_ptr: HasAtomics =
@@ -2740,7 +2739,6 @@ impl super::HasAtomics {
     pub const atomic_8_16_32_64_ptr: HasAtomics =
         HasAtomics::new_const(__has_atomics_8_16_32_64_ptr);
     pub const atomic_8_16_32_ptr: HasAtomics = HasAtomics::new_const(__has_atomics_8_16_32_ptr);
-    pub const atomic_64_ptr: HasAtomics = HasAtomics::new_const(__has_atomics_64_ptr);
 }
 
 impl super::Panic {
