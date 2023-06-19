@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+### Fixed
+- [PR#61](https://github.com/EmbarkStudios/cfg-expr/pull/61) fixed an issue where `target_os = "none"` was not matching target triplets where `os = None`. Thanks [@sunshowers](https://github.com/sunshowers)!
+
 ## [0.15.2] - 2023-06-02
 ### Changed
 - [PR#59](https://github.com/EmbarkStudios/cfg-expr/pull/60) updated the builtin target list to 1.70.0.
