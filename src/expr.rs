@@ -79,7 +79,12 @@ impl TargetMatcher for targ::TargetInfo {
             },
             Family(fam) => self.families.contains(fam),
             HasAtomic(has_atomic) => self.has_atomics.contains(*has_atomic),
-            Os(os) => Some(os) == self.os.as_ref(),
+            Os(os) => match &self.os {
+                Some(self_os) => os == self_os,
+                // os = "none" means it should be matched against None. Note that this is different
+                // from "env" above.
+                None => os.as_str() == "none",
+            },
             PointerWidth(w) => *w == self.pointer_width,
             Vendor(ven) => match &self.vendor {
                 Some(v) => ven == v,
