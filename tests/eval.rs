@@ -251,6 +251,12 @@ fn complex() {
     // Should *not* match x86_64 windows or android
     assert!(!complex.eval(|pred| tg_match!(pred, windows_msvc)));
     assert!(!complex.eval(|pred| tg_match!(pred, android)));
+
+    // Ensure that target_os = "none" matches against Os == None.
+    let complex = Expression::parse(r#"all(target_os="none")"#).unwrap();
+    let armebv7r_none_eabi = Target::make("armebv7r-none-eabi");
+    assert!(!complex.eval(|pred| tg_match!(pred, linux_gnu)));
+    assert!(complex.eval(|pred| tg_match!(pred, armebv7r_none_eabi)));
 }
 
 #[test]
