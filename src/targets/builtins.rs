@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.70.0";
+pub(crate) const RUSTC_VERSION: &str = "1.71.0";
 
 pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
@@ -504,7 +504,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         families: Families::new_const(&[]),
         pointer_width: 32,
         endian: Endian::big,
-        has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
         panic: Panic::abort,
     },
     TargetInfo {
@@ -517,7 +517,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         families: Families::new_const(&[]),
         pointer_width: 32,
         endian: Endian::big,
-        has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
         panic: Panic::abort,
     },
     TargetInfo {
@@ -673,7 +673,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         families: Families::unix,
         pointer_width: 32,
         endian: Endian::little,
-        has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
         panic: Panic::abort,
     },
     TargetInfo {
@@ -881,7 +881,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         families: Families::new_const(&[]),
         pointer_width: 32,
         endian: Endian::little,
-        has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
         panic: Panic::abort,
     },
     TargetInfo {
@@ -894,7 +894,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         families: Families::new_const(&[]),
         pointer_width: 32,
         endian: Endian::little,
-        has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
         panic: Panic::abort,
     },
     TargetInfo {
@@ -2663,6 +2663,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         pointer_width: 64,
         endian: Endian::little,
         has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("x86_64h-apple-darwin"),
+        os: Some(Os::macos),
+        abi: None,
+        arch: Arch::x86_64,
+        env: None,
+        vendor: Some(Vendor::apple),
+        families: Families::unix,
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
         panic: Panic::unwind,
     },
 ];
