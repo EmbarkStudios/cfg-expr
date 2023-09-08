@@ -644,7 +644,7 @@ impl Expression {
     }
 }
 
-/// [`PartialEq`] will do a **syntactical** comparaison, so will just check if both
+/// [`PartialEq`] will do a **syntactical** comparison, so will just check if both
 /// expressions have been parsed from the same string, **not** if they are semantically
 /// equivalent.
 ///

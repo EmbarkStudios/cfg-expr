@@ -6,7 +6,7 @@ use crate::error::{ParseError, Reason};
 pub enum Token<'a> {
     /// A single contiguous term
     Key(&'a str),
-    /// A single continguous value, without its surrounding quotes
+    /// A single contiguous value, without its surrounding quotes
     Value(&'a str),
     /// A '=', joining a key and a value
     Equals,
