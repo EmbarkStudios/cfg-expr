@@ -10,7 +10,7 @@ authors = [
 edition = "2021"
 license = "MIT OR Apache-2.0"
 readme = "README.md"
-rust-version = "1.58.0"
+rust-version = "1.70.0"
 documentation = "https://docs.rs/cfg-expr"
 homepage = "https://github.com/EmbarkStudios/cfg-expr"
 keywords = ["cargo", "rustc", "cfg"]
@@ -24,7 +24,7 @@ targets = ["target-lexicon"]
 
 [dependencies]
 smallvec = "1.8"
-target-lexicon = { version = "0.12.5", optional = true }
+target-lexicon = { version = "0.12.11", optional = true }
 
 [dev-dependencies]
 similar-asserts = "1.1"
