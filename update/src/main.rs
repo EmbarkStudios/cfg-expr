@@ -326,7 +326,7 @@ fn real_main() -> Result<(), String> {
         .map_err(|e| format!("failed to run rustfmt: {}", e))?;
 
     if !status.success() {
-        return Err(format!("failed to successfuly format: {}", status));
+        return Err(format!("failed to successfully format: {}", status));
     }
 
     Ok(())
