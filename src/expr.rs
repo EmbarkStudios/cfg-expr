@@ -121,6 +121,9 @@ impl TargetMatcher for target_lexicon::Triple {
                 } else if arch == &targ::Arch::bpf {
                     self.architecture == Architecture::Bpfeb
                         || self.architecture == Architecture::Bpfel
+                } else if arch == &targ::Arch::x86_64 {
+                    self.architecture == Architecture::X86_64
+                        || self.architecture == Architecture::X86_64h
                 } else {
                     match arch.0.parse::<Architecture>() {
                         Ok(a) => match (self.architecture, a) {
@@ -224,6 +227,11 @@ impl TargetMatcher for target_lexicon::Triple {
                                                 | Environment::Uclibceabi
                                                 | Environment::Uclibceabihf
                                         )
+                                    } else if env == &targ::Env::newlib {
+                                        matches!(
+                                            self.operating_system,
+                                            OperatingSystem::Horizon | OperatingSystem::Espidf
+                                        )
                                     } else {
                                         self.environment == e
                                     }
@@ -235,7 +243,7 @@ impl TargetMatcher for target_lexicon::Triple {
                 }
             }
             Family(fam) => {
-                use target_lexicon::OperatingSystem::{
+                use OperatingSystem::{
                     Aix, AmdHsa, Bitrig, Cloudabi, Cuda, Darwin, Dragonfly, Emscripten, Espidf,
                     Freebsd, Fuchsia, Haiku, Hermit, Horizon, Illumos, Ios, L4re, Linux, MacOSX,
                     Nebulet, Netbsd, None_, Openbsd, Redox, Solaris, Tvos, Uefi, Unknown, VxWorks,
@@ -324,7 +332,15 @@ impl TargetMatcher for target_lexicon::Triple {
                 false
             }
             Vendor(ven) => match ven.0.parse::<target_lexicon::Vendor>() {
-                Ok(v) => self.vendor == v,
+                Ok(v) => {
+                    if self.vendor == v {
+                        true
+                    } else if let target_lexicon::Vendor::Custom(custom) = &self.vendor {
+                        custom.as_str() == "esp" && v == target_lexicon::Vendor::Espressif
+                    } else {
+                        false
+                    }
+                }
                 Err(_) => false,
             },
             PointerWidth(pw) => {

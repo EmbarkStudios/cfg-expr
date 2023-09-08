@@ -2,7 +2,7 @@
 
 # `⚙️ cfg-expr`
 
-**A parser and evaluator for Rust `cfg()` expressions. Builtin targets as of [Rust 1.69.0](https://forge.rust-lang.org/release/platform-support.html) are supported.**
+**A parser and evaluator for Rust `cfg()` expressions. Builtin targets as of [Rust 1.72.0](https://forge.rust-lang.org/release/platform-support.html) are supported.**
 
 [![Build Status](https://github.com/EmbarkStudios/cfg-expr/workflows/CI/badge.svg)](https://github.com/EmbarkStudios/cfg-expr/actions?workflow=CI)
 [![Crates.io](https://img.shields.io/crates/v/cfg-expr.svg)](https://crates.io/crates/cfg-expr)
@@ -22,7 +22,7 @@
 
 `cfg-expr` is a crate that can be used to parse and evaluate Rust `cfg()` expressions, both as declarable in Rust code itself, as well in cargo manifests' `[target.'cfg()'.dependencies]` sections.
 
-It contains a list of all builtin targets known to rustc as of `1.66.0` that can be used to determine if a particular cfg expression is satisfiable.
+It contains a list of all builtin targets known to rustc as of `1.72.0` that can be used to determine if a particular cfg expression is satisfiable.
 
 ```rust
 use cfg_expr::{targets::get_builtin_target_by_triple, Expression, Predicate};
