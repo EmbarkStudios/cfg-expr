@@ -372,7 +372,7 @@ pub fn get_builtin_target_by_triple(triple: &str) -> Option<&'static TargetInfo>
 /// versions.
 ///
 /// ```
-/// assert_eq!("1.72.0", cfg_expr::targets::rustc_version());
+/// assert_eq!("1.75.0", cfg_expr::targets::rustc_version());
 /// ```
 pub fn rustc_version() -> &'static str {
     builtins::RUSTC_VERSION
@@ -397,7 +397,7 @@ mod test {
     #[test]
     fn has_ios() {
         assert_eq!(
-            8,
+            7,
             super::ALL_BUILTINS
                 .iter()
                 .filter(|ti| ti.os == Some(super::Os::ios))
