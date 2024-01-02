@@ -397,7 +397,7 @@ mod test {
     #[test]
     fn has_ios() {
         assert_eq!(
-            8,
+            7,
             super::ALL_BUILTINS
                 .iter()
                 .filter(|ti| ti.os == Some(super::Os::ios))
