@@ -159,8 +159,10 @@ fn very_specific() {
     for target in all {
         let t = Target::make(target.triple.as_str());
         assert_eq!(
-            target.triple.as_str() == "i686-pc-windows-msvc"
-                || target.triple.as_str() == "i586-pc-windows-msvc",
+            matches!(
+                target.triple.as_str(),
+                "i686-pc-windows-msvc" | "i586-pc-windows-msvc" | "i686-win7-windows-msvc"
+            ),
             specific.eval(|pred| { tg_match!(pred, t, &["fxsr", "sse", "sse2"]) }),
             "expected true for i686-pc-windows-msvc, but got true for {}",
             target.triple,
@@ -317,14 +319,12 @@ fn unstable_target_abi() {
 fn wasm_family() {
     let wasm = Expression::parse(r#"cfg(target_family = "wasm")"#).unwrap();
 
-    let asmjs_emscripten = Target::make("asmjs-unknown-emscripten");
     let wasm32_unknown = Target::make("wasm32-unknown-unknown");
     let wasm32_emscripten = Target::make("wasm32-unknown-emscripten");
     let wasm32_wasi = Target::make("wasm32-wasi");
     let wasm64_unknown = Target::make("wasm64-unknown-unknown");
 
     // All of the above targets match.
-    assert!(wasm.eval(|pred| tg_match!(pred, asmjs_emscripten)));
     assert!(wasm.eval(|pred| tg_match!(pred, wasm32_unknown)));
     assert!(wasm.eval(|pred| tg_match!(pred, wasm32_emscripten)));
     assert!(wasm.eval(|pred| tg_match!(pred, wasm32_wasi)));
