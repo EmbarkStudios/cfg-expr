@@ -8,7 +8,7 @@ use crate::{
 use smallvec::SmallVec;
 
 impl Expression {
-    /// Given a cfg() expression (the cfg( and ) are optional), attempts to
+    /// Given a `cfg()` expression (the cfg( and ) are optional), attempts to
     /// parse it into a form where it can be evaluated
     ///
     /// ```

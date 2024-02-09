@@ -540,7 +540,7 @@ impl Expression {
 
     /// Evaluates the expression, using the provided closure to determine the value of
     /// each predicate, which are then combined into a final result depending on the
-    /// functions not(), all(), or any() in the expression.
+    /// functions `not()`, `all()`, or `any()` in the expression.
     ///
     /// `eval_predicate` typically returns `bool`, but may return any type that implements
     /// the `Logic` trait.

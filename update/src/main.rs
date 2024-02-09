@@ -3,24 +3,11 @@ use std::{fmt::Write, process::Command};
 fn real_main() -> Result<(), String> {
     let rustc = std::env::var("RUSTC").unwrap_or_else(|_| "rustc".to_owned());
 
-    let mut path = std::env::var("PATH").unwrap_or_else(|_| "".to_owned());
-
-    let sep = if cfg!(unix) { ':' } else { ';' };
-
-    path.push(sep);
-    write!(
-        path,
-        "{}",
-        std::env::current_exe().unwrap().parent().unwrap().display()
-    )
-    .unwrap();
-
     // Get the rustc version
     let output = Command::new(&rustc)
-        .env("PATH", &path)
         .arg("--version")
         .output()
-        .map_err(|e| format!("failed to run rustc --version: {}", e))?;
+        .map_err(|e| format!("failed to run rustc --version: {e}"))?;
 
     if !output.status.success() {
         return Err(format!("rustc --version {}", output.status));
@@ -32,10 +19,9 @@ fn real_main() -> Result<(), String> {
 
     // Get the list of possible targets
     let output = Command::new(&rustc)
-        .env("PATH", &path)
         .args(&["--print", "target-list"])
         .output()
-        .map_err(|e| format!("failed to run rustc --print target-list: {}", e))?;
+        .map_err(|e| format!("failed to run rustc --print target-list: {e}"))?;
 
     if !output.status.success() {
         return Err(format!(
@@ -95,22 +81,30 @@ fn real_main() -> Result<(), String> {
     let mut has_atomics: Vec<HasAtomicElement> = Vec::new();
     let mut has_atomic_groups: Vec<Vec<HasAtomicElement>> = Vec::new();
     let mut panics: Vec<String> = Vec::new();
+    //let mut relocation_models: Vec<String> = Vec::new();
 
     for target in targets.lines() {
-        let output = Command::new(&rustc)
-            .env("PATH", &path)
-            .arg("--target")
-            .arg(target)
-            .args(&["--print", "cfg"])
-            .output()
-            .map_err(|e| format!("failed to run rustc: {}", e))?;
+        let output = {
+            let mut cmd = Command::new(&rustc);
+
+            // this gives an error on 1.76.0 but not on nightly so...
+            if target == "aarch64-apple-watchos" {
+                cmd.arg("+nightly");
+            }
+
+            //.env("PATH", &path)
+            cmd.arg("--target")
+                .arg(target)
+                .args(&["--print", "cfg"])
+                .output()
+                .map_err(|e| format!("failed to run rustc: {e}"))?
+        };
 
         if !output.status.success() {
             return Err(format!(
-                "failed to retrieve target {}: {}",
-                target,
+                "failed to retrieve target {target}: {}",
                 String::from_utf8(output.stderr)
-                    .map_err(|e| format!("unable to parse stderr: {}", e))?
+                    .map_err(|e| format!("unable to parse stderr: {e}"))?
             ));
         }
 
@@ -126,6 +120,7 @@ fn real_main() -> Result<(), String> {
         let mut width = None;
         let mut vendor = None;
         let mut panic = None;
+        //let mut relocation_model = None;
         let mut has_atomic_group = Vec::new();
 
         for line in kv.lines() {
@@ -189,7 +184,13 @@ fn real_main() -> Result<(), String> {
                                 vendor = Some(val)
                             }
                         }
-                        _ => panic!("unknown key: {}", line),
+                        // unstable
+                        "relocation_model"
+                        | "target_has_atomic_equal_alignment"
+                        | "target_has_atomic_load_store" => {
+                            //relocation_model = Some(val),
+                        }
+                        _ => panic!("unknown key: {line}"),
                     }
                 }
             }
@@ -238,6 +239,7 @@ fn real_main() -> Result<(), String> {
         insert(os, &mut oses);
         insert(env, &mut envs);
         insert(panic, &mut panics);
+        //insert(relocation_model, &mut relocation_models);
 
         let families_str = insert_group(
             family_group,
@@ -253,6 +255,14 @@ fn real_main() -> Result<(), String> {
             "HasAtomics",
             "atomic_",
         );
+
+        let print_opt = |kind: &str, opt: Option<&str>| {
+            if let Some(val) = opt {
+                format!("Some({kind}::{val})")
+            } else {
+                "None".into()
+            }
+        };
 
         writeln!(
             out,
@@ -270,22 +280,15 @@ fn real_main() -> Result<(), String> {
         panic: Panic::{panic},
     }},",
             triple = target,
-            os = os
-                .map(|os| format!("Some(Os::{})", os))
-                .unwrap_or_else(|| "None".to_owned()),
-            abi = abi
-                .map(|a| format!("Some(Abi::{})", a))
-                .unwrap_or_else(|| "None".to_owned()),
+            os = print_opt("Os", os),
+            abi = print_opt("Abi", abi),
             arch = arch.expect("target had no arch"),
-            env = env
-                .map(|e| format!("Some(Env::{})", e))
-                .unwrap_or_else(|| "None".to_owned()),
-            vendor = vendor
-                .map(|v| format!("Some(Vendor::{})", v))
-                .unwrap_or_else(|| "None".to_owned()),
+            env = print_opt("Env", env),
+            vendor = print_opt("Vendor", vendor),
             width = width.expect("target had no pointer_width"),
             endian = endian.expect("target had no endian"),
             panic = panic.expect("target had no panic"),
+            //rel_model = print_opt("RelocationModel", relocation_model),
         )
         .unwrap();
     }
@@ -316,30 +319,30 @@ fn real_main() -> Result<(), String> {
         has_atomic_groups,
     );
     write_impls(&mut out, "Panic", panics);
+    //write_impls(&mut out, "RelocationModel", relocation_models);
 
     std::fs::write("src/targets/builtins.rs", out)
-        .map_err(|e| format!("failed to write target_list.rs: {}", e))?;
+        .map_err(|e| format!("failed to write target_list.rs: {e}"))?;
 
     let status = Command::new("rustfmt")
         .args(&["--edition", "2018", "src/targets/builtins.rs"])
         .status()
-        .map_err(|e| format!("failed to run rustfmt: {}", e))?;
+        .map_err(|e| format!("failed to run rustfmt: {e}"))?;
 
     if !status.success() {
-        return Err(format!("failed to successfully format: {}", status));
+        return Err(format!("failed to successfully format: {status}"));
     }
 
     Ok(())
 }
 
 fn write_impls(out: &mut String, typ: &'static str, builtins: Vec<String>) {
-    writeln!(out, "\nimpl super::{} {{", typ).unwrap();
+    writeln!(out, "\nimpl super::{typ} {{").unwrap();
 
     for thing in builtins {
         writeln!(
             out,
-            "pub const {}: {} = {}::new_const(\"{}\");",
-            thing, typ, typ, thing
+            "pub const {thing}: {typ} = {typ}::new_const(\"{thing}\");"
         )
         .unwrap();
     }
@@ -378,7 +381,7 @@ impl HasAtomicElement {
         } else if input == "ptr" {
             HasAtomicElement::Pointer
         } else {
-            panic!("unrecognized input for target_has_atomic: {}", input)
+            panic!("unrecognized input for target_has_atomic: {input}")
         }
     }
 }
@@ -386,14 +389,14 @@ impl HasAtomicElement {
 impl GroupElement for HasAtomicElement {
     fn value_expr(&self) -> String {
         match self {
-            Self::IntegerSize(size) => format!("IntegerSize({})", size),
+            Self::IntegerSize(size) => format!("IntegerSize({size})"),
             Self::Pointer => "Pointer".to_owned(),
         }
     }
 
     fn id_str(&self) -> String {
         match self {
-            Self::IntegerSize(size) => format!("{}", size),
+            Self::IntegerSize(size) => size.to_string(),
             Self::Pointer => "ptr".to_owned(),
         }
     }
@@ -449,17 +452,6 @@ fn write_group_str<'a, T: 'a + GroupElement>(
 }
 
 fn main() {
-    // Workaround for https://github.com/rust-lang/rust/issues/36156
-    // the ios targets attempt to find an SDK path, and then just hide
-    // the target altogether if it doesn't exist, but we don't care about
-    // that, we just want to get the metadata for the target, so we
-    // cheat and create a script that just echos our current path that
-    // is enough to satisfy rustc so that it spits out the info we want
-    if std::env::args().find(|a| a == "--show-sdk-path").is_some() {
-        println!("{}", std::env::current_dir().unwrap().display());
-        return;
-    }
-
     if let Err(ref e) = real_main() {
         eprintln!("error: {}", e);
         std::process::exit(1);
