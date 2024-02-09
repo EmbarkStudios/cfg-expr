@@ -3,24 +3,11 @@ use std::{fmt::Write, process::Command};
 fn real_main() -> Result<(), String> {
     let rustc = std::env::var("RUSTC").unwrap_or_else(|_| "rustc".to_owned());
 
-    let mut path = std::env::var("PATH").unwrap_or_else(|_| "".to_owned());
-
-    let sep = if cfg!(unix) { ':' } else { ';' };
-
-    path.push(sep);
-    write!(
-        path,
-        "{}",
-        std::env::current_exe().unwrap().parent().unwrap().display()
-    )
-    .unwrap();
-
     // Get the rustc version
     let output = Command::new(&rustc)
-        .env("PATH", &path)
         .arg("--version")
         .output()
-        .map_err(|e| format!("failed to run rustc --version: {}", e))?;
+        .map_err(|e| format!("failed to run rustc --version: {e}"))?;
 
     if !output.status.success() {
         return Err(format!("rustc --version {}", output.status));
@@ -32,7 +19,6 @@ fn real_main() -> Result<(), String> {
 
     // Get the list of possible targets
     let output = Command::new(&rustc)
-        .env("PATH", &path)
         .args(&["--print", "target-list"])
         .output()
         .map_err(|e| format!("failed to run rustc --print target-list: {}", e))?;
@@ -449,17 +435,6 @@ fn write_group_str<'a, T: 'a + GroupElement>(
 }
 
 fn main() {
-    // Workaround for https://github.com/rust-lang/rust/issues/36156
-    // the ios targets attempt to find an SDK path, and then just hide
-    // the target altogether if it doesn't exist, but we don't care about
-    // that, we just want to get the metadata for the target, so we
-    // cheat and create a script that just echos our current path that
-    // is enough to satisfy rustc so that it spits out the info we want
-    if std::env::args().find(|a| a == "--show-sdk-path").is_some() {
-        println!("{}", std::env::current_dir().unwrap().display());
-        return;
-    }
-
     if let Err(ref e) = real_main() {
         eprintln!("error: {}", e);
         std::process::exit(1);
