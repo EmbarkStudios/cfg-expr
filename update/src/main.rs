@@ -281,7 +281,7 @@ fn real_main() -> Result<(), String> {
     }},",
             triple = target,
             os = print_opt("Os", os),
-            abi = print_opt("Abi", abi),
+            abi = print_opt("Abi", abi).replace("-", "_"), // const value cannot have hyphens
             arch = arch.expect("target had no arch"),
             env = print_opt("Env", env),
             vendor = print_opt("Vendor", vendor),
@@ -340,6 +340,8 @@ fn write_impls(out: &mut String, typ: &'static str, builtins: Vec<String>) {
     writeln!(out, "\nimpl super::{typ} {{").unwrap();
 
     for thing in builtins {
+        let thing = thing.replace("-", "_"); // const value cannot have hyphens
+
         writeln!(
             out,
             "pub const {thing}: {typ} = {typ}::new_const(\"{thing}\");"
