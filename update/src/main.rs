@@ -1,22 +1,9 @@
 use std::{fmt::Write, process::Command};
 
-fn real_main() -> Result<(), String> {
-    let rustc = std::env::var("RUSTC").unwrap_or_else(|_| "rustc".to_owned());
+const BUILTINS: &str = "src/targets/builtins.rs";
+const README: &str = "README.md";
 
-    // Get the rustc version
-    let output = Command::new(&rustc)
-        .arg("--version")
-        .output()
-        .map_err(|e| format!("failed to run rustc --version: {e}"))?;
-
-    if !output.status.success() {
-        return Err(format!("rustc --version {}", output.status));
-    }
-
-    let version = String::from_utf8(output.stdout).unwrap();
-
-    let version = version.splitn(3, ' ').nth(1).unwrap();
-
+fn assemble(version: &str, rustc: String) -> Result<String, String> {
     // Get the list of possible targets
     let output = Command::new(&rustc)
         .args(&["--print", "target-list"])
@@ -53,12 +40,7 @@ fn real_main() -> Result<(), String> {
     ",
     );
 
-    write!(
-        out,
-        "pub(crate) const RUSTC_VERSION: &str = \"{}\";",
-        version
-    )
-    .unwrap();
+    write!(out, "pub(crate) const RUSTC_VERSION: &str = \"{version}\";").unwrap();
 
     out.push_str(
         "
@@ -321,19 +303,7 @@ fn real_main() -> Result<(), String> {
     write_impls(&mut out, "Panic", panics);
     //write_impls(&mut out, "RelocationModel", relocation_models);
 
-    std::fs::write("src/targets/builtins.rs", out)
-        .map_err(|e| format!("failed to write target_list.rs: {e}"))?;
-
-    let status = Command::new("rustfmt")
-        .args(&["--edition", "2018", "src/targets/builtins.rs"])
-        .status()
-        .map_err(|e| format!("failed to run rustfmt: {e}"))?;
-
-    if !status.success() {
-        return Err(format!("failed to successfully format: {status}"));
-    }
-
-    Ok(())
+    Ok(out)
 }
 
 fn write_impls(out: &mut String, typ: &'static str, builtins: Vec<String>) {
@@ -451,9 +421,87 @@ fn write_group_str<'a, T: 'a + GroupElement>(
     }
 }
 
+fn read_rustc_version() -> Result<(String, String), String> {
+    let rustc = std::env::var("RUSTC").unwrap_or_else(|_| "rustc".to_owned());
+
+    // Get the rustc version
+    let output = Command::new(&rustc)
+        .arg("--version")
+        .output()
+        .map_err(|e| format!("failed to run rustc --version: {e}"))?;
+
+    if !output.status.success() {
+        return Err(format!("rustc --version {}", output.status));
+    }
+
+    let version = String::from_utf8(output.stdout).unwrap();
+
+    Ok((version.splitn(3, ' ').nth(1).unwrap().into(), rustc))
+}
+
+fn assemble_readme(rustc_version: &str) -> Result<String, String> {
+    let rm =
+        std::fs::read_to_string(README).map_err(|e| format!("failed to read {README}: {e}"))?;
+
+    let end = rm
+        .rfind("]:")
+        .ok_or_else(|| "failed to find rust version end".to_owned())?;
+    let start = rm[..end]
+        .rfind('[')
+        .ok_or_else(|| "failed to find rust version begin".to_owned())?;
+
+    let old_version = &rm[start + 1..end];
+    let replaced = rm.replace(old_version, rustc_version);
+
+    Ok(replaced)
+}
+
+fn finalize(builtins: String, readme: String) -> Result<(), String> {
+    std::fs::write(BUILTINS, builtins).map_err(|e| format!("failed to write {BUILTINS}: {e}"))?;
+
+    let status = Command::new("rustfmt")
+        .args(&["--edition", "2018", "src/targets/builtins.rs"])
+        .status()
+        .map_err(|e| format!("failed to run rustfmt: {e}"))?;
+
+    if !status.success() {
+        return Err(format!("failed to successfully format: {status}"));
+    }
+
+    std::fs::write(README, readme).map_err(|e| format!("failed to write {README}: {e}"))?;
+    Ok(())
+}
+
 fn main() {
-    if let Err(ref e) = real_main() {
-        eprintln!("error: {}", e);
+    let (rustc_version, rustc) = match read_rustc_version() {
+        Ok(rv) => rv,
+        Err(err) => {
+            eprintln!("failed to read rustc version: {err}");
+            std::process::exit(1);
+        }
+    };
+
+    let mut assembled = String::new();
+    let mut readme = String::new();
+    std::thread::scope(|s| {
+        s.spawn(|| match assemble(&rustc_version, rustc) {
+            Ok(ab) => assembled = ab,
+            Err(err) => {
+                eprintln!("error assembling {BUILTINS}: {err}");
+                std::process::exit(1);
+            }
+        });
+        s.spawn(|| match assemble_readme(&rustc_version) {
+            Ok(rm) => readme = rm,
+            Err(err) => {
+                eprintln!("error assembling {README}: {err}");
+                std::process::exit(1);
+            }
+        });
+    });
+
+    if let Err(err) = finalize(assembled, readme) {
+        eprintln!("{err}");
         std::process::exit(1);
     }
 }

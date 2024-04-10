@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.76.0";
+pub(crate) const RUSTC_VERSION: &str = "1.77.2";
 
 pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
@@ -233,6 +233,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         endian: Endian::little,
         has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
         panic: Panic::abort,
+    },
+    TargetInfo {
+        triple: Triple::new_const("aarch64-unknown-illumos"),
+        os: Some(Os::illumos),
+        abi: None,
+        arch: Arch::aarch64,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
+        panic: Panic::unwind,
     },
     TargetInfo {
         triple: Triple::new_const("aarch64-unknown-linux-gnu"),
@@ -1052,6 +1065,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         endian: Endian::little,
         has_atomics: HasAtomics::atomic_8_16_32_ptr,
         panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("hexagon-unknown-none-elf"),
+        os: None,
+        abi: None,
+        arch: Arch::hexagon,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::new_const(&[]),
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        panic: Panic::abort,
     },
     TargetInfo {
         triple: Triple::new_const("i386-apple-ios"),
@@ -1938,6 +1964,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::abort,
     },
     TargetInfo {
+        triple: Triple::new_const("riscv32im-risc0-zkvm-elf"),
+        os: Some(Os::zkvm),
+        abi: None,
+        arch: Arch::riscv32,
+        env: None,
+        vendor: Some(Vendor::risc0),
+        families: Families::new_const(&[]),
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
         triple: Triple::new_const("riscv32im-unknown-none-elf"),
         os: None,
         abi: None,
@@ -1988,6 +2027,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         endian: Endian::little,
         has_atomics: HasAtomics::atomic_8_16_32_ptr,
         panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("riscv32imafc-esp-espidf"),
+        os: Some(Os::espidf),
+        abi: None,
+        arch: Arch::riscv32,
+        env: Some(Env::newlib),
+        vendor: Some(Vendor::espressif),
+        families: Families::unix,
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        panic: Panic::abort,
     },
     TargetInfo {
         triple: Triple::new_const("riscv32imafc-unknown-none-elf"),
@@ -3005,6 +3057,7 @@ impl super::Vendor {
     pub const nintendo: Vendor = Vendor::new_const("nintendo");
     pub const nvidia: Vendor = Vendor::new_const("nvidia");
     pub const pc: Vendor = Vendor::new_const("pc");
+    pub const risc0: Vendor = Vendor::new_const("risc0");
     pub const sony: Vendor = Vendor::new_const("sony");
     pub const sun: Vendor = Vendor::new_const("sun");
     pub const unikraft: Vendor = Vendor::new_const("unikraft");
@@ -3049,6 +3102,7 @@ impl super::Os {
     pub const watchos: Os = Os::new_const("watchos");
     pub const windows: Os = Os::new_const("windows");
     pub const xous: Os = Os::new_const("xous");
+    pub const zkvm: Os = Os::new_const("zkvm");
 }
 
 impl super::Family {
