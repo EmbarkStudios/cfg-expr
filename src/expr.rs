@@ -452,7 +452,7 @@ pub enum Predicate<'a> {
     /// when compiling without optimizations.
     DebugAssertions,
     /// [Enabled](https://doc.rust-lang.org/reference/conditional-compilation.html#proc_macro) for
-    /// crates of the proc_macro type.
+    /// crates of the `proc_macro` type.
     ProcMacro,
     /// A [`feature = "<name>"`](https://doc.rust-lang.org/nightly/cargo/reference/features.html)
     Feature(&'a str),

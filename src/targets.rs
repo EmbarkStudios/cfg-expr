@@ -348,7 +348,7 @@ pub struct TargetInfo {
     /// [target_endian](https://doc.rust-lang.org/reference/conditional-compilation.html#target_endian)
     /// predicate.
     pub endian: Endian,
-    /// The target's support for atomics. Used by the has_target_atomics predicate.
+    /// The target's support for atomics. Used by the `has_target_atomics` predicate.
     pub has_atomics: HasAtomics,
     /// The panic strategy used on this target by default. Used by the
     /// [panic](https://doc.rust-lang.org/beta/reference/conditional-compilation.html#panic) predicate.
