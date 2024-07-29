@@ -10,11 +10,11 @@ pub enum Token<'a> {
     Value(&'a str),
     /// A '=', joining a key and a value
     Equals,
-    /// Beginning of an all() predicate list
+    /// Beginning of an `all()` predicate list
     All,
-    /// Beginning of an any() predicate list
+    /// Beginning of an `any()` predicate list
     Any,
-    /// Beginning of a not() predicate
+    /// Beginning of a `not()` predicate
     Not,
     /// A `(` for starting a predicate list
     OpenParen,

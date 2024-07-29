@@ -240,6 +240,8 @@ fn assemble(version: &str, rustc: String) -> Result<String, String> {
 
         let print_opt = |kind: &str, opt: Option<&str>| {
             if let Some(val) = opt {
+                // Use _ instead of - in identifiers.
+                let val = val.replace("-", "_");
                 format!("Some({kind}::{val})")
             } else {
                 "None".into()
@@ -310,9 +312,11 @@ fn write_impls(out: &mut String, typ: &'static str, builtins: Vec<String>) {
     writeln!(out, "\nimpl super::{typ} {{").unwrap();
 
     for thing in builtins {
+        // Use _ instead of - in identifiers.
+        let ident = thing.replace("-", "_");
         writeln!(
             out,
-            "pub const {thing}: {typ} = {typ}::new_const(\"{thing}\");"
+            "pub const {ident}: {typ} = {typ}::new_const(\"{thing}\");"
         )
         .unwrap();
     }

@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.77.2";
+pub(crate) const RUSTC_VERSION: &str = "1.80.0";
 
 pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
@@ -42,7 +42,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-apple-ios-macabi"),
         os: Some(Os::ios),
-        abi: None,
+        abi: Some(Abi::macabi),
         arch: Arch::aarch64,
         env: None,
         vendor: Some(Vendor::apple),
@@ -55,7 +55,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-apple-ios-sim"),
         os: Some(Os::ios),
-        abi: None,
+        abi: Some(Abi::sim),
         arch: Arch::aarch64,
         env: None,
         vendor: Some(Vendor::apple),
@@ -81,7 +81,33 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-apple-tvos-sim"),
         os: Some(Os::tvos),
+        abi: Some(Abi::sim),
+        arch: Arch::aarch64,
+        env: None,
+        vendor: Some(Vendor::apple),
+        families: Families::unix,
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("aarch64-apple-visionos"),
+        os: Some(Os::visionos),
         abi: None,
+        arch: Arch::aarch64,
+        env: None,
+        vendor: Some(Vendor::apple),
+        families: Families::unix,
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("aarch64-apple-visionos-sim"),
+        os: Some(Os::visionos),
+        abi: Some(Abi::sim),
         arch: Arch::aarch64,
         env: None,
         vendor: Some(Vendor::apple),
@@ -107,7 +133,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-apple-watchos-sim"),
         os: Some(Os::watchos),
-        abi: None,
+        abi: Some(Abi::sim),
         arch: Arch::aarch64,
         env: None,
         vendor: Some(Vendor::apple),
@@ -172,7 +198,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-pc-windows-gnullvm"),
         os: Some(Os::windows),
-        abi: None,
+        abi: Some(Abi::llvm),
         arch: Arch::aarch64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::pc),
@@ -263,7 +289,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-unknown-linux-gnu_ilp32"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::ilp32),
         arch: Arch::aarch64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -328,7 +354,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-unknown-none-softfloat"),
         os: None,
-        abi: None,
+        abi: Some(Abi::softfloat),
         arch: Arch::aarch64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -406,7 +432,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-uwp-windows-msvc"),
         os: Some(Os::windows),
-        abi: None,
+        abi: Some(Abi::uwp),
         arch: Arch::aarch64,
         env: Some(Env::msvc),
         vendor: Some(Vendor::uwp),
@@ -445,7 +471,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64_be-unknown-linux-gnu_ilp32"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::ilp32),
         arch: Arch::aarch64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -471,7 +497,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("arm-linux-androideabi"),
         os: Some(Os::android),
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -484,7 +510,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("arm-unknown-linux-gnueabi"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -497,7 +523,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("arm-unknown-linux-gnueabihf"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::eabihf),
         arch: Arch::arm,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -510,7 +536,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("arm-unknown-linux-musleabi"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -523,7 +549,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("arm-unknown-linux-musleabihf"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::eabihf),
         arch: Arch::arm,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -573,9 +599,22 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::unwind,
     },
     TargetInfo {
+        triple: Triple::new_const("arm64ec-pc-windows-msvc"),
+        os: Some(Os::windows),
+        abi: None,
+        arch: Arch::arm64ec,
+        env: Some(Env::msvc),
+        vendor: Some(Vendor::pc),
+        families: Families::windows,
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
         triple: Triple::new_const("armeb-unknown-linux-gnueabi"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -588,7 +627,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armebv7r-none-eabi"),
         os: None,
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -601,7 +640,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armebv7r-none-eabihf"),
         os: None,
-        abi: None,
+        abi: Some(Abi::eabihf),
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -614,7 +653,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv4t-none-eabi"),
         os: None,
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -627,7 +666,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv4t-unknown-linux-gnueabi"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -640,7 +679,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv5te-none-eabi"),
         os: None,
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -653,7 +692,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv5te-unknown-linux-gnueabi"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -666,7 +705,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv5te-unknown-linux-musleabi"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -679,7 +718,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv5te-unknown-linux-uclibceabi"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: Some(Env::uclibc),
         vendor: Some(Vendor::unknown),
@@ -692,9 +731,9 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv6-unknown-freebsd"),
         os: Some(Os::freebsd),
-        abi: None,
+        abi: Some(Abi::eabihf),
         arch: Arch::arm,
-        env: Some(Env::gnueabihf),
+        env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
         families: Families::unix,
         pointer_width: 32,
@@ -705,9 +744,9 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv6-unknown-netbsd-eabihf"),
         os: Some(Os::netbsd),
-        abi: None,
+        abi: Some(Abi::eabihf),
         arch: Arch::arm,
-        env: Some(Env::eabihf),
+        env: None,
         vendor: Some(Vendor::unknown),
         families: Families::unix,
         pointer_width: 32,
@@ -718,7 +757,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv6k-nintendo-3ds"),
         os: Some(Os::horizon),
-        abi: None,
+        abi: Some(Abi::eabihf),
         arch: Arch::arm,
         env: Some(Env::newlib),
         vendor: Some(Vendor::nintendo),
@@ -731,7 +770,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7-linux-androideabi"),
         os: Some(Os::android),
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -744,7 +783,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7-sony-vita-newlibeabihf"),
         os: Some(Os::vita),
-        abi: None,
+        abi: Some(Abi::eabihf),
         arch: Arch::arm,
         env: Some(Env::newlib),
         vendor: Some(Vendor::sony),
@@ -757,9 +796,9 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7-unknown-freebsd"),
         os: Some(Os::freebsd),
-        abi: None,
+        abi: Some(Abi::eabihf),
         arch: Arch::arm,
-        env: Some(Env::gnueabihf),
+        env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
         families: Families::unix,
         pointer_width: 32,
@@ -770,7 +809,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7-unknown-linux-gnueabi"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -783,7 +822,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7-unknown-linux-gnueabihf"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::eabihf),
         arch: Arch::arm,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -796,7 +835,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7-unknown-linux-musleabi"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -809,7 +848,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7-unknown-linux-musleabihf"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::eabihf),
         arch: Arch::arm,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -822,7 +861,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7-unknown-linux-ohos"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: Some(Env::ohos),
         vendor: Some(Vendor::unknown),
@@ -835,7 +874,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7-unknown-linux-uclibceabi"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: Some(Env::uclibc),
         vendor: Some(Vendor::unknown),
@@ -848,7 +887,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7-unknown-linux-uclibceabihf"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::eabihf),
         arch: Arch::arm,
         env: Some(Env::uclibc),
         vendor: Some(Vendor::unknown),
@@ -861,9 +900,9 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7-unknown-netbsd-eabihf"),
         os: Some(Os::netbsd),
-        abi: None,
+        abi: Some(Abi::eabihf),
         arch: Arch::arm,
-        env: Some(Env::eabihf),
+        env: None,
         vendor: Some(Vendor::unknown),
         families: Families::unix,
         pointer_width: 32,
@@ -874,7 +913,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7-wrs-vxworks-eabihf"),
         os: Some(Os::vxworks),
-        abi: None,
+        abi: Some(Abi::eabihf),
         arch: Arch::arm,
         env: Some(Env::gnu),
         vendor: Some(Vendor::wrs),
@@ -913,7 +952,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7a-none-eabi"),
         os: None,
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -926,7 +965,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7a-none-eabihf"),
         os: None,
-        abi: None,
+        abi: Some(Abi::eabihf),
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -952,7 +991,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7r-none-eabi"),
         os: None,
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -965,7 +1004,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("armv7r-none-eabihf"),
         os: None,
-        abi: None,
+        abi: Some(Abi::eabihf),
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -987,6 +1026,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         endian: Endian::little,
         has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
         panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("armv8r-none-eabihf"),
+        os: None,
+        abi: Some(Abi::eabihf),
+        arch: Arch::arm,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::new_const(&[]),
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::abort,
     },
     TargetInfo {
         triple: Triple::new_const("avr-unknown-gnu-atmega328"),
@@ -1030,7 +1082,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("csky-unknown-linux-gnuabiv2"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::abiv2),
         arch: Arch::csky,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1043,7 +1095,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("csky-unknown-linux-gnuabiv2hf"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::abiv2hf),
         arch: Arch::csky,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1082,7 +1134,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("i386-apple-ios"),
         os: Some(Os::ios),
-        abi: None,
+        abi: Some(Abi::sim),
         arch: Arch::x86,
         env: None,
         vendor: Some(Vendor::apple),
@@ -1199,7 +1251,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("i686-pc-windows-gnullvm"),
         os: Some(Os::windows),
-        abi: None,
+        abi: Some(Abi::llvm),
         arch: Arch::x86,
         env: Some(Env::gnu),
         vendor: Some(Vendor::pc),
@@ -1329,7 +1381,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("i686-uwp-windows-gnu"),
         os: Some(Os::windows),
-        abi: None,
+        abi: Some(Abi::uwp),
         arch: Arch::x86,
         env: Some(Env::gnu),
         vendor: Some(Vendor::uwp),
@@ -1342,7 +1394,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("i686-uwp-windows-msvc"),
         os: Some(Os::windows),
-        abi: None,
+        abi: Some(Abi::uwp),
         arch: Arch::x86,
         env: Some(Env::msvc),
         vendor: Some(Vendor::uwp),
@@ -1392,6 +1444,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::unwind,
     },
     TargetInfo {
+        triple: Triple::new_const("loongarch64-unknown-linux-musl"),
+        os: Some(Os::linux),
+        abi: None,
+        arch: Arch::loongarch64,
+        env: Some(Env::musl),
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
         triple: Triple::new_const("loongarch64-unknown-none"),
         os: None,
         abi: None,
@@ -1407,7 +1472,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("loongarch64-unknown-none-softfloat"),
         os: None,
-        abi: None,
+        abi: Some(Abi::softfloat),
         arch: Arch::loongarch64,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -1472,7 +1537,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("mips64-openwrt-linux-musl"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::abi64),
         arch: Arch::mips64,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -1485,7 +1550,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("mips64-unknown-linux-gnuabi64"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::abi64),
         arch: Arch::mips64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1498,7 +1563,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("mips64-unknown-linux-muslabi64"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::abi64),
         arch: Arch::mips64,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -1511,7 +1576,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("mips64el-unknown-linux-gnuabi64"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::abi64),
         arch: Arch::mips64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1524,7 +1589,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("mips64el-unknown-linux-muslabi64"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::abi64),
         arch: Arch::mips64,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -1654,7 +1719,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("mipsisa64r6-unknown-linux-gnuabi64"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::abi64),
         arch: Arch::mips64r6,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1667,7 +1732,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("mipsisa64r6el-unknown-linux-gnuabi64"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::abi64),
         arch: Arch::mips64r6,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1732,7 +1797,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("powerpc-unknown-linux-gnuspe"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::spe),
         arch: Arch::powerpc,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -1797,7 +1862,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("powerpc-wrs-vxworks-spe"),
         os: Some(Os::vxworks),
-        abi: None,
+        abi: Some(Abi::spe),
         arch: Arch::powerpc,
         env: Some(Env::gnu),
         vendor: Some(Vendor::wrs),
@@ -1810,7 +1875,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("powerpc64-ibm-aix"),
         os: Some(Os::aix),
-        abi: None,
+        abi: Some(Abi::vec_extabi),
         arch: Arch::powerpc64,
         env: None,
         vendor: Some(Vendor::ibm),
@@ -1987,6 +2052,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         pointer_width: 32,
         endian: Endian::little,
         has_atomics: HasAtomics::new_const(&[]),
+        panic: Panic::abort,
+    },
+    TargetInfo {
+        triple: Triple::new_const("riscv32ima-unknown-none-elf"),
+        os: None,
+        abi: None,
+        arch: Arch::riscv32,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::new_const(&[]),
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_ptr,
         panic: Panic::abort,
     },
     TargetInfo {
@@ -2252,7 +2330,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("sparc-unknown-none-elf"),
         os: None,
-        abi: None,
+        abi: Some(Abi::elf),
         arch: Arch::sparc,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -2317,7 +2395,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv4t-none-eabi"),
         os: None,
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -2330,7 +2408,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv5te-none-eabi"),
         os: None,
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -2343,7 +2421,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv6m-none-eabi"),
         os: None,
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -2369,7 +2447,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv7a-uwp-windows-msvc"),
         os: Some(Os::windows),
-        abi: None,
+        abi: Some(Abi::uwp),
         arch: Arch::arm,
         env: Some(Env::msvc),
         vendor: Some(Vendor::uwp),
@@ -2382,7 +2460,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv7em-none-eabi"),
         os: None,
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -2395,7 +2473,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv7em-none-eabihf"),
         os: None,
-        abi: None,
+        abi: Some(Abi::eabihf),
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -2408,7 +2486,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv7m-none-eabi"),
         os: None,
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -2421,7 +2499,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv7neon-linux-androideabi"),
         os: Some(Os::android),
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -2434,7 +2512,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv7neon-unknown-linux-gnueabihf"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::eabihf),
         arch: Arch::arm,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -2447,7 +2525,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv7neon-unknown-linux-musleabihf"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::eabihf),
         arch: Arch::arm,
         env: Some(Env::musl),
         vendor: Some(Vendor::unknown),
@@ -2460,7 +2538,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv8m.base-none-eabi"),
         os: None,
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -2473,7 +2551,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv8m.main-none-eabi"),
         os: None,
-        abi: None,
+        abi: Some(Abi::eabi),
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -2486,7 +2564,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("thumbv8m.main-none-eabihf"),
         os: None,
-        abi: None,
+        abi: Some(Abi::eabihf),
         arch: Arch::arm,
         env: None,
         vendor: Some(Vendor::unknown),
@@ -2536,11 +2614,37 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::abort,
     },
     TargetInfo {
-        triple: Triple::new_const("wasm32-wasi-preview1-threads"),
+        triple: Triple::new_const("wasm32-wasip1"),
         os: Some(Os::wasi),
         abi: None,
         arch: Arch::wasm32,
         env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::wasm,
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
+        triple: Triple::new_const("wasm32-wasip1-threads"),
+        os: Some(Os::wasi),
+        abi: None,
+        arch: Arch::wasm32,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::wasm,
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
+        triple: Triple::new_const("wasm32-wasip2"),
+        os: Some(Os::wasi),
+        abi: None,
+        arch: Arch::wasm32,
+        env: Some(Env::p2),
         vendor: Some(Vendor::unknown),
         families: Families::wasm,
         pointer_width: 32,
@@ -2577,7 +2681,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-apple-ios"),
         os: Some(Os::ios),
-        abi: None,
+        abi: Some(Abi::sim),
         arch: Arch::x86_64,
         env: None,
         vendor: Some(Vendor::apple),
@@ -2590,7 +2694,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-apple-ios-macabi"),
         os: Some(Os::ios),
-        abi: None,
+        abi: Some(Abi::macabi),
         arch: Arch::x86_64,
         env: None,
         vendor: Some(Vendor::apple),
@@ -2603,7 +2707,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-apple-tvos"),
         os: Some(Os::tvos),
-        abi: None,
+        abi: Some(Abi::sim),
         arch: Arch::x86_64,
         env: None,
         vendor: Some(Vendor::apple),
@@ -2616,7 +2720,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-apple-watchos-sim"),
         os: Some(Os::watchos),
-        abi: None,
+        abi: Some(Abi::sim),
         arch: Arch::x86_64,
         env: None,
         vendor: Some(Vendor::apple),
@@ -2629,7 +2733,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-fortanix-unknown-sgx"),
         os: Some(Os::unknown),
-        abi: None,
+        abi: Some(Abi::fortanix),
         arch: Arch::x86_64,
         env: Some(Env::sgx),
         vendor: Some(Vendor::fortanix),
@@ -2701,20 +2805,20 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         families: Families::windows,
         pointer_width: 64,
         endian: Endian::little,
-        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
         panic: Panic::unwind,
     },
     TargetInfo {
         triple: Triple::new_const("x86_64-pc-windows-gnullvm"),
         os: Some(Os::windows),
-        abi: None,
+        abi: Some(Abi::llvm),
         arch: Arch::x86_64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::pc),
         families: Families::windows,
         pointer_width: 64,
         endian: Endian::little,
-        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
         panic: Panic::unwind,
     },
     TargetInfo {
@@ -2727,7 +2831,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         families: Families::windows,
         pointer_width: 64,
         endian: Endian::little,
-        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
         panic: Panic::unwind,
     },
     TargetInfo {
@@ -2850,7 +2954,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-unknown-linux-gnux32"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::x32),
         arch: Arch::x86_64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -2866,6 +2970,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         abi: None,
         arch: Arch::x86_64,
         env: Some(Env::musl),
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("x86_64-unknown-linux-none"),
+        os: Some(Os::linux),
+        abi: None,
+        arch: Arch::x86_64,
+        env: None,
         vendor: Some(Vendor::unknown),
         families: Families::unix,
         pointer_width: 64,
@@ -2954,27 +3071,27 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("x86_64-uwp-windows-gnu"),
         os: Some(Os::windows),
-        abi: None,
+        abi: Some(Abi::uwp),
         arch: Arch::x86_64,
         env: Some(Env::gnu),
         vendor: Some(Vendor::uwp),
         families: Families::windows,
         pointer_width: 64,
         endian: Endian::little,
-        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
         panic: Panic::unwind,
     },
     TargetInfo {
         triple: Triple::new_const("x86_64-uwp-windows-msvc"),
         os: Some(Os::windows),
-        abi: None,
+        abi: Some(Abi::uwp),
         arch: Arch::x86_64,
         env: Some(Env::msvc),
         vendor: Some(Vendor::uwp),
         families: Families::windows,
         pointer_width: 64,
         endian: Endian::little,
-        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
         panic: Panic::unwind,
     },
     TargetInfo {
@@ -3018,11 +3135,29 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     },
 ];
 
-impl super::Abi {}
+impl super::Abi {
+    pub const abi64: Abi = Abi::new_const("abi64");
+    pub const abiv2: Abi = Abi::new_const("abiv2");
+    pub const abiv2hf: Abi = Abi::new_const("abiv2hf");
+    pub const eabi: Abi = Abi::new_const("eabi");
+    pub const eabihf: Abi = Abi::new_const("eabihf");
+    pub const elf: Abi = Abi::new_const("elf");
+    pub const fortanix: Abi = Abi::new_const("fortanix");
+    pub const ilp32: Abi = Abi::new_const("ilp32");
+    pub const llvm: Abi = Abi::new_const("llvm");
+    pub const macabi: Abi = Abi::new_const("macabi");
+    pub const sim: Abi = Abi::new_const("sim");
+    pub const softfloat: Abi = Abi::new_const("softfloat");
+    pub const spe: Abi = Abi::new_const("spe");
+    pub const uwp: Abi = Abi::new_const("uwp");
+    pub const vec_extabi: Abi = Abi::new_const("vec-extabi");
+    pub const x32: Abi = Abi::new_const("x32");
+}
 
 impl super::Arch {
     pub const aarch64: Arch = Arch::new_const("aarch64");
     pub const arm: Arch = Arch::new_const("arm");
+    pub const arm64ec: Arch = Arch::new_const("arm64ec");
     pub const avr: Arch = Arch::new_const("avr");
     pub const bpf: Arch = Arch::new_const("bpf");
     pub const csky: Arch = Arch::new_const("csky");
@@ -3096,6 +3231,7 @@ impl super::Os {
     pub const tvos: Os = Os::new_const("tvos");
     pub const uefi: Os = Os::new_const("uefi");
     pub const unknown: Os = Os::new_const("unknown");
+    pub const visionos: Os = Os::new_const("visionos");
     pub const vita: Os = Os::new_const("vita");
     pub const vxworks: Os = Os::new_const("vxworks");
     pub const wasi: Os = Os::new_const("wasi");
@@ -3124,15 +3260,14 @@ impl super::Families {
 }
 
 impl super::Env {
-    pub const eabihf: Env = Env::new_const("eabihf");
     pub const gnu: Env = Env::new_const("gnu");
-    pub const gnueabihf: Env = Env::new_const("gnueabihf");
     pub const msvc: Env = Env::new_const("msvc");
     pub const musl: Env = Env::new_const("musl");
     pub const newlib: Env = Env::new_const("newlib");
     pub const nto70: Env = Env::new_const("nto70");
     pub const nto71: Env = Env::new_const("nto71");
     pub const ohos: Env = Env::new_const("ohos");
+    pub const p2: Env = Env::new_const("p2");
     pub const psx: Env = Env::new_const("psx");
     pub const relibc: Env = Env::new_const("relibc");
     pub const sgx: Env = Env::new_const("sgx");

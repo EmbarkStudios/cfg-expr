@@ -15,7 +15,7 @@ pub struct ParseError {
 /// The particular reason for a `ParseError`
 #[derive(Debug, PartialEq, Eq)]
 pub enum Reason {
-    /// not() takes exactly 1 predicate, unlike all() and any()
+    /// `not()` takes exactly 1 predicate, unlike `all()` and `any()`
     InvalidNot(usize),
     /// The characters are not valid in an cfg expression
     InvalidCharacters,
@@ -34,7 +34,7 @@ pub enum Reason {
     Unexpected(&'static [&'static str]),
     /// Failed to parse an integer value
     InvalidInteger,
-    /// The root cfg() may only contain a single predicate
+    /// The root `cfg()` may only contain a single predicate
     MultipleRootPredicates,
     /// A `target_has_atomic` predicate didn't correctly parse.
     InvalidHasAtomic,
