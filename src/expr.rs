@@ -614,7 +614,7 @@ impl Expression {
     {
         let mut result_stack = SmallVec::<[T; 8]>::new();
 
-        // We store the expression as postfix, so just evaluate each license
+        // We store the expression as postfix, so just evaluate each component
         // requirement in the order it comes, and then combining the previous
         // results according to each operator as it comes
         for node in self.expr.iter() {
