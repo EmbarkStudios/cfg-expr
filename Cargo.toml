@@ -24,7 +24,7 @@ targets = ["target-lexicon"]
 
 [dependencies]
 smallvec = "1.8"
-target-lexicon = { version = "0.12.11", optional = true }
+target-lexicon = { version = "0.12.15", optional = true }
 
 [dev-dependencies]
 similar-asserts = "1.1"
