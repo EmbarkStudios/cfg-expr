@@ -65,3 +65,13 @@ jobs:
       - run: cargo fetch
       - name: cargo publish check
         run: cargo publish --dry-run
+
+  minimal-versions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: taiki-e/install-action@cargo-hack
+      - uses: taiki-e/install-action@cargo-minimal-versions
+      - run: cargo minimal-versions check --all-features
