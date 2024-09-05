@@ -169,7 +169,8 @@ fn assemble(version: &str, rustc: String) -> Result<String, String> {
                         // unstable
                         "relocation_model"
                         | "target_has_atomic_equal_alignment"
-                        | "target_has_atomic_load_store" => {
+                        | "target_has_atomic_load_store"
+                        | "fmt_debug" => {
                             //relocation_model = Some(val),
                         }
                         _ => panic!("unknown key: {line}"),
