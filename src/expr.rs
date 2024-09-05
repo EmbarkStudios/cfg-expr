@@ -187,8 +187,9 @@ impl TargetMatcher for target_lexicon::Triple {
                         Environment::LinuxKernel => env == &targ::Env::gnu,
                         _ => env.0.is_empty(),
                     },
-                    OperatingSystem::WasiP1 => env.0.is_empty(),
+                    OperatingSystem::WasiP1 => env == &targ::Env::p1,
                     OperatingSystem::WasiP2 => env == &targ::Env::p2,
+                    OperatingSystem::Wasi => env.0.is_empty() || env == &targ::Env::p1,
                     _ => {
                         if env.0.is_empty() {
                             matches!(
@@ -367,7 +368,9 @@ impl TargetMatcher for target_lexicon::Triple {
                     if self.vendor == v {
                         true
                     } else if let target_lexicon::Vendor::Custom(custom) = &self.vendor {
-                        custom.as_str() == "esp" && v == target_lexicon::Vendor::Espressif
+                        matches!(custom.as_str(), "esp" | "esp32" | "esp32s2" | "esp32s3")
+                            && (v == target_lexicon::Vendor::Espressif
+                                || v == target_lexicon::Vendor::Unknown)
                     } else {
                         false
                     }
