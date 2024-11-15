@@ -339,9 +339,8 @@ impl TargetMatcher for target_lexicon::Triple {
                         self.operating_system,
                         OperatingSystem::WasiP1 | OperatingSystem::WasiP2
                     )
+                    || os == &targ::Os::nuttx && self.vendor == NUTTX
                 {
-                    return true;
-                } else if os == &targ::Os::nuttx && self.vendor == NUTTX {
                     return true;
                 }
 
@@ -373,9 +372,7 @@ impl TargetMatcher for target_lexicon::Triple {
             }
             Vendor(ven) => match ven.0.parse::<target_lexicon::Vendor>() {
                 Ok(v) => {
-                    if self.vendor == v {
-                        true
-                    } else if self.vendor == NUTTX && ven == &targ::Vendor::unknown {
+                    if self.vendor == v || self.vendor == NUTTX && ven == &targ::Vendor::unknown {
                         true
                     } else if let target_lexicon::Vendor::Custom(custom) = &self.vendor {
                         matches!(custom.as_str(), "esp" | "esp32" | "esp32s2" | "esp32s3")
