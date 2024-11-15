@@ -105,6 +105,9 @@ impl TargetMatcher for target_lexicon::Triple {
             Abi, Arch, Endian, Env, Family, HasAtomic, Os, Panic, PointerWidth, Vendor,
         };
 
+        const NUTTX: target_lexicon::Vendor =
+            target_lexicon::Vendor::Custom(target_lexicon::CustomVendor::Static("nuttx"));
+
         match tp {
             Abi(_) => {
                 // `target_abi` is unstable. Assume false for this.
@@ -267,6 +270,7 @@ impl TargetMatcher for target_lexicon::Triple {
                     MacOSX, Nebulet, Netbsd, None_, Openbsd, Redox, Solaris, Tvos, Uefi, Unknown,
                     Visionos, VxWorks, Wasi, WasiP1, WasiP2, Watchos, Windows,
                 };
+
                 match self.operating_system {
                     AmdHsa | Bitrig | Cloudabi | Cuda | Hermit | Nebulet | None_ | Uefi => false,
                     Aix
@@ -300,6 +304,7 @@ impl TargetMatcher for target_lexicon::Triple {
                             _ => false,
                         }
                     }
+                    Unknown if self.vendor == NUTTX => fam == &crate::targets::Family::unix,
                     Unknown => {
                         // asmjs, wasm32 and wasm64 are part of the wasm family.
                         match self.architecture {
@@ -334,9 +339,11 @@ impl TargetMatcher for target_lexicon::Triple {
                         self.operating_system,
                         OperatingSystem::WasiP1 | OperatingSystem::WasiP2
                     )
+                    || os == &targ::Os::nuttx && self.vendor == NUTTX
                 {
                     return true;
                 }
+
                 match os.0.parse::<OperatingSystem>() {
                     Ok(o) => match self.environment {
                         Environment::HermitKernel => os == &targ::Os::hermit,
@@ -365,7 +372,7 @@ impl TargetMatcher for target_lexicon::Triple {
             }
             Vendor(ven) => match ven.0.parse::<target_lexicon::Vendor>() {
                 Ok(v) => {
-                    if self.vendor == v {
+                    if self.vendor == v || self.vendor == NUTTX && ven == &targ::Vendor::unknown {
                         true
                     } else if let target_lexicon::Vendor::Custom(custom) = &self.vendor {
                         matches!(custom.as_str(), "esp" | "esp32" | "esp32s2" | "esp32s3")

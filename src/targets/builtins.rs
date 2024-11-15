@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.81.0";
+pub(crate) const RUSTC_VERSION: &str = "1.82.0";
 
 pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
@@ -406,6 +406,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("aarch64-unknown-teeos"),
         os: Some(Os::teeos),
+        abi: None,
+        arch: Arch::aarch64,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::new_const(&[]),
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
+        triple: Triple::new_const("aarch64-unknown-trusty"),
+        os: Some(Os::trusty),
         abi: None,
         arch: Arch::aarch64,
         env: None,
@@ -909,6 +922,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         endian: Endian::little,
         has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
         panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("armv7-unknown-trusty"),
+        os: Some(Os::trusty),
+        abi: Some(Abi::eabi),
+        arch: Arch::arm,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::new_const(&[]),
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::abort,
     },
     TargetInfo {
         triple: Triple::new_const("armv7-wrs-vxworks-eabihf"),
@@ -1834,6 +1860,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::unwind,
     },
     TargetInfo {
+        triple: Triple::new_const("powerpc-unknown-linux-muslspe"),
+        os: Some(Os::linux),
+        abi: Some(Abi::spe),
+        arch: Arch::powerpc,
+        env: Some(Env::musl),
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 32,
+        endian: Endian::big,
+        has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
         triple: Triple::new_const("powerpc-unknown-netbsd"),
         os: Some(Os::netbsd),
         abi: None,
@@ -2107,6 +2146,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::abort,
     },
     TargetInfo {
+        triple: Triple::new_const("riscv32imac-unknown-nuttx-elf"),
+        os: Some(Os::nuttx),
+        abi: None,
+        arch: Arch::riscv32,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
         triple: Triple::new_const("riscv32imac-unknown-xous-elf"),
         os: Some(Os::xous),
         abi: None,
@@ -2146,6 +2198,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::abort,
     },
     TargetInfo {
+        triple: Triple::new_const("riscv32imafc-unknown-nuttx-elf"),
+        os: Some(Os::nuttx),
+        abi: None,
+        arch: Arch::riscv32,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
         triple: Triple::new_const("riscv32imc-esp-espidf"),
         os: Some(Os::espidf),
         abi: None,
@@ -2170,6 +2235,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         endian: Endian::little,
         has_atomics: HasAtomics::new_const(&[]),
         panic: Panic::abort,
+    },
+    TargetInfo {
+        triple: Triple::new_const("riscv32imc-unknown-nuttx-elf"),
+        os: Some(Os::nuttx),
+        abi: None,
+        arch: Arch::riscv32,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        panic: Panic::unwind,
     },
     TargetInfo {
         triple: Triple::new_const("riscv64-linux-android"),
@@ -2276,6 +2354,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::abort,
     },
     TargetInfo {
+        triple: Triple::new_const("riscv64gc-unknown-nuttx-elf"),
+        os: Some(Os::nuttx),
+        abi: None,
+        arch: Arch::riscv64,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
         triple: Triple::new_const("riscv64gc-unknown-openbsd"),
         os: Some(Os::openbsd),
         abi: None,
@@ -2296,6 +2387,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         env: None,
         vendor: Some(Vendor::unknown),
         families: Families::new_const(&[]),
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
+        triple: Triple::new_const("riscv64imac-unknown-nuttx-elf"),
+        os: Some(Os::nuttx),
+        abi: None,
+        arch: Arch::riscv64,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
         pointer_width: 64,
         endian: Endian::little,
         has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
@@ -2445,6 +2549,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::abort,
     },
     TargetInfo {
+        triple: Triple::new_const("thumbv6m-nuttx-eabi"),
+        os: Some(Os::nuttx),
+        abi: Some(Abi::eabi),
+        arch: Arch::arm,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::new_const(&[]),
+        panic: Panic::abort,
+    },
+    TargetInfo {
         triple: Triple::new_const("thumbv7a-pc-windows-msvc"),
         os: Some(Os::windows),
         abi: None,
@@ -2497,6 +2614,32 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::abort,
     },
     TargetInfo {
+        triple: Triple::new_const("thumbv7em-nuttx-eabi"),
+        os: Some(Os::nuttx),
+        abi: Some(Abi::eabi),
+        arch: Arch::arm,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
+        triple: Triple::new_const("thumbv7em-nuttx-eabihf"),
+        os: Some(Os::nuttx),
+        abi: Some(Abi::eabihf),
+        arch: Arch::arm,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
         triple: Triple::new_const("thumbv7m-none-eabi"),
         os: None,
         abi: Some(Abi::eabi),
@@ -2504,6 +2647,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         env: None,
         vendor: Some(Vendor::unknown),
         families: Families::new_const(&[]),
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
+        triple: Triple::new_const("thumbv7m-nuttx-eabi"),
+        os: Some(Os::nuttx),
+        abi: Some(Abi::eabi),
+        arch: Arch::arm,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
         pointer_width: 32,
         endian: Endian::little,
         has_atomics: HasAtomics::atomic_8_16_32_ptr,
@@ -2562,6 +2718,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::abort,
     },
     TargetInfo {
+        triple: Triple::new_const("thumbv8m.base-nuttx-eabi"),
+        os: Some(Os::nuttx),
+        abi: Some(Abi::eabi),
+        arch: Arch::arm,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
         triple: Triple::new_const("thumbv8m.main-none-eabi"),
         os: None,
         abi: Some(Abi::eabi),
@@ -2582,6 +2751,32 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         env: None,
         vendor: Some(Vendor::unknown),
         families: Families::new_const(&[]),
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
+        triple: Triple::new_const("thumbv8m.main-nuttx-eabi"),
+        os: Some(Os::nuttx),
+        abi: Some(Abi::eabi),
+        arch: Arch::arm,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
+        triple: Triple::new_const("thumbv8m.main-nuttx-eabihf"),
+        os: Some(Os::nuttx),
+        abi: Some(Abi::eabihf),
+        arch: Arch::arm,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
         pointer_width: 32,
         endian: Endian::little,
         has_atomics: HasAtomics::atomic_8_16_32_ptr,
@@ -3314,12 +3509,14 @@ impl super::Os {
     pub const macos: Os = Os::new_const("macos");
     pub const netbsd: Os = Os::new_const("netbsd");
     pub const nto: Os = Os::new_const("nto");
+    pub const nuttx: Os = Os::new_const("nuttx");
     pub const openbsd: Os = Os::new_const("openbsd");
     pub const psp: Os = Os::new_const("psp");
     pub const redox: Os = Os::new_const("redox");
     pub const solaris: Os = Os::new_const("solaris");
     pub const solid_asp3: Os = Os::new_const("solid_asp3");
     pub const teeos: Os = Os::new_const("teeos");
+    pub const trusty: Os = Os::new_const("trusty");
     pub const tvos: Os = Os::new_const("tvos");
     pub const uefi: Os = Os::new_const("uefi");
     pub const unknown: Os = Os::new_const("unknown");
