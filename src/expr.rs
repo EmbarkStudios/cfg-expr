@@ -107,6 +107,8 @@ impl TargetMatcher for target_lexicon::Triple {
 
         const NUTTX: target_lexicon::Vendor =
             target_lexicon::Vendor::Custom(target_lexicon::CustomVendor::Static("nuttx"));
+        const RTEMS: target_lexicon::Vendor =
+            target_lexicon::Vendor::Custom(target_lexicon::CustomVendor::Static("rtems"));
 
         match tp {
             Abi(_) => {
@@ -231,7 +233,7 @@ impl TargetMatcher for target_lexicon::Triple {
                                             Environment::Kernel => {
                                                 self.operating_system == OperatingSystem::Linux
                                             }
-                                            _ => false,
+                                            _ => self.architecture == Architecture::Avr,
                                         }
                                     } else if env == &targ::Env::musl {
                                         matches!(
@@ -252,7 +254,7 @@ impl TargetMatcher for target_lexicon::Triple {
                                         matches!(
                                             self.operating_system,
                                             OperatingSystem::Horizon | OperatingSystem::Espidf
-                                        )
+                                        ) || self.vendor == RTEMS
                                     } else {
                                         self.environment == e
                                     }
@@ -304,7 +306,9 @@ impl TargetMatcher for target_lexicon::Triple {
                             _ => false,
                         }
                     }
-                    Unknown if self.vendor == NUTTX => fam == &crate::targets::Family::unix,
+                    Unknown if self.vendor == NUTTX || self.vendor == RTEMS => {
+                        fam == &crate::targets::Family::unix
+                    }
                     Unknown => {
                         // asmjs, wasm32 and wasm64 are part of the wasm family.
                         match self.architecture {
@@ -339,7 +343,8 @@ impl TargetMatcher for target_lexicon::Triple {
                         self.operating_system,
                         OperatingSystem::WasiP1 | OperatingSystem::WasiP2
                     )
-                    || os == &targ::Os::nuttx && self.vendor == NUTTX
+                    || (os == &targ::Os::nuttx && self.vendor == NUTTX)
+                    || (os == &targ::Os::rtems && self.vendor == RTEMS)
                 {
                     return true;
                 }
@@ -372,7 +377,10 @@ impl TargetMatcher for target_lexicon::Triple {
             }
             Vendor(ven) => match ven.0.parse::<target_lexicon::Vendor>() {
                 Ok(v) => {
-                    if self.vendor == v || self.vendor == NUTTX && ven == &targ::Vendor::unknown {
+                    if self.vendor == v
+                        || ((self.vendor == NUTTX || self.vendor == RTEMS)
+                            && ven == &targ::Vendor::unknown)
+                    {
                         true
                     } else if let target_lexicon::Vendor::Custom(custom) = &self.vendor {
                         matches!(custom.as_str(), "esp" | "esp32" | "esp32s2" | "esp32s3")
