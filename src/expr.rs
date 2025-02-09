@@ -173,12 +173,7 @@ impl TargetMatcher for target_lexicon::Triple {
                 match self.operating_system {
                     OperatingSystem::Redox => env == &targ::Env::relibc,
                     OperatingSystem::VxWorks => env == &targ::Env::gnu,
-                    OperatingSystem::Freebsd => match self.architecture {
-                        Architecture::Arm(ArmArchitecture::Armv6 | ArmArchitecture::Armv7) => {
-                            env == &targ::Env::gnu
-                        }
-                        _ => env.0.is_empty(),
-                    },
+                    OperatingSystem::Freebsd => env.0.is_empty(),
                     OperatingSystem::Netbsd => match self.architecture {
                         Architecture::Arm(ArmArchitecture::Armv6 | ArmArchitecture::Armv7) => {
                             env.0.is_empty()
@@ -188,7 +183,7 @@ impl TargetMatcher for target_lexicon::Triple {
                     OperatingSystem::None_
                     | OperatingSystem::Cloudabi
                     | OperatingSystem::Hermit
-                    | OperatingSystem::Ios => match self.environment {
+                    | OperatingSystem::IOS(_) => match self.environment {
                         Environment::LinuxKernel => env == &targ::Env::gnu,
                         _ => env.0.is_empty(),
                     },
@@ -268,15 +263,15 @@ impl TargetMatcher for target_lexicon::Triple {
             Family(fam) => {
                 use OperatingSystem::{
                     Aix, AmdHsa, Bitrig, Cloudabi, Cuda, Darwin, Dragonfly, Emscripten, Espidf,
-                    Freebsd, Fuchsia, Haiku, Hermit, Horizon, Hurd, Illumos, Ios, L4re, Linux,
-                    MacOSX, Nebulet, Netbsd, None_, Openbsd, Redox, Solaris, Tvos, Uefi, Unknown,
-                    Visionos, VxWorks, Wasi, WasiP1, WasiP2, Watchos, Windows,
+                    Freebsd, Fuchsia, Haiku, Hermit, Horizon, Hurd, Illumos, L4re, Linux, MacOSX,
+                    Nebulet, Netbsd, None_, Openbsd, Redox, Solaris, TvOS, Uefi, Unknown, VisionOS,
+                    VxWorks, Wasi, WasiP1, WasiP2, WatchOS, Windows, IOS,
                 };
 
                 match self.operating_system {
                     AmdHsa | Bitrig | Cloudabi | Cuda | Hermit | Nebulet | None_ | Uefi => false,
                     Aix
-                    | Darwin
+                    | Darwin(_)
                     | Dragonfly
                     | Espidf
                     | Freebsd
@@ -284,7 +279,7 @@ impl TargetMatcher for target_lexicon::Triple {
                     | Haiku
                     | Hurd
                     | Illumos
-                    | Ios
+                    | IOS(_)
                     | L4re
                     | MacOSX { .. }
                     | Horizon
@@ -292,10 +287,10 @@ impl TargetMatcher for target_lexicon::Triple {
                     | Openbsd
                     | Redox
                     | Solaris
-                    | Tvos
-                    | Visionos
+                    | TvOS(_)
+                    | VisionOS(_)
                     | VxWorks
-                    | Watchos => fam == &crate::targets::Family::unix,
+                    | WatchOS(_) => fam == &crate::targets::Family::unix,
                     Emscripten => {
                         match self.architecture {
                             // asmjs, wasm32 and wasm64 are part of both the wasm and unix families
@@ -358,7 +353,7 @@ impl TargetMatcher for target_lexicon::Triple {
                         // Handle special case for darwin/macos, where the triple is
                         // "darwin", but rustc identifies the OS as "macos"
                         if os == &targ::Os::macos
-                            && self.operating_system == OperatingSystem::Darwin
+                            && matches!(self.operating_system, OperatingSystem::Darwin(_))
                         {
                             true
                         } else {
