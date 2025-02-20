@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.83.0";
+pub(crate) const RUSTC_VERSION: &str = "1.85.0";
 
 pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
@@ -759,7 +759,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         os: Some(Os::freebsd),
         abi: Some(Abi::eabihf),
         arch: Arch::arm,
-        env: Some(Env::gnu),
+        env: None,
         vendor: Some(Vendor::unknown),
         families: Families::unix,
         pointer_width: 32,
@@ -837,7 +837,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         os: Some(Os::freebsd),
         abi: Some(Abi::eabihf),
         arch: Arch::arm,
-        env: Some(Env::gnu),
+        env: None,
         vendor: Some(Vendor::unknown),
         families: Families::unix,
         pointer_width: 32,
@@ -1202,7 +1202,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         abi: None,
         arch: Arch::x86,
         env: Some(Env::nto70),
-        vendor: Some(Vendor::unknown),
+        vendor: Some(Vendor::pc),
         families: Families::unix,
         pointer_width: 32,
         endian: Endian::little,
@@ -1692,10 +1692,10 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     },
     TargetInfo {
         triple: Triple::new_const("mipsel-sony-psx"),
-        os: None,
+        os: Some(Os::psx),
         abi: None,
         arch: Arch::mips,
-        env: Some(Env::psx),
+        env: None,
         vendor: Some(Vendor::sony),
         families: Families::new_const(&[]),
         pointer_width: 32,
@@ -2913,19 +2913,6 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::abort,
     },
     TargetInfo {
-        triple: Triple::new_const("wasm32-wasi"),
-        os: Some(Os::wasi),
-        abi: None,
-        arch: Arch::wasm32,
-        env: Some(Env::p1),
-        vendor: Some(Vendor::unknown),
-        families: Families::wasm,
-        pointer_width: 32,
-        endian: Endian::little,
-        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
-        panic: Panic::abort,
-    },
-    TargetInfo {
         triple: Triple::new_const("wasm32-wasip1"),
         os: Some(Os::wasi),
         abi: None,
@@ -2957,6 +2944,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         abi: None,
         arch: Arch::wasm32,
         env: Some(Env::p2),
+        vendor: Some(Vendor::unknown),
+        families: Families::wasm,
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
+        triple: Triple::new_const("wasm32v1-none"),
+        os: None,
+        abi: None,
+        arch: Arch::wasm32,
+        env: None,
         vendor: Some(Vendor::unknown),
         families: Families::wasm,
         pointer_width: 32,
@@ -3074,7 +3074,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         abi: None,
         arch: Arch::x86_64,
         env: Some(Env::nto71),
-        vendor: Some(Vendor::unknown),
+        vendor: Some(Vendor::pc),
         families: Families::unix,
         pointer_width: 64,
         endian: Endian::little,
@@ -3300,7 +3300,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         pointer_width: 64,
         endian: Endian::little,
         has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
-        panic: Panic::unwind,
+        panic: Panic::abort,
     },
     TargetInfo {
         triple: Triple::new_const("x86_64-unknown-linux-ohos"),
@@ -3628,6 +3628,7 @@ impl super::Os {
     pub const nuttx: Os = Os::new_const("nuttx");
     pub const openbsd: Os = Os::new_const("openbsd");
     pub const psp: Os = Os::new_const("psp");
+    pub const psx: Os = Os::new_const("psx");
     pub const redox: Os = Os::new_const("redox");
     pub const rtems: Os = Os::new_const("rtems");
     pub const solaris: Os = Os::new_const("solaris");
@@ -3675,7 +3676,6 @@ impl super::Env {
     pub const ohos: Env = Env::new_const("ohos");
     pub const p1: Env = Env::new_const("p1");
     pub const p2: Env = Env::new_const("p2");
-    pub const psx: Env = Env::new_const("psx");
     pub const relibc: Env = Env::new_const("relibc");
     pub const sgx: Env = Env::new_const("sgx");
     pub const uclibc: Env = Env::new_const("uclibc");

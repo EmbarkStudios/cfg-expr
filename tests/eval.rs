@@ -321,13 +321,19 @@ fn wasm_family() {
 
     let wasm32_unknown = Target::make("wasm32-unknown-unknown");
     let wasm32_emscripten = Target::make("wasm32-unknown-emscripten");
-    let wasm32_wasi = Target::make("wasm32-wasi");
+    let wasm32_wasip1 = Target::make("wasm32-wasip1");
+    let wasm32_wasip1_threads = Target::make("wasm32-wasip1-threads");
+    let wasm32_wasip2 = Target::make("wasm32-wasip2");
+    let wasm32v1_none = Target::make("wasm32v1-none");
     let wasm64_unknown = Target::make("wasm64-unknown-unknown");
 
     // All of the above targets match.
     assert!(wasm.eval(|pred| tg_match!(pred, wasm32_unknown)));
     assert!(wasm.eval(|pred| tg_match!(pred, wasm32_emscripten)));
-    assert!(wasm.eval(|pred| tg_match!(pred, wasm32_wasi)));
+    assert!(wasm.eval(|pred| tg_match!(pred, wasm32_wasip1)));
+    assert!(wasm.eval(|pred| tg_match!(pred, wasm32_wasip1_threads)));
+    assert!(wasm.eval(|pred| tg_match!(pred, wasm32_wasip2)));
+    assert!(wasm.eval(|pred| tg_match!(pred, wasm32v1_none)));
     assert!(wasm.eval(|pred| tg_match!(pred, wasm64_unknown)));
 }
 
