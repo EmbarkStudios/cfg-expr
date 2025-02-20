@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.84.1";
+pub(crate) const RUSTC_VERSION: &str = "1.85.0";
 
 pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
@@ -3300,7 +3300,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         pointer_width: 64,
         endian: Endian::little,
         has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
-        panic: Panic::unwind,
+        panic: Panic::abort,
     },
     TargetInfo {
         triple: Triple::new_const("x86_64-unknown-linux-ohos"),
