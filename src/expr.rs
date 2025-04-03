@@ -143,6 +143,8 @@ impl TargetMatcher for target_lexicon::Triple {
                             Mips64Architecture::Mipsisa64r6 | Mips64Architecture::Mipsisa64r6el
                         )
                     )
+                } else if arch == &targ::Arch::amdgpu {
+                    self.architecture == Architecture::AmdGcn
                 } else {
                     match arch.0.parse::<Architecture>() {
                         Ok(a) => match (self.architecture, a) {
