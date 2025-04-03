@@ -1,8 +1,8 @@
 use cfg_expr::{
+    Expression, ParseError,
     error::Reason,
     expr::{Predicate as P, TargetPredicate as TP},
     targets::*,
-    Expression, ParseError,
 };
 
 macro_rules! test_validate {

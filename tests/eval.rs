@@ -1,7 +1,7 @@
 use cfg_expr::{
-    expr::{Predicate, TargetMatcher},
-    targets::{get_builtin_target_by_triple, ALL_BUILTINS as all},
     Expression, TargetPredicate,
+    expr::{Predicate, TargetMatcher},
+    targets::{ALL_BUILTINS as all, get_builtin_target_by_triple},
 };
 
 struct Target {
