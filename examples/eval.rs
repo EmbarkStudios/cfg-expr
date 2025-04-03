@@ -1,4 +1,4 @@
-use cfg_expr::{targets::get_builtin_target_by_triple, Expression, Predicate};
+use cfg_expr::{Expression, Predicate, targets::get_builtin_target_by_triple};
 
 fn main() {
     let specific = Expression::parse(

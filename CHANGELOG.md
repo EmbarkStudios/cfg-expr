@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+### Changed
+- [PR#78](https://github.com/EmbarkStudios/cfg-expr/pull/78) updated the builtin target list to 1.86.0.
+- [PR#78](https://github.com/EmbarkStudios/cfg-expr/pull/78) changed the MSRV to 1.85.0 and the edition to 2024.
+
 ## [0.18.0] - 2025-02-20
 ### Changed
 - [PR#77](https://github.com/EmbarkStudios/cfg-expr/pull/77) updated the builtin target list to 1.84.1 and 1.85.0.

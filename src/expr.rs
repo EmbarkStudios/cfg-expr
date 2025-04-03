@@ -100,10 +100,10 @@ impl TargetMatcher for target_lexicon::Triple {
     #[allow(clippy::cognitive_complexity)]
     #[allow(clippy::match_same_arms)]
     fn matches(&self, tp: &TargetPredicate) -> bool {
-        use target_lexicon::*;
         use TargetPredicate::{
             Abi, Arch, Endian, Env, Family, HasAtomic, Os, Panic, PointerWidth, Vendor,
         };
+        use target_lexicon::*;
 
         const NUTTX: target_lexicon::Vendor =
             target_lexicon::Vendor::Custom(target_lexicon::CustomVendor::Static("nuttx"));
@@ -143,6 +143,8 @@ impl TargetMatcher for target_lexicon::Triple {
                             Mips64Architecture::Mipsisa64r6 | Mips64Architecture::Mipsisa64r6el
                         )
                     )
+                } else if arch == &targ::Arch::amdgpu {
+                    self.architecture == Architecture::AmdGcn
                 } else {
                     match arch.0.parse::<Architecture>() {
                         Ok(a) => match (self.architecture, a) {
@@ -263,9 +265,9 @@ impl TargetMatcher for target_lexicon::Triple {
             Family(fam) => {
                 use OperatingSystem::{
                     Aix, AmdHsa, Bitrig, Cloudabi, Cuda, Darwin, Dragonfly, Emscripten, Espidf,
-                    Freebsd, Fuchsia, Haiku, Hermit, Horizon, Hurd, Illumos, L4re, Linux, MacOSX,
-                    Nebulet, Netbsd, None_, Openbsd, Redox, Solaris, TvOS, Uefi, Unknown, VisionOS,
-                    VxWorks, Wasi, WasiP1, WasiP2, WatchOS, Windows, IOS,
+                    Freebsd, Fuchsia, Haiku, Hermit, Horizon, Hurd, IOS, Illumos, L4re, Linux,
+                    MacOSX, Nebulet, Netbsd, None_, Openbsd, Redox, Solaris, TvOS, Uefi, Unknown,
+                    VisionOS, VxWorks, Wasi, WasiP1, WasiP2, WatchOS, Windows,
                 };
 
                 match self.operating_system {
