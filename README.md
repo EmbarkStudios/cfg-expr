@@ -4,13 +4,13 @@
 
 # `⚙️ cfg-expr`
 
-**A parser and evaluator for Rust `cfg()` expressions. Builtin targets as of [1.86.0] are supported.**
+**A parser and evaluator for Rust `cfg()` expressions. Builtin targets as of [1.87.0] are supported.**
 
 [![Build Status](https://github.com/EmbarkStudios/cfg-expr/workflows/CI/badge.svg)](https://github.com/EmbarkStudios/cfg-expr/actions?workflow=CI)
 [![Crates.io](https://img.shields.io/crates/v/cfg-expr.svg)](https://crates.io/crates/cfg-expr)
 [![Docs](https://docs.rs/cfg-expr/badge.svg)](https://docs.rs/cfg-expr)
 [![Minimum Stable Rust Version](https://img.shields.io/badge/Rust%20MSRV-1.70.0-blue?color=fc8d62&logo=rust)](https://blog.rust-lang.org/2023/06/01/Rust-1.70.0.html)
-[![Rust Targets](https://img.shields.io/badge/Rust%20Targets-1.86.0-blue.svg)](https://forge.rust-lang.org/release/platform-support.html)
+[![Rust Targets](https://img.shields.io/badge/Rust%20Targets-1.87.0-blue.svg)](https://forge.rust-lang.org/release/platform-support.html)
 [![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 [![Embark](https://img.shields.io/badge/embark-open%20source-blueviolet.svg)](https://embark.dev)
 </div>
@@ -24,7 +24,7 @@
 
 `cfg-expr` is a crate that can be used to parse and evaluate Rust `cfg()` expressions, both as declarable in Rust code itself, as well in cargo manifests' `[target.'cfg()'.dependencies]` sections.
 
-It contains a list of all builtin targets known to rustc as of [1.86.0] that can be used to determine if a particular cfg expression is satisfiable.
+It contains a list of all builtin targets known to rustc as of [1.87.0] that can be used to determine if a particular cfg expression is satisfiable.
 
 ```rust
 use cfg_expr::{targets::get_builtin_target_by_triple, Expression, Predicate};
@@ -47,7 +47,6 @@ let specific = Expression::parse(
 
 // cfg_expr includes a list of every builtin target in rustc
 let x86_win = get_builtin_target_by_triple("i686-pc-windows-msvc").unwrap();
-let x86_pentium_win = get_builtin_target_by_triple("i586-pc-windows-msvc").unwrap();
 let uwp_win = get_builtin_target_by_triple("i686-uwp-windows-msvc").unwrap();
 let mac = get_builtin_target_by_triple("x86_64-apple-darwin").unwrap();
 
@@ -59,15 +58,6 @@ assert!(specific.eval(|pred| {
         Predicate::Target(tp) => tp.matches(x86_win),
         Predicate::TargetFeature(feat) => avail_target_feats.contains(feat),
         Predicate::Feature(feat) => *feat == "cool_thing",
-        _ => false,
-    }
-}));
-
-// This won't, it doesn't have the cool_thing feature!
-assert!(!specific.eval(|pred| {
-    match pred {
-        Predicate::Target(tp) => tp.matches(x86_pentium_win),
-        Predicate::TargetFeature(feat) => avail_target_feats.contains(feat),
         _ => false,
     }
 }));
@@ -110,4 +100,4 @@ at your option.
 
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.
 
-[1.86.0]: (https://forge.rust-lang.org/release/platform-support.html)
+[1.87.0]: (https://forge.rust-lang.org/release/platform-support.html)
