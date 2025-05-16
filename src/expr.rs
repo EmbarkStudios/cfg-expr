@@ -109,6 +109,8 @@ impl TargetMatcher for target_lexicon::Triple {
             target_lexicon::Vendor::Custom(target_lexicon::CustomVendor::Static("nuttx"));
         const RTEMS: target_lexicon::Vendor =
             target_lexicon::Vendor::Custom(target_lexicon::CustomVendor::Static("rtems"));
+        const WALI: target_lexicon::Vendor =
+            target_lexicon::Vendor::Custom(target_lexicon::CustomVendor::Static("wali"));
 
         match tp {
             Abi(_) => {
@@ -315,6 +317,9 @@ impl TargetMatcher for target_lexicon::Triple {
                             _ => false,
                         }
                     }
+                    Linux if self.vendor == WALI => {
+                        fam == &crate::targets::Family::wasm || fam == &crate::targets::Family::unix
+                    }
                     Linux => {
                         // The 'kernel' environment is treated specially as not-unix
                         if self.environment != Environment::Kernel {
@@ -375,7 +380,7 @@ impl TargetMatcher for target_lexicon::Triple {
             Vendor(ven) => match ven.0.parse::<target_lexicon::Vendor>() {
                 Ok(v) => {
                     if self.vendor == v
-                        || ((self.vendor == NUTTX || self.vendor == RTEMS)
+                        || ((self.vendor == NUTTX || self.vendor == RTEMS || self.vendor == WALI)
                             && ven == &targ::Vendor::unknown)
                     {
                         true

@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.86.0";
+pub(crate) const RUSTC_VERSION: &str = "1.87.0";
 
 pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
@@ -1171,11 +1171,11 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::abort,
     },
     TargetInfo {
-        triple: Triple::new_const("avr-unknown-gnu-atmega328"),
+        triple: Triple::new_const("avr-none"),
         os: None,
         abi: None,
         arch: Arch::avr,
-        env: Some(Env::gnu),
+        env: None,
         vendor: Some(Vendor::unknown),
         families: Families::new_const(&[]),
         pointer_width: 16,
@@ -1275,32 +1275,6 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::unwind,
     },
     TargetInfo {
-        triple: Triple::new_const("i586-pc-nto-qnx700"),
-        os: Some(Os::nto),
-        abi: None,
-        arch: Arch::x86,
-        env: Some(Env::nto70),
-        vendor: Some(Vendor::pc),
-        families: Families::unix,
-        pointer_width: 32,
-        endian: Endian::little,
-        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
-        panic: Panic::unwind,
-    },
-    TargetInfo {
-        triple: Triple::new_const("i586-pc-windows-msvc"),
-        os: Some(Os::windows),
-        abi: None,
-        arch: Arch::x86,
-        env: Some(Env::msvc),
-        vendor: Some(Vendor::pc),
-        families: Families::windows,
-        pointer_width: 32,
-        endian: Endian::little,
-        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
-        panic: Panic::unwind,
-    },
-    TargetInfo {
         triple: Triple::new_const("i586-unknown-linux-gnu"),
         os: Some(Os::linux),
         abi: None,
@@ -1372,6 +1346,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         arch: Arch::x86,
         env: None,
         vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("i686-pc-nto-qnx700"),
+        os: Some(Os::nto),
+        abi: None,
+        arch: Arch::x86,
+        env: Some(Env::nto70),
+        vendor: Some(Vendor::pc),
         families: Families::unix,
         pointer_width: 32,
         endian: Endian::little,
@@ -3069,6 +3056,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::abort,
     },
     TargetInfo {
+        triple: Triple::new_const("wasm32-wali-linux-musl"),
+        os: Some(Os::linux),
+        abi: None,
+        arch: Arch::wasm32,
+        env: Some(Env::musl),
+        vendor: Some(Vendor::unknown),
+        families: Families::unix_wasm,
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
         triple: Triple::new_const("wasm32-wasip1"),
         os: Some(Os::wasi),
         abi: None,
@@ -3377,7 +3377,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         families: Families::unix,
         pointer_width: 64,
         endian: Endian::little,
-        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
         panic: Panic::unwind,
     },
     TargetInfo {
