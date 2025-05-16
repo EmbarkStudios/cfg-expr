@@ -47,7 +47,6 @@ let specific = Expression::parse(
 
 // cfg_expr includes a list of every builtin target in rustc
 let x86_win = get_builtin_target_by_triple("i686-pc-windows-msvc").unwrap();
-let x86_pentium_win = get_builtin_target_by_triple("i586-pc-windows-msvc").unwrap();
 let uwp_win = get_builtin_target_by_triple("i686-uwp-windows-msvc").unwrap();
 let mac = get_builtin_target_by_triple("x86_64-apple-darwin").unwrap();
 
@@ -59,15 +58,6 @@ assert!(specific.eval(|pred| {
         Predicate::Target(tp) => tp.matches(x86_win),
         Predicate::TargetFeature(feat) => avail_target_feats.contains(feat),
         Predicate::Feature(feat) => *feat == "cool_thing",
-        _ => false,
-    }
-}));
-
-// This won't, it doesn't have the cool_thing feature!
-assert!(!specific.eval(|pred| {
-    match pred {
-        Predicate::Target(tp) => tp.matches(x86_pentium_win),
-        Predicate::TargetFeature(feat) => avail_target_feats.contains(feat),
         _ => false,
     }
 }));
