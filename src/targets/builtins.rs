@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.88.0";
+pub(crate) const RUSTC_VERSION: &str = "1.89.0";
 
 pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
@@ -1572,6 +1572,32 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         endian: Endian::little,
         has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
         panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("loongarch32-unknown-none"),
+        os: None,
+        abi: None,
+        arch: Arch::loongarch32,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::new_const(&[]),
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
+        triple: Triple::new_const("loongarch32-unknown-none-softfloat"),
+        os: None,
+        abi: Some(Abi::softfloat),
+        arch: Arch::loongarch32,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::new_const(&[]),
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        panic: Panic::abort,
     },
     TargetInfo {
         triple: Triple::new_const("loongarch64-unknown-linux-gnu"),
@@ -3787,6 +3813,7 @@ impl super::Arch {
     pub const bpf: Arch = Arch::new_const("bpf");
     pub const csky: Arch = Arch::new_const("csky");
     pub const hexagon: Arch = Arch::new_const("hexagon");
+    pub const loongarch32: Arch = Arch::new_const("loongarch32");
     pub const loongarch64: Arch = Arch::new_const("loongarch64");
     pub const m68k: Arch = Arch::new_const("m68k");
     pub const mips: Arch = Arch::new_const("mips");
