@@ -4,13 +4,13 @@
 
 # `⚙️ cfg-expr`
 
-**A parser and evaluator for Rust `cfg()` expressions. Builtin targets as of [1.89.0] are supported.**
+**A parser and evaluator for Rust `cfg()` expressions. Builtin targets as of [1.90.0] are supported.**
 
 [![Build Status](https://github.com/EmbarkStudios/cfg-expr/workflows/CI/badge.svg)](https://github.com/EmbarkStudios/cfg-expr/actions?workflow=CI)
 [![Crates.io](https://img.shields.io/crates/v/cfg-expr.svg)](https://crates.io/crates/cfg-expr)
 [![Docs](https://docs.rs/cfg-expr/badge.svg)](https://docs.rs/cfg-expr)
 [![Minimum Stable Rust Version](https://img.shields.io/badge/Rust%20MSRV-1.70.0-blue?color=fc8d62&logo=rust)](https://blog.rust-lang.org/2023/06/01/Rust-1.70.0.html)
-[![Rust Targets](https://img.shields.io/badge/Rust%20Targets-1.89.0-blue.svg)](https://forge.rust-lang.org/release/platform-support.html)
+[![Rust Targets](https://img.shields.io/badge/Rust%20Targets-1.90.0-blue.svg)](https://forge.rust-lang.org/release/platform-support.html)
 [![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 [![Embark](https://img.shields.io/badge/embark-open%20source-blueviolet.svg)](https://embark.dev)
 </div>
@@ -24,7 +24,7 @@
 
 `cfg-expr` is a crate that can be used to parse and evaluate Rust `cfg()` expressions, both as declarable in Rust code itself, as well in cargo manifests' `[target.'cfg()'.dependencies]` sections.
 
-It contains a list of all builtin targets known to rustc as of [1.89.0] that can be used to determine if a particular cfg expression is satisfiable.
+It contains a list of all builtin targets known to rustc as of [1.90.0] that can be used to determine if a particular cfg expression is satisfiable.
 
 ```rust
 use cfg_expr::{targets::get_builtin_target_by_triple, Expression, Predicate};
@@ -100,4 +100,4 @@ at your option.
 
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.
 
-[1.89.0]: (https://forge.rust-lang.org/release/platform-support.html)
+[1.90.0]: (https://forge.rust-lang.org/release/platform-support.html)
