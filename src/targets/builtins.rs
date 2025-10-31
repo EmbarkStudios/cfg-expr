@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.90.0";
+pub(crate) const RUSTC_VERSION: &str = "1.91.0";
 
 pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
@@ -44,7 +44,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         os: Some(Os::ios),
         abi: Some(Abi::macabi),
         arch: Arch::aarch64,
-        env: None,
+        env: Some(Env::macabi),
         vendor: Some(Vendor::apple),
         families: Families::unix,
         pointer_width: 64,
@@ -57,7 +57,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         os: Some(Os::ios),
         abi: Some(Abi::sim),
         arch: Arch::aarch64,
-        env: None,
+        env: Some(Env::sim),
         vendor: Some(Vendor::apple),
         families: Families::unix,
         pointer_width: 64,
@@ -83,7 +83,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         os: Some(Os::tvos),
         abi: Some(Abi::sim),
         arch: Arch::aarch64,
-        env: None,
+        env: Some(Env::sim),
         vendor: Some(Vendor::apple),
         families: Families::unix,
         pointer_width: 64,
@@ -109,7 +109,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         os: Some(Os::visionos),
         abi: Some(Abi::sim),
         arch: Arch::aarch64,
-        env: None,
+        env: Some(Env::sim),
         vendor: Some(Vendor::apple),
         families: Families::unix,
         pointer_width: 64,
@@ -135,7 +135,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         os: Some(Os::watchos),
         abi: Some(Abi::sim),
         arch: Arch::aarch64,
-        env: None,
+        env: Some(Env::sim),
         vendor: Some(Vendor::apple),
         families: Families::unix,
         pointer_width: 64,
@@ -305,6 +305,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         abi: None,
         arch: Arch::aarch64,
         env: Some(Env::ohos),
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("aarch64-unknown-managarm-mlibc"),
+        os: Some(Os::managarm),
+        abi: None,
+        arch: Arch::aarch64,
+        env: Some(Env::mlibc),
         vendor: Some(Vendor::unknown),
         families: Families::unix,
         pointer_width: 64,
@@ -508,6 +521,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::unwind,
     },
     TargetInfo {
+        triple: Triple::new_const("aarch64_be-unknown-hermit"),
+        os: Some(Os::hermit),
+        abi: None,
+        arch: Arch::aarch64,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::new_const(&[]),
+        pointer_width: 64,
+        endian: Endian::big,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
         triple: Triple::new_const("aarch64_be-unknown-linux-gnu"),
         os: Some(Os::linux),
         abi: None,
@@ -534,6 +560,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::unwind,
     },
     TargetInfo {
+        triple: Triple::new_const("aarch64_be-unknown-linux-musl"),
+        os: Some(Os::linux),
+        abi: None,
+        arch: Arch::aarch64,
+        env: Some(Env::musl),
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 64,
+        endian: Endian::big,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
         triple: Triple::new_const("aarch64_be-unknown-netbsd"),
         os: Some(Os::netbsd),
         abi: None,
@@ -545,6 +584,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         endian: Endian::big,
         has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
         panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("aarch64_be-unknown-none-softfloat"),
+        os: None,
+        abi: Some(Abi::softfloat),
+        arch: Arch::aarch64,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::new_const(&[]),
+        pointer_width: 64,
+        endian: Endian::big,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
+        panic: Panic::abort,
     },
     TargetInfo {
         triple: Triple::new_const("amdgcn-amd-amdhsa"),
@@ -1106,6 +1158,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::abort,
     },
     TargetInfo {
+        triple: Triple::new_const("armv7a-vex-v5"),
+        os: Some(Os::vexos),
+        abi: Some(Abi::eabihf),
+        arch: Arch::arm,
+        env: Some(Env::v5),
+        vendor: Some(Vendor::vex),
+        families: Families::new_const(&[]),
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
         triple: Triple::new_const("armv7k-apple-watchos"),
         os: Some(Os::watchos),
         abi: None,
@@ -1266,7 +1331,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         os: Some(Os::ios),
         abi: Some(Abi::sim),
         arch: Arch::x86,
-        env: None,
+        env: Some(Env::sim),
         vendor: Some(Vendor::apple),
         families: Families::unix,
         pointer_width: 32,
@@ -2510,6 +2575,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::unwind,
     },
     TargetInfo {
+        triple: Triple::new_const("riscv64a23-unknown-linux-gnu"),
+        os: Some(Os::linux),
+        abi: None,
+        arch: Arch::riscv64,
+        env: Some(Env::gnu),
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
         triple: Triple::new_const("riscv64gc-unknown-freebsd"),
         os: Some(Os::freebsd),
         abi: None,
@@ -2567,6 +2645,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         abi: None,
         arch: Arch::riscv64,
         env: Some(Env::musl),
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("riscv64gc-unknown-managarm-mlibc"),
+        os: Some(Os::managarm),
+        abi: None,
+        arch: Arch::riscv64,
+        env: Some(Env::mlibc),
         vendor: Some(Vendor::unknown),
         families: Families::unix,
         pointer_width: 64,
@@ -3177,7 +3268,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         os: Some(Os::ios),
         abi: Some(Abi::sim),
         arch: Arch::x86_64,
-        env: None,
+        env: Some(Env::sim),
         vendor: Some(Vendor::apple),
         families: Families::unix,
         pointer_width: 64,
@@ -3190,7 +3281,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         os: Some(Os::ios),
         abi: Some(Abi::macabi),
         arch: Arch::x86_64,
-        env: None,
+        env: Some(Env::macabi),
         vendor: Some(Vendor::apple),
         families: Families::unix,
         pointer_width: 64,
@@ -3203,7 +3294,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         os: Some(Os::tvos),
         abi: Some(Abi::sim),
         arch: Arch::x86_64,
-        env: None,
+        env: Some(Env::sim),
         vendor: Some(Vendor::apple),
         families: Families::unix,
         pointer_width: 64,
@@ -3216,7 +3307,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         os: Some(Os::watchos),
         abi: Some(Abi::sim),
         arch: Arch::x86_64,
-        env: None,
+        env: Some(Env::sim),
         vendor: Some(Vendor::apple),
         families: Families::unix,
         pointer_width: 64,
@@ -3550,6 +3641,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::unwind,
     },
     TargetInfo {
+        triple: Triple::new_const("x86_64-unknown-managarm-mlibc"),
+        os: Some(Os::managarm),
+        abi: None,
+        arch: Arch::x86_64,
+        env: Some(Env::mlibc),
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
         triple: Triple::new_const("x86_64-unknown-netbsd"),
         os: Some(Os::netbsd),
         abi: None,
@@ -3856,6 +3960,7 @@ impl super::Vendor {
     pub const unikraft: Vendor = Vendor::new_const("unikraft");
     pub const unknown: Vendor = Vendor::new_const("unknown");
     pub const uwp: Vendor = Vendor::new_const("uwp");
+    pub const vex: Vendor = Vendor::new_const("vex");
     pub const win7: Vendor = Vendor::new_const("win7");
     pub const wrs: Vendor = Vendor::new_const("wrs");
 }
@@ -3881,6 +3986,7 @@ impl super::Os {
     pub const linux: Os = Os::new_const("linux");
     pub const lynxos178: Os = Os::new_const("lynxos178");
     pub const macos: Os = Os::new_const("macos");
+    pub const managarm: Os = Os::new_const("managarm");
     pub const netbsd: Os = Os::new_const("netbsd");
     pub const nto: Os = Os::new_const("nto");
     pub const nuttx: Os = Os::new_const("nuttx");
@@ -3896,6 +4002,7 @@ impl super::Os {
     pub const tvos: Os = Os::new_const("tvos");
     pub const uefi: Os = Os::new_const("uefi");
     pub const unknown: Os = Os::new_const("unknown");
+    pub const vexos: Os = Os::new_const("vexos");
     pub const visionos: Os = Os::new_const("visionos");
     pub const vita: Os = Os::new_const("vita");
     pub const vxworks: Os = Os::new_const("vxworks");
@@ -3926,6 +4033,8 @@ impl super::Families {
 
 impl super::Env {
     pub const gnu: Env = Env::new_const("gnu");
+    pub const macabi: Env = Env::new_const("macabi");
+    pub const mlibc: Env = Env::new_const("mlibc");
     pub const msvc: Env = Env::new_const("msvc");
     pub const musl: Env = Env::new_const("musl");
     pub const newlib: Env = Env::new_const("newlib");
@@ -3938,7 +4047,9 @@ impl super::Env {
     pub const p2: Env = Env::new_const("p2");
     pub const relibc: Env = Env::new_const("relibc");
     pub const sgx: Env = Env::new_const("sgx");
+    pub const sim: Env = Env::new_const("sim");
     pub const uclibc: Env = Env::new_const("uclibc");
+    pub const v5: Env = Env::new_const("v5");
 }
 
 const __has_atomics_8_16_32_64_128_ptr: &[HasAtomic] = &[

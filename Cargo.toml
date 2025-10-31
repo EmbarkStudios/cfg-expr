@@ -23,8 +23,8 @@ default = []
 targets = ["target-lexicon"]
 
 [dependencies]
-smallvec = "1.14"
-target-lexicon = { version = "=0.13.2", optional = true }
+smallvec = "1.15"
+target-lexicon = { version = "=0.13.3", optional = true }
 
 [dev-dependencies]
 similar-asserts = "1.7"

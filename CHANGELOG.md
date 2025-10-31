@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+### Changed
+- [PR#83](https://github.com/EmbarkStudios/cfg-expr/pull/83) updated the builtin target list to 1.91.0.
+
 ## [0.20.3] - 2025-09-18
 ### Changed
 - [PR#82](https://github.com/EmbarkStudios/cfg-expr/pull/82) updated the builtin target list to 1.90.0.
