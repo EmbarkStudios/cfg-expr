@@ -112,6 +112,7 @@ impl TargetMatcher for target_lexicon::Triple {
         const NUTTX: tl::Vendor = tl::Vendor::Custom(tl::CustomVendor::Static("nuttx"));
         const RTEMS: tl::Vendor = tl::Vendor::Custom(tl::CustomVendor::Static("rtems"));
         const WALI: tl::Vendor = tl::Vendor::Custom(tl::CustomVendor::Static("wali"));
+        const WASIP3: tl::Vendor = tl::Vendor::Custom(tl::CustomVendor::Static("wasip3"));
 
         match tp {
             Abi(_) => {
@@ -205,6 +206,8 @@ impl TargetMatcher for target_lexicon::Triple {
                                     | env::Sim
                                     | env::None
                             )
+                        } else if env == &targ::Env::p3 {
+                            self.vendor == WASIP3
                         } else {
                             match env.0.parse::<env>() {
                                 Ok(e) => {
@@ -332,7 +335,9 @@ impl TargetMatcher for target_lexicon::Triple {
                 false
             }
             Os(os) => {
-                if os == &targ::Os::wasi && matches!(self.operating_system, os::WasiP1 | os::WasiP2)
+                if os == &targ::Os::wasi
+                    && (matches!(self.operating_system, os::WasiP1 | os::WasiP2)
+                        || self.vendor == WASIP3)
                     || (os == &targ::Os::nuttx && self.vendor == NUTTX)
                     || (os == &targ::Os::rtems && self.vendor == RTEMS)
                 {
@@ -367,7 +372,10 @@ impl TargetMatcher for target_lexicon::Triple {
             Vendor(ven) => match ven.0.parse::<target_lexicon::Vendor>() {
                 Ok(v) => {
                     if self.vendor == v
-                        || ((self.vendor == NUTTX || self.vendor == RTEMS || self.vendor == WALI)
+                        || ((self.vendor == NUTTX
+                            || self.vendor == RTEMS
+                            || self.vendor == WALI
+                            || self.vendor == WASIP3)
                             && ven == &targ::Vendor::unknown)
                     {
                         true
@@ -697,6 +705,20 @@ impl Expression {
 impl PartialEq for Expression {
     fn eq(&self, other: &Self) -> bool {
         self.original.eq(&other.original)
+    }
+}
+
+impl std::str::FromStr for Expression {
+    type Err = crate::error::ParseError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Expression::parse(s)
+    }
+}
+
+impl std::fmt::Display for Expression {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(&self.original)
     }
 }
 
