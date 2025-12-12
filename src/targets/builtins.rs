@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.91.0";
+pub(crate) const RUSTC_VERSION: &str = "1.92.0";
 
 pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
@@ -3225,6 +3225,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::abort,
     },
     TargetInfo {
+        triple: Triple::new_const("wasm32-wasip3"),
+        os: Some(Os::wasi),
+        abi: None,
+        arch: Arch::wasm32,
+        env: Some(Env::p3),
+        vendor: Some(Vendor::unknown),
+        families: Families::wasm,
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
         triple: Triple::new_const("wasm32v1-none"),
         os: None,
         abi: None,
@@ -3654,6 +3667,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::unwind,
     },
     TargetInfo {
+        triple: Triple::new_const("x86_64-unknown-motor"),
+        os: Some(Os::motor),
+        abi: None,
+        arch: Arch::x86_64,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::new_const(&[]),
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
         triple: Triple::new_const("x86_64-unknown-netbsd"),
         os: Some(Os::netbsd),
         abi: None,
@@ -3987,6 +4013,7 @@ impl super::Os {
     pub const lynxos178: Os = Os::new_const("lynxos178");
     pub const macos: Os = Os::new_const("macos");
     pub const managarm: Os = Os::new_const("managarm");
+    pub const motor: Os = Os::new_const("motor");
     pub const netbsd: Os = Os::new_const("netbsd");
     pub const nto: Os = Os::new_const("nto");
     pub const nuttx: Os = Os::new_const("nuttx");
@@ -4045,6 +4072,7 @@ impl super::Env {
     pub const ohos: Env = Env::new_const("ohos");
     pub const p1: Env = Env::new_const("p1");
     pub const p2: Env = Env::new_const("p2");
+    pub const p3: Env = Env::new_const("p3");
     pub const relibc: Env = Env::new_const("relibc");
     pub const sgx: Env = Env::new_const("sgx");
     pub const sim: Env = Env::new_const("sim");
