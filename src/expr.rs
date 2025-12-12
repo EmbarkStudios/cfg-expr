@@ -708,6 +708,20 @@ impl PartialEq for Expression {
     }
 }
 
+impl std::str::FromStr for Expression {
+    type Err = crate::error::ParseError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Expression::parse(s)
+    }
+}
+
+impl std::fmt::Display for Expression {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(&self.original)
+    }
+}
+
 /// A propositional logic used to evaluate `Expression` instances.
 ///
 /// An `Expression` consists of some predicates and the `any`, `all` and `not` operators. An
