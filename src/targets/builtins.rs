@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.92.0";
+pub(crate) const RUSTC_VERSION: &str = "1.93.0";
 
 pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
@@ -233,6 +233,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         endian: Endian::little,
         has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
         panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("aarch64-unknown-helenos"),
+        os: Some(Os::helenos),
+        abi: None,
+        arch: Arch::aarch64,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::new_const(&[]),
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
+        panic: Panic::abort,
     },
     TargetInfo {
         triple: Triple::new_const("aarch64-unknown-hermit"),
@@ -1327,6 +1340,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::abort,
     },
     TargetInfo {
+        triple: Triple::new_const("hexagon-unknown-qurt"),
+        os: Some(Os::qurt),
+        abi: None,
+        arch: Arch::hexagon,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
         triple: Triple::new_const("i386-apple-ios"),
         os: Some(Os::ios),
         abi: Some(Abi::sim),
@@ -1494,6 +1520,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         endian: Endian::little,
         has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
         panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("i686-unknown-helenos"),
+        os: Some(Os::helenos),
+        abi: None,
+        arch: Arch::x86,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::new_const(&[]),
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::abort,
     },
     TargetInfo {
         triple: Triple::new_const("i686-unknown-hurd-gnu"),
@@ -2066,6 +2105,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         endian: Endian::big,
         has_atomics: HasAtomics::atomic_8_16_32_ptr,
         panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("powerpc-unknown-helenos"),
+        os: Some(Os::helenos),
+        abi: None,
+        arch: Arch::powerpc,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::new_const(&[]),
+        pointer_width: 32,
+        endian: Endian::big,
+        has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        panic: Panic::abort,
     },
     TargetInfo {
         triple: Triple::new_const("powerpc-unknown-linux-gnu"),
@@ -2718,6 +2770,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::unwind,
     },
     TargetInfo {
+        triple: Triple::new_const("riscv64gc-unknown-redox"),
+        os: Some(Os::redox),
+        abi: None,
+        arch: Arch::riscv64,
+        env: Some(Env::relibc),
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::unwind,
+    },
+    TargetInfo {
         triple: Triple::new_const("riscv64imac-unknown-none-elf"),
         os: None,
         abi: None,
@@ -2793,6 +2858,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         pointer_width: 32,
         endian: Endian::big,
         has_atomics: HasAtomics::atomic_8_16_32_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
+        triple: Triple::new_const("sparc64-unknown-helenos"),
+        os: Some(Os::helenos),
+        abi: None,
+        arch: Arch::sparc64,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::new_const(&[]),
+        pointer_width: 64,
+        endian: Endian::big,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
         panic: Panic::abort,
     },
     TargetInfo {
@@ -3537,6 +3615,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         panic: Panic::unwind,
     },
     TargetInfo {
+        triple: Triple::new_const("x86_64-unknown-helenos"),
+        os: Some(Os::helenos),
+        abi: None,
+        arch: Arch::x86_64,
+        env: None,
+        vendor: Some(Vendor::unknown),
+        families: Families::new_const(&[]),
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
         triple: Triple::new_const("x86_64-unknown-hermit"),
         os: Some(Os::hermit),
         abi: None,
@@ -4003,6 +4094,7 @@ impl super::Os {
     pub const freebsd: Os = Os::new_const("freebsd");
     pub const fuchsia: Os = Os::new_const("fuchsia");
     pub const haiku: Os = Os::new_const("haiku");
+    pub const helenos: Os = Os::new_const("helenos");
     pub const hermit: Os = Os::new_const("hermit");
     pub const horizon: Os = Os::new_const("horizon");
     pub const hurd: Os = Os::new_const("hurd");
@@ -4020,6 +4112,7 @@ impl super::Os {
     pub const openbsd: Os = Os::new_const("openbsd");
     pub const psp: Os = Os::new_const("psp");
     pub const psx: Os = Os::new_const("psx");
+    pub const qurt: Os = Os::new_const("qurt");
     pub const redox: Os = Os::new_const("redox");
     pub const rtems: Os = Os::new_const("rtems");
     pub const solaris: Os = Os::new_const("solaris");
