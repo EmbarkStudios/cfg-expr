@@ -15,7 +15,7 @@ dependencies = [
 
 [[package]]
 name = "cfg-expr"
-version = "0.20.5"
+version = "0.20.6"
 dependencies = [
  "similar-asserts",
  "smallvec",
