@@ -4,13 +4,13 @@
 
 # `⚙️ cfg-expr`
 
-**A parser and evaluator for Rust `cfg()` expressions. Builtin targets as of [1.94.0] are supported.**
+**A parser and evaluator for Rust `cfg()` expressions. Builtin targets as of [1.96.0] are supported.**
 
 [![Build Status](https://github.com/EmbarkStudios/cfg-expr/actions/workflows/ci.yml/badge.svg)](https://github.com/EmbarkStudios/cfg-expr/actions)
 [![crates.io](https://img.shields.io/crates/v/cfg-expr.svg)](https://crates.io/crates/cfg-expr)
 [![Docs](https://docs.rs/cfg-expr/badge.svg)](https://docs.rs/cfg-expr)
 [![Minimum Supported Rust Version](https://img.shields.io/badge/Rust%20MSRV-1.85.0-blue?color=fc8d62&logo=rust)](https://blog.rust-lang.org/2025/02/20/Rust-1.85.0/)
-[![Rust Targets](https://img.shields.io/badge/Rust%20Targets-1.94.0-blue.svg)](https://doc.rust-lang.org/rustc/platform-support.html)
+[![Rust Targets](https://img.shields.io/badge/Rust%20Targets-1.96.0-blue.svg)](https://doc.rust-lang.org/rustc/platform-support.html)
 [![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 [![Embark](https://img.shields.io/badge/embark-open%20source-blueviolet.svg)](https://embark.dev/)
 </div>
@@ -24,7 +24,7 @@
 
 `cfg-expr` is a crate that can be used to parse and evaluate Rust `cfg()` expressions, both as declarable in Rust code itself, as well in Cargo manifests' `[target.'cfg()'.dependencies]` sections.
 
-It contains a list of all builtin targets known to rustc as of [1.94.0] that can be used to determine if a particular cfg expression is satisfiable.
+It contains a list of all builtin targets known to rustc as of [1.96.0] that can be used to determine if a particular cfg expression is satisfiable.
 
 ```rust
 use cfg_expr::{targets::get_builtin_target_by_triple, Expression, Predicate};
@@ -100,4 +100,4 @@ at your option.
 
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.
 
-[1.94.0]: (https://doc.rust-lang.org/rustc/platform-support.html)
+[1.96.0]: (https://doc.rust-lang.org/rustc/platform-support.html)
