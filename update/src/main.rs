@@ -170,6 +170,8 @@ fn assemble(version: &str, rustc: String) -> Result<String, String> {
                         "relocation_model"
                         | "target_has_atomic_equal_alignment"
                         | "target_has_atomic_load_store"
+                        | "target_has_atomic_primitive_alignment"
+                        | "target_object_format"
                         | "fmt_debug" => {
                             //relocation_model = Some(val),
                         }
