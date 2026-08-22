@@ -113,6 +113,7 @@ impl TargetMatcher for target_lexicon::Triple {
         const RTEMS: tl::Vendor = tl::Vendor::Custom(tl::CustomVendor::Static("rtems"));
         const WALI: tl::Vendor = tl::Vendor::Custom(tl::CustomVendor::Static("wali"));
         const WASIP3: tl::Vendor = tl::Vendor::Custom(tl::CustomVendor::Static("wasip3"));
+        const OE: tl::Vendor = tl::Vendor::Custom(tl::CustomVendor::Static("oe"));
 
         match tp {
             Abi(_) => {
@@ -369,25 +370,33 @@ impl TargetMatcher for target_lexicon::Triple {
                 // panic support depends on the OS. Assume false for this.
                 false
             }
-            Vendor(ven) => match ven.0.parse::<target_lexicon::Vendor>() {
-                Ok(v) => {
-                    if self.vendor == v
-                        || ((self.vendor == NUTTX
-                            || self.vendor == RTEMS
-                            || self.vendor == WALI
-                            || self.vendor == WASIP3)
-                            && ven == &targ::Vendor::unknown)
-                    {
-                        true
-                    } else if let tl::Vendor::Custom(custom) = &self.vendor {
-                        matches!(custom.as_str(), "esp" | "esp32" | "esp32s2" | "esp32s3")
-                            && (v == tl::Vendor::Espressif || v == tl::Vendor::Unknown)
-                    } else {
-                        false
+            Vendor(ven) => {
+                // Unsure why the OpenEmbedded (oe) targets don't have it as the vendor, but for now the official
+                // rust targets don't
+                if self.vendor == OE && ven == &targ::Vendor::unknown {
+                    true
+                } else {
+                    match ven.0.parse::<target_lexicon::Vendor>() {
+                        Ok(v) => {
+                            if self.vendor == v
+                                || ((self.vendor == NUTTX
+                                    || self.vendor == RTEMS
+                                    || self.vendor == WALI
+                                    || self.vendor == WASIP3)
+                                    && ven == &targ::Vendor::unknown)
+                            {
+                                true
+                            } else if let tl::Vendor::Custom(custom) = &self.vendor {
+                                matches!(custom.as_str(), "esp" | "esp32" | "esp32s2" | "esp32s3")
+                                    && (v == tl::Vendor::Espressif || v == tl::Vendor::Unknown)
+                            } else {
+                                false
+                            }
+                        }
+                        Err(_) => false,
                     }
                 }
-                Err(_) => false,
-            },
+            }
             PointerWidth(pw) => {
                 // The gnux32 environment is a special case, where it has an
                 // x86_64 architecture, but a 32-bit pointer width
