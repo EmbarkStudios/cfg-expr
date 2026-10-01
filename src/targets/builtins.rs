@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.98.0";
+pub(crate) const RUSTC_VERSION: &str = "1.99.0";
 
 pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
@@ -285,6 +285,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         endian: Endian::little,
         has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
         panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("aarch64-unknown-l4re-uclibc"),
+        os: Some(Os::l4re),
+        abi: None,
+        arch: Arch::aarch64,
+        env: Some(Env::uclibc),
+        vendor: Some(Vendor::unknown),
+        families: Families::unix,
+        pointer_width: 64,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_128_ptr,
+        panic: Panic::abort,
     },
     TargetInfo {
         triple: Triple::new_const("aarch64-unknown-linux-gnu"),
@@ -1256,19 +1269,6 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         env: None,
         vendor: Some(Vendor::unknown),
         families: Families::unix,
-        pointer_width: 32,
-        endian: Endian::little,
-        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
-        panic: Panic::abort,
-    },
-    TargetInfo {
-        triple: Triple::new_const("armv7a-vex-v5"),
-        os: Some(Os::vexos),
-        abi: Some(Abi::eabihf),
-        arch: Arch::arm,
-        env: Some(Env::v5),
-        vendor: Some(Vendor::vex),
-        families: Families::new_const(&[]),
         pointer_width: 32,
         endian: Endian::little,
         has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
@@ -3232,6 +3232,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         env: Some(Env::msvc),
         vendor: Some(Vendor::uwp),
         families: Families::windows,
+        pointer_width: 32,
+        endian: Endian::little,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::abort,
+    },
+    TargetInfo {
+        triple: Triple::new_const("thumbv7a-vex-v5"),
+        os: Some(Os::vexos),
+        abi: Some(Abi::eabihf),
+        arch: Arch::arm,
+        env: Some(Env::v5),
+        vendor: Some(Vendor::vex),
+        families: Families::new_const(&[]),
         pointer_width: 32,
         endian: Endian::little,
         has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
