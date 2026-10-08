@@ -1,12 +1,12 @@
 # Embark Contributor Guidelines
 
-Welcome! This project is created by the team at [Embark Studios](https://embark.games). We're glad you're interested in contributing! We welcome contributions from people of all backgrounds who are interested in making great software with us.
+Welcome! This project is created by the team at [Embark Studios](https://www.embark-studios.com/). We're glad you're interested in contributing! We welcome contributions from people of all backgrounds who are interested in making great software with us.
 
 At Embark, we aspire to empower everyone to create interactive experiences. To do this, we're exploring and pushing the boundaries of new technologies, and sharing our learnings with the open source community.
 
 If you have ideas for collaboration, email us at opensource@embark-studios.com.
 
-We're also hiring full-time engineers to work with us in Stockholm! Check out our current job postings [here](https://embark.games/careers).
+We're also hiring full-time engineers to work with us in Stockholm! Check out our current job postings [here](https://careers.embark-studios.com/).
 
 ## Issues
 
@@ -42,7 +42,7 @@ You can comment on the issue to let others know you're interested in working on 
 
 3. Make your changes. Ensure that there are no build errors by running the project with your changes locally.
 
-4. Open a pull request with a name and description of what you did. You can read more about working with pull requests on GitHub [here](https://help.github.com/en/articles/creating-a-pull-request-from-a-fork).
+4. Open a pull request with a name and description of what you did. You can read more about working with pull requests on GitHub [here](https://docs.github.com/en/pull-requests/how-tos/create-pull-requests/creating-a-pull-request-from-a-fork).
 
 5. A maintainer will review your pull request and may ask you to make changes.
 
@@ -54,7 +54,7 @@ You can read about our standards and recommendations for working with Rust [here
 
 ### Python
 
-We recommend following [PEP8 conventions](https://www.python.org/dev/peps/pep-0008/) when working with Python modules.
+We recommend following [PEP8 conventions](https://peps.python.org/pep-0008/) when working with Python modules.
 
 ### JavaScript
 
