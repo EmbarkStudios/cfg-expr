@@ -10,7 +10,7 @@
 
 use super::*;
 
-pub(crate) const RUSTC_VERSION: &str = "1.99.0";
+pub(crate) const RUSTC_VERSION: &str = "1.100.0";
 
 pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
@@ -2330,7 +2330,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("powerpc64-ibm-aix"),
         os: Some(Os::aix),
-        abi: Some(Abi::vec_extabi),
+        abi: Some(Abi::vec_default),
         arch: Arch::powerpc64,
         env: None,
         vendor: Some(Vendor::ibm),
@@ -2339,6 +2339,19 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
         endian: Endian::big,
         has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
         panic: Panic::unwind,
+    },
+    TargetInfo {
+        triple: Triple::new_const("powerpc64-sony-ps3"),
+        os: Some(Os::ps3),
+        abi: Some(Abi::elfv1),
+        arch: Arch::powerpc64,
+        env: None,
+        vendor: Some(Vendor::sony),
+        families: Families::new_const(&[]),
+        pointer_width: 64,
+        endian: Endian::big,
+        has_atomics: HasAtomics::atomic_8_16_32_64_ptr,
+        panic: Panic::abort,
     },
     TargetInfo {
         triple: Triple::new_const("powerpc64-unknown-freebsd"),
@@ -3006,7 +3019,7 @@ pub const ALL_BUILTINS: &[TargetInfo] = &[
     TargetInfo {
         triple: Triple::new_const("sparc-unknown-linux-gnu"),
         os: Some(Os::linux),
-        abi: None,
+        abi: Some(Abi::v8plus),
         arch: Arch::sparc,
         env: Some(Env::gnu),
         vendor: Some(Vendor::unknown),
@@ -4336,7 +4349,8 @@ impl super::Abi {
     pub const softfloat: Abi = Abi::new_const("softfloat");
     pub const spe: Abi = Abi::new_const("spe");
     pub const uwp: Abi = Abi::new_const("uwp");
-    pub const vec_extabi: Abi = Abi::new_const("vec-extabi");
+    pub const v8plus: Abi = Abi::new_const("v8plus");
+    pub const vec_default: Abi = Abi::new_const("vec-default");
     pub const x32: Abi = Abi::new_const("x32");
 }
 
@@ -4423,6 +4437,7 @@ impl super::Os {
     pub const nto: Os = Os::new_const("nto");
     pub const nuttx: Os = Os::new_const("nuttx");
     pub const openbsd: Os = Os::new_const("openbsd");
+    pub const ps3: Os = Os::new_const("ps3");
     pub const psp: Os = Os::new_const("psp");
     pub const psx: Os = Os::new_const("psx");
     pub const qnx: Os = Os::new_const("qnx");

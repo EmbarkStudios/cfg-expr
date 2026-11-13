@@ -12,7 +12,6 @@ license = "MIT OR Apache-2.0"
 readme = "README.md"
 rust-version = "1.85.0"
 documentation = "https://docs.rs/cfg-expr"
-homepage = "https://github.com/EmbarkStudios/cfg-expr"
 keywords = ["cargo", "rustc", "cfg"]
 categories = ["parser-implementations"]
 
